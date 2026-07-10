@@ -1,0 +1,92 @@
+
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+{% include 'snippets/messages.html' %}
+
+<div class="title-1">{{ chapter.title }} - Lessons</div>
+
+<table class="table table-light">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Lesson</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lesson in lessons %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <!-- <td>{{ lesson.title }}</td> -->
+             <td>
+                <a href="{% url 'lesson_detail' lesson.id %}">
+                    {{ lesson.title }}
+                </a>
+            </td>
+        
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% if request.user.is_lecturer or request.user.is_superuser %}
+
+<div class="mb-3">
+    <a href="{% url 'chapter_list' chapter.module.id %}"
+       class="btn btn-outline-secondary">
+        ← Back to Chapters
+    </a>
+</div>
+
+
+<a href="{% url 'add_lesson' chapter.id %}"
+    class="btn btn-warning">
+    + Add Lesson
+</a>
+
+
+{% endif %}
+{% endblock %}
+
+<!-- 
+
+<nav>
+    <a href="{% url 'user_course_list' %}">My Courses</a> >
+    <span>{{ chapter.module.course.title }}</span> >
+    <span>{{ chapter.module.title }}</span> >
+    {{ chapter.title }}
+</nav>
+
+<div class="title-1">{{ chapter.title }} - Lessons</div>
+
+<div class="table-responsive p-3">
+    <table class="table table-light">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Lesson</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in lessons %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ lesson.title }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div> -->
+
+
+
+<!-- <h3>Lessons - {{ chapter.title }}</h3>
+
+{% for lesson in lessons %}
+    <a href="{% url 'lesson_detail' lesson.id %}">
+        <div class="card p-2 mb-2">
+            {{ lesson.title }}
+        </div>
+    </a>
+{% empty %}
+    <p>No lessons</p>
+{% endfor %} -->

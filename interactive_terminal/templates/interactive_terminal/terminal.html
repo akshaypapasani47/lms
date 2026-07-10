@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Virtual Lab Terminal</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+
+</head>
+
+<body
+    style="
+        margin:0;
+        background:white;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+        font-family:Arial;
+    "
+>
+
+<div
+    style="
+        width:85%;
+        max-width:1200px;
+        background:#1b1b1b;
+        border-radius:12px;
+        padding:20px;
+        box-shadow:0px 0px 20px rgba(0,0,0,0.5);
+    "
+>
+
+    <!-- HEADING -->
+    <h1
+        style="
+            color:white;
+            text-align:center;
+            margin-bottom:20px;
+        "
+    >
+        Virtual Lab
+    </h1>
+
+    <!-- TERMINAL -->
+    <div
+        id="terminal"
+        style="
+            width:100%;
+            height:600px;
+            background:black;
+            border-radius:8px;
+            padding:10px;
+            box-sizing:border-box;
+        "
+    >
+    </div>
+
+</div>
+
+<script>
+
+    // CREATE TERMINAL
+    const term = new Terminal({
+
+        cursorBlink: true,
+
+        fontSize: 16,
+
+        theme: {
+
+            background: "#000000",
+
+            foreground: "#ffffff"
+        }
+    });
+
+    // OPEN TERMINAL
+    term.open(document.getElementById("terminal"));
+
+    // TERMINAL HEADING
+    term.writeln("=================================");
+    term.writeln("      VIRTUAL LAB TERMINAL");
+    term.writeln("=================================");
+    term.writeln("");
+
+    // PROMPT
+    const promptText = "Akshay@gpu010:~$ ";
+
+    function showPrompt() {
+
+        term.write("\r\n" + promptText);
+    }
+
+    // INITIAL PROMPT
+    term.write(promptText);
+
+    // STORE COMMAND
+    let currentCommand = "";
+
+    // SEND COMMAND
+    async function sendCommand(command) {
+
+        try {
+
+            let response = await fetch(
+                "/terminal/run-command/",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/x-www-form-urlencoded",
+
+                        "X-CSRFToken":
+                            "{{ csrf_token }}"
+                    },
+
+                    body:
+                        "command=" +
+                        encodeURIComponent(command)
+                }
+            );
+
+            let data = await response.json();
+
+            let output = data.output || "";
+
+            // REMOVE COMMAND DUPLICATION
+            output = output.replace(command, "");
+
+            // CLEAN EXTRA PROMPTS
+            output = output.replace(/Akshay@gpu010:~\$\s?/g, "");
+
+            // PRINT OUTPUT
+            if (output.trim() !== "") {
+
+                term.write("\r\n" + output.trim());
+            }
+
+            // NEW PROMPT
+            showPrompt();
+        }
+
+        catch(error) {
+
+            term.write(
+                "\r\nConnection Error"
+            );
+
+            showPrompt();
+        }
+    }
+
+    // TERMINAL INPUT
+    term.onData(function(data) {
+
+        // ENTER KEY
+        if (data === "\r") {
+
+            const commandToSend = currentCommand.trim();
+
+            if (commandToSend !== "") {
+
+                sendCommand(commandToSend);
+            }
+
+            else {
+
+                showPrompt();
+            }
+
+            currentCommand = "";
+        }
+
+        // BACKSPACE
+        else if (data === "\u007F") {
+
+            if (currentCommand.length > 0) {
+
+                currentCommand =
+                    currentCommand.slice(0, -1);
+
+                term.write("\b \b");
+            }
+        }
+
+        // CTRL + C
+        else if (data === "\u0003") {
+
+            term.write("^C");
+
+            currentCommand = "";
+
+            showPrompt();
+        }
+
+        // NORMAL CHARACTERS
+        else {
+
+            currentCommand += data;
+
+            // SHOW ONLY USER INPUT ONCE
+            term.write(data);
+        }
+    });
+
+</script>
+
+</body>
+
+</html>

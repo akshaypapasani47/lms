@@ -1,0 +1,460 @@
+ <!-- <div class="row mb-5">
+        <div class="col-md-12 p-0"> -->
+            <!-- <p class="form-title m-0">{% trans 'Video Tutorials' %}</p>
+            <div class="table-responsive">
+                <table class="table table-shadow table-light table-striped m-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans 'Video Title' %}</th>
+                            <th>{% trans 'Uploaded Date' %}</th>
+                            <th>{% trans 'Get Started' %}</th>
+                            {% if request.user.is_student %}
+                            <th>{% trans 'Progress' %}</th>
+                            {% endif %}
+                            {% if request.user.is_superuser or request.user.is_lecturer %}
+                            <th>{% trans 'Actions' %}</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in video_rows %}
+                        {% with video=row.video %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <a href="{{ video.get_absolute_url }}" title="{{ video }}" class="d-flex align-items-center">
+                                    <i class="fas fa-video me-1"></i> {{ video.title|title }}
+                                </a>
+                            </td>
+                            <td>{{ video.timestamp|date }}</td>
+                            <th>
+                                <div>
+                                    <a class="download-btn" href="{{ video.get_absolute_url }}"
+                                        title="Download to your device">
+                                        <i class="fas fa-play me-1"></i>{% trans 'Play now' %}</a>
+                                </div>
+                            </th>
+                            {% if request.user.is_student %}
+                            <td>
+                                <span class="small text-muted video-progress-pct" data-video-id="{{ video.pk }}">{{ row.progress_pct }}%</span>
+                            </td>
+                            {% endif %}
+
+                            {% if request.user.is_superuser or request.user.is_lecturer %}
+                            <td>
+                                <div class="update-delete">
+                                    <a href="{% url 'upload_video_edit' slug=course.slug video_slug=video.slug %}"
+                                        class="update" title="{% trans 'Edit' %}">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    <a href="{% url 'upload_video_delete' slug=course.slug video_slug=video.slug %}"
+                                        class="delete" title="{% trans 'Delete' %}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endwith %}
+                        {% empty %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <span class="text-danger">
+                                    {% trans 'No video Uploaded.' %}
+                                    {% if request.user.is_superuser or request.user.is_lecturer %}
+                                    <a href="{% url 'upload_video' course.slug %}">
+                                        <i class="primary" style="font-size: 22px;">
+                                            {% trans 'Upload now.' %}
+                                        </i>
+                                        {% endif %}
+                                    </a>
+                                </span>
+                            </td>
+                            <td></td>
+                            {% if request.user.is_student %}
+                            <td></td>
+                            {% endif %}
+                            {% if request.user.is_superuser or request.user.is_lecturer %}
+                            <td></td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table> -->
+            <!-- </div> -->
+        <!-- </div> -->
+    <!-- </div> -->
+
+    <!-- <div class="row">
+        <div class="col-md-12 p-0"> -->
+            <!-- <p class="form-title m-0">{% trans 'Documentations' %}</p>
+            <div class="table-responsive">
+                <table class="table table-shadow table-light table-striped m-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans 'File name' %}</th>
+                            <th>{% trans 'Uploaded Date' %}</th>
+                            <th>{% trans 'Updated Date' %}</th>
+                            <th>{% trans 'Downloads' %}</th>
+                            {% if request.user.is_superuser or request.user.is_lecturer %}
+                            <th>{% trans 'Actions' %}</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in files %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href="{{ file.file.url }}" title="{{ file }}" class="d-flex align-items-center">
+                                    <i class="fas fa-file-{{ file.get_extension_short }} me-1"></i>
+                                    {{ file.title|title }}
+                                </a>
+                            </td>
+                            <td>{{ file.upload_time|date }}</td>
+                            <td>{{ file.updated_date|date }}</td>
+                            <th>
+                                <div>
+                                    <a class="download-btn" href="{{ file.file.url }}" title="Download to your device">
+                                        <i class="fas fa-download me-1"></i>{% trans 'Download' %}</a>
+                                </div>
+                            </th>
+
+                            {% if request.user.is_superuser or request.user.is_lecturer %}
+                            <td>
+                                <div class="update-delete">
+                                    <a href="{% url 'upload_file_edit' slug=course.slug file_id=file.pk %}"
+                                        class="update" title="{% trans 'Edit' %}">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    <a href="{% url 'upload_file_delete' slug=course.slug file_id=file.pk %}"
+                                        class="delete" title="{% trans 'Delete' %}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <span class="text-danger">
+                                    {% trans 'No File Uploaded.' %}
+                                    {% if request.user.is_superuser or request.user.is_lecturer %}
+                                    <a href="{% url 'upload_file_view' course.slug %}">
+                                        <i class="primary" style="font-size: 22px;">
+                                            {% trans 'Upload now.' %}
+                                        </i>
+                                        {% endif %}
+                                    </a>
+                                </span>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table> -->
+            <!-- </div>
+        </div>
+    </div> -->
+<!-- {% if request.user.is_superuser or request.user.is_lecturer %} -->
+<!-- <h3>Course Content</h3> -->
+<!-- <a href="{% url 'add_module' course.id %}" class="btn btn-primary mb-3">
+    + Add Module
+</a>
+{% endif %}
+
+{% for module in modules %}
+  <div class="card mb-3 p-3">
+    <h4>Module: {{ module.title }}</h4>
+
+    {% if request.user.is_superuser or request.user.is_lecturer %} -->
+    <!-- ✅ ADD CHAPTER BUTTON -->
+    <!-- <a href="{% url 'add_chapter' module.id %}" class="btn btn-sm btn-success mb-2">
+        + Add Chapter
+    </a>
+    {% endif %}
+
+    {% for chapter in module.chapters.all %}
+      <div class="ms-3">
+        <h5>Chapter: {{ chapter.title }}</h5>
+
+        {% if request.user.is_superuser or request.user.is_lecturer %} -->
+         <!-- ✅ ADD LESSON BUTTON -->
+        <!-- <a href="{% url 'add_lesson' chapter.id %}" class="btn btn-sm btn-warning mb-2">
+            + Add Lesson
+        </a>
+        {% endif %}
+
+        {% for lesson in chapter.lessons.all %}
+          <div class="ms-4">
+            <h6>Lesson: {{ lesson.title }}</h6>
+
+            <b>Videos:</b>
+            {% for v in lesson.uploadvideo_set.all %} -->
+              <!-- <p>▶ {{ v.title }}</p> -->
+                <!-- <video width="400" controls>
+                    <source src="{{ v.video.url }}" type="video/mp4">
+                </video>
+                <p>{{ v.title }}</p>
+            {% empty %}
+              <p>No videos</p>
+            {% endfor %}
+
+            <b>Files:</b>
+            {% for f in lesson.upload_set.all %} -->
+              <!-- <p>📄 {{ f.title }}</p> -->
+                <!-- <a href="{{ f.file.url }}" target="_blank">
+                    📄 {{ f.title }}
+                </a>
+            {% empty %}
+              <p>No files</p>
+            {% endfor %}
+
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+{% empty %}
+  <p>No modules added</p>
+{% endfor %}
+
+</div> -->
+
+
+<!-- <h3>Course Content</h3>
+
+{% for module in modules %}
+  <div class="card mb-2 p-2"> -->
+    
+    <!-- MODULE CLICK -->
+    <!-- <h4 onclick="toggle('module-{{ module.id }}')" style="cursor:pointer;">
+      ▶ Module: {{ module.title }}
+    </h4>
+
+    <div id="module-{{ module.id }}" style="display:none;">
+
+      {% for chapter in module.chapters.all %}
+        <div class="ms-3"> -->
+
+          <!-- CHAPTER CLICK -->
+          <!-- <h5 onclick="toggle('chapter-{{ chapter.id }}')" style="cursor:pointer;">
+            ▶ Chapter: {{ chapter.title }}
+          </h5>
+
+          <div id="chapter-{{ chapter.id }}" style="display:none;">
+
+            {% for lesson in chapter.lessons.all %}
+              <div class="ms-4"> -->
+
+                <!-- LESSON CLICK -->
+                <!-- <h6 onclick="toggle('lesson-{{ lesson.id }}')" style="cursor:pointer;">
+                  ▶ Lesson: {{ lesson.title }}
+                </h6>
+
+                <div id="lesson-{{ lesson.id }}" style="display:none;"> -->
+
+                  <!-- VIDEOS -->
+                  <!-- <b>Videos:</b>
+                  {% for v in lesson.uploadvideo_set.all %}
+                    <video width="600" controls>
+                      <source src="{{ v.video.url }}" type="video/mp4">
+                    </video>
+                    <p>{{ v.title }}</p>
+                  {% empty %}
+                    <p>No videos</p>
+                  {% endfor %} -->
+
+                  <!-- FILES -->
+                  <!-- <b>Files:</b>
+                  {% for f in lesson.upload_set.all %}
+                    <a href="{{ f.file.url }}" target="_blank">
+                      📄 {{ f.title }}
+                    </a><br>
+                  {% empty %}
+                    <p>No files</p>
+                  {% endfor %}
+
+                </div>
+              </div>
+            {% endfor %}
+
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+{% empty %}
+  <p>No modules added</p>
+{% endfor %} -->
+
+
+<h3>Course Content</h3>
+
+<!-- ✅ ADD MODULE BUTTON -->
+{% if request.user.is_lecturer or request.user.is_superuser %}
+  <a href="{% url 'add_module' course.id %}" class="btn btn-primary mb-2">
+    + Add Module
+  </a>
+{% endif %}
+
+{% for module in modules %}
+  <div class="card mb-2 p-2">
+        <!-- MODULE CLICK -->
+        <h4 onclick="toggle('module-{{ module.id }}')" style="cursor:pointer;">
+        ▶ Module: {{ module.title }}
+        </h4>
+
+        <!-- ✅ ADD CHAPTER BUTTON -->
+        {% if request.user.is_lecturer or request.user.is_superuser %}
+        <a href="{% url 'add_chapter' module.id %}" class="btn btn-sm btn-success mb-1">
+            + Add Chapter
+        </a>
+        {% endif %}
+
+        <div id="module-{{ module.id }}" style="display:none;">
+
+        {% for chapter in module.chapters.all %}
+            <div class="ms-3">
+
+            <!-- CHAPTER CLICK -->
+            <h5 onclick="toggle('chapter-{{ chapter.id }}')" style="cursor:pointer;">
+                ▶ Chapter: {{ chapter.title }}
+            </h5>
+
+            <!-- ✅ ADD LESSON BUTTON -->
+            {% if request.user.is_lecturer or request.user.is_superuser %}
+                <a href="{% url 'add_lesson' chapter.id %}" class="btn btn-sm btn-warning mb-1">
+                + Add Lesson
+                </a>
+            {% endif %}
+
+            <div id="chapter-{{ chapter.id }}" style="display:none;">
+
+                    {% for lesson in chapter.lessons.all %}
+                    <div class="ms-4">
+
+                            <!-- LESSON CLICK -->
+                            <h6 onclick="toggle('lesson-{{ lesson.id }}')" style="cursor:pointer;">
+                            ▶ Lesson: {{ lesson.title }}
+                            </h6>
+
+                            <div id="lesson-{{ lesson.id }}" style="display:none;">
+
+                                <!-- VIDEOS -->
+
+                                <b>Videos:</b>
+
+                                {% for v in lesson.uploadvideo_set.all %}
+
+                                <div class="video-container">
+
+                                    <h5>{{ v.title }}</h5>
+                                    
+                                    <select class="language-select">
+                                            <option value="en">English</option>
+                                            <!-- {% if v.audio_hi %} -->
+                                            <option value="hi">Hindi</option>
+                                            <!-- {% endif %}
+                                            {% if v.audio_te %} -->
+                                            <option value="te">Telugu</option>
+                                            <!-- {% endif %}
+                                            {% if v.audio_kn %} -->
+                                            <option value="kn">Kannada</option>
+                                            <!-- {% endif %} -->
+                                    </select>
+
+                                    <br><br>
+
+                                    <video width="700" controls class="video-player">
+                                        <source src="{{ v.video.url }}" type="video/mp4">
+
+                                            {% if v.subtitle_en %}
+                                            <track
+                                                src="{{ v.subtitle_en.url }}"
+                                                kind="subtitles"
+                                                srclang="en"
+                                                label="English"
+                                                default>
+                                            {% endif %}
+
+                                            {% if v.subtitle_hi %}
+                                            <track
+                                                src="{{ v.subtitle_hi.url }}"
+                                                kind="subtitles"
+                                                srclang="hi"
+                                                label="Hindi">
+                                            {% endif %}
+
+                                            {% if v.subtitle_te %}
+                                            <track
+                                                src="{{ v.subtitle_te.url }}"
+                                                kind="subtitles"
+                                                srclang="te"
+                                                label="Telugu">
+                                            {% endif %}
+
+                                            {% if v.subtitle_kn %}
+                                            <track
+                                                src="{{ v.subtitle_kn.url }}"
+                                                kind="subtitles"
+                                                srclang="kn"
+                                                label="Kannada">
+                                            {% endif %}
+                
+                                    </video>
+
+                                    <audio class="dub-audio"></audio>
+
+                                    {% if v.audio_hi %}
+                                        <input type="hidden" class="hi-audio" value="{{ v.audio_hi.url }}">
+                                    {% endif %}
+
+                                    {% if v.audio_te %}
+                                        <input type="hidden" class="te-audio" value="{{ v.audio_te.url }}">
+                                    {% endif %}
+
+                                    {% if v.audio_kn %}
+                                        <input type="hidden" class="kn-audio" value="{{ v.audio_kn.url }}">
+                                    {% endif %}
+
+                                </div>
+
+                                <hr>
+
+                                {% empty %}
+                                    <p>No videos</p>
+                                {% endfor %}
+
+                                <!-- FILES -->
+                                <b>Files:</b>
+                                {% for f in lesson.upload_set.all %}
+                                    <a href="{{ f.file.url }}" target="_blank">
+                                    📄 {{ f.title }}
+                                    </a><br>
+                                {% empty %}
+                                    <p>No files</p>
+                                {% endfor %}
+
+                            </div>
+                    </div>
+                    {% endfor %}
+
+            </div>
+            </div>
+        {% endfor %}
+
+        </div>
+  </div>
+{% empty %}
+  <p>No modules added</p>
+{% endfor %}

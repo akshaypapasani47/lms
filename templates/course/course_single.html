@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+        {% if request.user.is_student %}
+        <li class="breadcrumb-item"><a href="{% url 'user_course_list' %}">{% trans 'My courses' %}</a></li>
+        {% else %}
+        <li class="breadcrumb-item"><a href="{% url 'programs' %}">{% trans 'Programs' %}</a></li>
+        {% endif %}
+        <li class="breadcrumb-item"><a href="{% url 'program_detail' course.program.id %}">{{ course.program }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ course }}</li>
+    </ol>
+</nav>
+
+
+
+<div class="title-1">{{ course }}</div>
+<p class="small text-muted">{{ course.summary }}</p>
+
+
+{% include 'snippets/messages.html' %}
+
+<div class="container">
+<h3>Course Modules</h3>
+{% for module in modules %}
+<div class="card p-3 mb-2">
+
+    <a href="{% url 'chapter_list' module.id %}">
+        {{ module.title }}
+    </a>
+
+</div>
+{% empty %}
+<p>No Modules Added</p>
+{% endfor %}
+
+{% if request.user.is_lecturer or request.user.is_superuser %}
+
+<div class="mb-3">
+    <a href="{% url 'program_detail' course.program.id %}"
+       class="btn btn-outline-secondary">
+        ← Back to Program
+    </a>
+</div>
+
+
+<a href="{% url 'add_module' course.id %}" class="btn btn-primary mb-3">
+    + Add Module
+</a>
+{% endif %}
+
+
+
+
+
+
+
+<div class="site-section mb-5 mt-4">
+    <div class="title-1">{% trans 'Lecturer(s)' %}</div>
+    <br>
+    <br>
+    <div class="container-fluid">
+        <div class="row">
+            {% for lecturer in lecturers %}
+            <div class="col-lg-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        {% if lecturer.lecturer.picture %}
+                        <img class="avatar avatar-lg" src="{{ lecturer.lecturer.picture.url }}" alt="">
+                        {% endif %}
+                        <h5 class="fw-bold mb-0">{{ lecturer|title }}</h5>
+                        <p class="mb-0">{{ lecturer.lecturer.email }}</p>
+                        <p class="text-muted small">Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod.</p>
+                        <p>
+                            <a class="btn btn-sm btn-secondary" href="#" role="button"><i
+                                    class="fab fa-twitter"></i></a>
+                            <a class="btn btn-sm btn-secondary" href="#" role="button"><i
+                                    class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-sm btn-secondary" href="#" role="button"><i
+                                    class="fab fa-linkedin-in"></i></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <h6 class="text-muted mt-3">{% trans 'No lecturer assigned for this course' %}</h6>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+<!-- <script>
+  
+function toggle(id) {
+  var x = document.getElementById(id);
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+
+document.querySelectorAll(".video-container").forEach(container => {
+
+    const video = container.querySelector(".video-player");
+    const audio = container.querySelector(".dub-audio");
+    const select = container.querySelector(".language-select");
+
+    const hiAudio = container.querySelector(".hi-audio");
+    const teAudio = container.querySelector(".te-audio");
+    const knAudio = container.querySelector(".kn-audio");
+
+    select.addEventListener("change", function() {
+
+        const lang = this.value;
+
+        // Subtitle switching
+        const tracks = video.textTracks;
+
+        for (let i = 0; i < tracks.length; i++) {
+            tracks[i].mode =
+                tracks[i].language === lang
+                    ? "showing"
+                    : "disabled";
+        }
+
+        // English
+        if (lang === "en") {
+            audio.pause();
+            audio.removeAttribute("src");
+            audio.load();
+            video.muted = false;
+            return;
+        }
+
+        let src = "";
+
+        if (lang === "hi" && hiAudio) src = hiAudio.value;
+        if (lang === "te" && teAudio) src = teAudio.value;
+        if (lang === "kn" && knAudio) src = knAudio.value;
+
+        if (!src) return;
+
+        video.muted = true;
+        
+        audio.pause();
+        audio.src = src;
+        audio.load();
+        audio.currentTime = video.currentTime;
+
+        if (!video.paused) {
+            audio.play();
+        }
+    });
+
+    video.addEventListener("play", () => {
+        if (select.value !== "en" && audio.src) {
+            audio.currentTime = video.currentTime;
+            audio.play();
+        }
+    });
+
+    video.addEventListener("pause", () => {
+        audio.pause();
+    });
+
+    video.addEventListener("seeking", () => {
+        if (audio.src) {
+            audio.currentTime = video.currentTime;
+        }
+    });
+
+    video.addEventListener("timeupdate", () => {
+        if (
+            select.value !== "en" &&
+            audio.src &&
+            Math.abs(audio.currentTime - video.currentTime) > 0.2
+        ) {
+            audio.currentTime = video.currentTime;
+        }
+    });
+});
+
+</script> -->

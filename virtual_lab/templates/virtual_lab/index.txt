@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Virtual Lab
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Virtual Labs</h2>
+
+        {% if request.user.is_superuser or request.user.is_lecturer %}
+        <a href="#" class="btn btn-primary">
+            + Create Lab
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4>Python Lab</h4>
+                    <p>Run Python experiments online.</p>
+
+                    <a href="#" class="btn btn-success">
+                        Open Lab
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4>Linux Lab</h4>
+                    <p>Practice Linux commands.</p>
+
+                    <a href="#" class="btn btn-success">
+                        Open Lab
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+
+

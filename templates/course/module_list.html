@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>{{ course.title }} - Modules</h3>
+
+{% for module in modules %}
+<div class="card p-3 mb-2">
+
+    <a href="{% url 'chapter_list' module.id %}">
+        {{ module.title }}
+    </a>
+
+    {% if request.user.is_lecturer or request.user.is_superuser %}
+
+    <div class="mb-3">
+        <a href="{% url 'course_detail' course.slug %}"
+        class="btn btn-outline-secondary">
+            ← Back to Course
+        </a>
+    </div>
+    <br><br>
+    <a href="{% url 'add_chapter' module.id %}"
+       class="btn btn-success btn-sm">
+       + Add Chapter
+    </a>
+    {% endif %}
+
+</div>
+{% empty %}
+<p>No modules available</p>
+{% endfor %}
+
+{% endblock %}
+
+<!-- 
+<h3>Modules - {{ course.title }}</h3>
+
+{% for module in modules %}
+    <a href="{% url 'chapter_list' module.id %}">
+        <div class="card p-2 mb-2">
+            {{ module.title }}
+        </div>
+    </a>
+{% empty %}
+    <p>No modules</p>
+{% endfor %} -->
+
+
+<!-- <div class="table-responsive p-3 mt-3">
+    <h6 class="fw-bold text-primary">
+        <u>{{ course.title }} - Modules</u>
+    </h6>
+
+    <div class="table-shadow">
+        <table class="table table-light">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Module Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for module in modules %}
+                <a href="{% url 'chapter_list' module.id %}">
+                    { module.title }}
+                </a>
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ module.title }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div> -->
+

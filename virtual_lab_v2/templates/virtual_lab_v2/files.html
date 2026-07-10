@@ -1,0 +1,1009 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form style="display:none;">
+
+    {% csrf_token %}
+
+</form>
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="alert alert-success">
+
+            {{ message }}
+
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+<div class="container-fluid mt-4">
+
+    <h2 class="fw-bold">
+        Virtual Lab File Manager
+    </h2>
+
+    <p class="text-muted">
+        Manage your Virtual Lab files and folders
+    </p>
+
+    <hr>
+
+    
+    
+    
+
+    <div class="card shadow-sm mb-3">
+
+        <div class="card-body">
+
+            <strong>Current Directory</strong>
+
+            <br>
+
+            {{ display_path }}
+
+        </div>
+
+    </div>
+
+    {% if current_path %}
+
+        {% if parent_path %}
+
+            <a href="?path={{ parent_path }}"
+            class="btn btn-secondary mb-3">
+
+                ⬅ Back
+
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'files' %}"
+            class="btn btn-secondary mb-3">
+
+                ⬅ Back
+
+            </a>
+
+        {% endif %}
+
+    {% endif %}
+
+    <p>Current Path = {{ current_path }}</p>
+    <p>Parent Path = {{ parent_path }}</p>
+
+
+    <div class="card shadow-sm mb-3">
+
+        <div class="card-body">
+
+            <button
+                class="btn btn-dark"
+                onclick="openTerminal()">
+
+                <i class="fa fa-terminal"></i>
+                Terminal
+
+            </button>
+
+            <button
+                class="btn btn-primary"
+                onclick="toggleUpload()">
+
+                📤 Upload
+
+            </button>
+
+            <div
+                id="uploadForm"
+                style="display:none;"
+                class="mt-3">
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                    action="{% url 'upload_file' %}">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="current_path"
+                        value="{{ current_path }}">
+
+                    <input
+                        type="file"
+                        name="file"
+                        class="form-control mb-2">
+
+                    <button
+                        class="btn btn-success">
+
+                        Upload
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <button
+                class="btn btn-success"
+                onclick="toggleFolder()">
+
+                📁 New Folder
+
+            </button>
+
+            <div
+                id="folderForm"
+                style="display:none;"
+                class="mt-3">
+
+                <form
+                    method="POST"
+                    action="{% url 'create_folder' %}">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="current_path"
+                        value="{{ current_path }}">
+
+                    <input
+                        type="text"
+                        name="folder_name"
+                        class="form-control mb-2"
+                        placeholder="Folder Name">
+
+                    <button
+                        class="btn btn-success">
+
+                        Create Folder
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <button
+                class="btn btn-secondary"
+                onclick="toggleFile()">
+
+                📄 New File
+
+            </button>
+
+            <div
+                id="fileForm"
+                style="display:none;"
+                class="mt-3">
+
+                <form
+                    method="POST"
+                    action="{% url 'create_file' %}">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="current_path"
+                        value="{{ current_path }}">
+
+                    <input
+                        type="text"
+                        name="file_name"
+                        class="form-control mb-2"
+                        placeholder="example.txt">
+
+                    <button
+                        class="btn btn-secondary">
+
+                        Create File
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <button
+                class="btn btn-warning"
+                onclick="location.reload();">
+
+                🔄 Refresh
+
+            </button>
+
+            <input
+                type="text"
+                id="searchBox"
+                class="form-control d-inline-block float-end"
+                style="width:250px"
+                placeholder="Search Files">
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+
+                    File Explorer
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-hover">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Name</th>
+
+                                <th>Type</th>
+
+                                <th>Size</th>
+
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        {% for item in items %}
+
+                        <tr
+                            class="file-row"
+                            data-id="{{ forloop.counter }}"
+                            data-name="{{ item.name }}"
+                            data-dir="{{ item.is_dir|yesno:'true,false' }}">
+
+                            <td id="name{{ forloop.counter }}">
+
+                                {% if item.is_dir %}
+
+                                <a href="?path={% if current_path %}{{ current_path }}/{% endif %}{{ item.name }}"
+                                class="text-decoration-none">
+
+                                    <i class="fa-solid {{ item.icon }} me-2"></i>
+                                    {{ item.name }}
+
+                                </a>
+
+                                {% else %}
+
+                                <i class="fa-solid {{ item.icon }} me-2"></i>
+                                {{ item.name }}
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if item.is_dir %}
+
+                                    Folder
+
+                                {% else %}
+
+                                    File
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.size }} bytes
+
+                            </td>
+
+                            <td>
+
+                                {% if not item.is_dir %}
+
+                                <a class="btn btn-outline-info btn-sm"
+                                href="{% url 'view_item' %}?file_name={{ item.name }}&current_path={{ current_path }}">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+
+                                <a class="btn btn-outline-success btn-sm"
+                                href="{% url 'download_item' %}?file_name={{ item.name }}&current_path={{ current_path }}">
+                                    <i class="fa fa-download"></i>
+                                </a>
+
+                                {% endif %}
+
+                                <button class="btn btn-outline-primary btn-sm"
+                                        onclick="renameItem('{{ forloop.counter }}','{{ item.name }}')">
+                                    <i class="fa fa-pen"></i>
+                                </button>
+
+                                <button class="btn btn-outline-danger btn-sm"
+                                        onclick="deleteItem('{{ item.name }}','{{ item.is_dir|yesno:'true,false' }}')">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr></tr>
+
+                            <td colspan="4" class="text-center">
+
+                                No files found.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-success text-white">
+
+                    File Information
+
+                </div>
+
+                <div class="card-body" id="fileInfoPanel">
+
+                    <p class="text-muted">
+
+                        Select a file to view details.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div
+    id="contextMenu"
+    class="card shadow"
+    style="
+        position:absolute;
+        display:none;
+        z-index:9999;
+        min-width:220px;
+    ">
+
+    <div class="list-group list-group-flush">
+
+        <button
+            class="list-group-item list-group-item-action"
+            id="ctxOpen">
+
+            📂 Open
+
+        </button>
+
+        <button
+            class="list-group-item list-group-item-action"
+            id="ctxRename">
+
+            ✏ Rename
+
+        </button>
+
+        <hr class="m-0">
+
+        <button
+            class="list-group-item list-group-item-action"
+            id="ctxCopy">
+
+            📄 Copy
+
+        </button>
+
+        <button
+            class="list-group-item list-group-item-action"
+            id="ctxCut">
+
+            ✂ Cut
+
+        </button>
+
+        <button
+            class="list-group-item list-group-item-action"
+            id="ctxPaste">
+
+            📋 Paste
+
+        </button>
+
+        <hr class="m-0">
+
+        <button
+            class="list-group-item list-group-item-action"
+            id="ctxDelete">
+
+            🗑 Delete
+
+        </button>
+
+        <button
+            class="list-group-item list-group-item-action"
+            id="ctxDownload">
+
+            ⬇ Download
+
+        </button>
+
+        <button
+            class="list-group-item list-group-item-action"
+            id="ctxTerminal">
+
+            💻 Open Terminal Here
+
+        </button>
+
+        <button
+            class="list-group-item list-group-item-action"
+            id="ctxProperties">
+
+            ℹ Properties
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function toggleUpload(){
+
+    let form = document.getElementById("uploadForm");
+
+    if(form.style.display=="none" || form.style.display==""){
+
+        form.style.display="block";
+
+    }
+
+    else{
+
+        form.style.display="none";
+
+    }
+
+}
+
+function toggleFolder(){
+
+    let form = document.getElementById("folderForm");
+
+    if(form.style.display=="none" || form.style.display==""){
+
+        form.style.display="block";
+
+    }
+
+    else{
+
+        form.style.display="none";
+
+    }
+
+}
+
+function toggleFile(){
+
+    let form = document.getElementById("fileForm");
+
+    if(form.style.display=="none" || form.style.display==""){
+
+        form.style.display="block";
+
+    }
+
+    else{
+
+        form.style.display="none";
+
+    }
+
+}
+
+function renameItem(id,name){
+
+    let cell=document.getElementById("name"+id);
+
+    cell.innerHTML=`
+
+        <div class="d-flex">
+
+            <input
+                id="rename${id}"
+                class="form-control form-control-sm me-2"
+                value="${name}">
+
+            <button
+                class="btn btn-success btn-sm me-1"
+                onclick="saveRename(${id},'${name}')">
+
+                ✔
+
+            </button>
+
+            <button
+                class="btn btn-danger btn-sm"
+                onclick="cancelRename(${id},'${name}')">
+
+                ✖
+
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+function cancelRename(id,name){
+
+    document.getElementById("name"+id).innerHTML=name;
+
+}
+
+function saveRename(id, oldName){
+
+    let newName =
+        document.getElementById(
+            "rename"+id
+        ).value;
+
+    let csrf =
+        document.querySelector(
+            "[name=csrfmiddlewaretoken]"
+        ).value;
+
+    fetch(
+        "/virtual-lab2/rename-item/",
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "X-CSRFToken":csrf,
+
+                "Content-Type":
+                "application/x-www-form-urlencoded"
+
+            },
+
+            body:
+
+                "old_name="+encodeURIComponent(oldName)+
+                "&new_name="+encodeURIComponent(newName)+
+                "&current_path="+encodeURIComponent("{{ current_path }}")
+
+        }
+
+    )
+
+    .then(response=>response.json())
+
+    .then(data=>{
+
+        if(data.success){
+
+            location.reload();
+
+        }
+
+        else{
+
+            alert(data.error);
+
+        }
+
+    });
+
+}
+
+function deleteItem(itemName,isDir){
+
+    if(
+        !confirm(
+            "Delete '"+itemName+"' ?"
+        )
+    ){
+        return;
+    }
+
+    let csrf =
+        document.querySelector(
+            "[name=csrfmiddlewaretoken]"
+        ).value;
+
+    fetch(
+        "/virtual-lab2/delete-item/",
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "X-CSRFToken":csrf,
+
+                "Content-Type":
+                "application/x-www-form-urlencoded"
+
+            },
+
+            body:
+
+                "item_name="+encodeURIComponent(itemName)+
+                "&current_path="+encodeURIComponent("{{ current_path }}")+
+                "&is_dir="+isDir
+
+        }
+
+    )
+
+    .then(response=>response.json())
+
+    .then(data=>{
+
+        if(data.success){
+
+            location.reload();
+
+        }
+
+        else{
+
+            alert(data.error);
+
+        }
+
+    });
+
+}
+
+
+function openTerminal(){
+
+    let path = encodeURIComponent("{{ current_path }}");
+
+    window.open(
+        "/virtual-lab2/terminal/?path=" + path,
+        "_blank"
+    );
+
+}
+
+let selectedItem = null;
+
+let clipboardItem = null;
+
+let clipboardAction = null;
+
+const menu =
+    document.getElementById("contextMenu");
+
+document.querySelectorAll(".file-row").forEach(function(row){
+
+    row.addEventListener("contextmenu", function(e){
+
+        e.preventDefault();
+
+        document.querySelectorAll(".file-row").forEach(function(r){
+            r.classList.remove("table-primary");
+        });
+
+        row.classList.add("table-primary");
+
+        selectedItem = {
+
+            id: row.dataset.id,
+
+            name: row.dataset.name,
+
+            isDir: row.dataset.dir === "true"
+
+        };
+
+        menu.style.left = e.pageX + "px";
+
+        menu.style.top = e.pageY + "px";
+
+        menu.style.display = "block";
+
+    });
+
+});
+
+document.addEventListener("click", function(){
+
+    menu.style.display = "none";
+
+});
+
+document.getElementById("ctxOpen").addEventListener("click", function(){
+
+    if(selectedItem == null)
+        return;
+
+    if(selectedItem.isDir){
+
+        let currentPath = "{{ current_path }}";
+
+        let newPath = currentPath
+            ? currentPath + "/" + selectedItem.name
+            : selectedItem.name;
+
+        window.location.href =
+            "{% url 'files' %}?path=" +
+            encodeURIComponent(newPath);
+
+    }
+
+    else{
+
+        window.location.href =
+            "{% url 'view_item' %}?file_name=" +
+            encodeURIComponent(selectedItem.name) +
+            "&current_path=" +
+            encodeURIComponent("{{ current_path }}");
+
+    }
+
+});
+
+document.getElementById("ctxRename").addEventListener("click", function(){
+
+    if(selectedItem == null)
+        return;
+
+    menu.style.display = "none";
+
+    renameItem(
+        selectedItem.id,
+        selectedItem.name
+    );
+
+});
+
+
+document.getElementById("ctxDelete").addEventListener("click", function(){
+
+    if(selectedItem == null)
+        return;
+
+    menu.style.display = "none";
+
+    deleteItem(
+
+        selectedItem.name,
+
+        selectedItem.isDir
+
+    );
+
+});
+
+
+document.getElementById("ctxDownload").addEventListener("click", function(){
+
+    if(selectedItem == null)
+        return;
+
+    menu.style.display = "none";
+
+    if(selectedItem.isDir){
+
+        alert("Folder download will be added later.");
+
+        return;
+
+    }
+
+    window.location.href =
+        "{% url 'download_item' %}?file_name=" +
+        encodeURIComponent(selectedItem.name) +
+        "&current_path=" +
+        encodeURIComponent("{{ current_path }}");
+
+});
+
+
+document.getElementById("ctxTerminal").addEventListener("click", function(){
+
+    if(selectedItem == null)
+        return;
+
+    menu.style.display = "none";
+
+    let path = "{{ current_path }}";
+
+    // If user right-clicks a folder, open terminal inside that folder
+    if(selectedItem.isDir){
+
+        path = path
+            ? path + "/" + selectedItem.name
+            : selectedItem.name;
+
+    }
+
+    // If user right-clicks a file,
+    // open terminal in the file's parent folder
+
+    window.open(
+
+        "{% url 'lab_terminal' %}?path=" +
+        encodeURIComponent(path),
+
+        "_blank"
+
+    );
+
+});
+
+document.getElementById("ctxProperties").addEventListener("click", function(){
+
+    console.log("Selected Item:", selectedItem);
+
+    if(selectedItem == null){
+        alert("No item selected");
+        return;
+    }
+
+    menu.style.display = "none";
+
+    fetch(
+        "/virtual-lab2/file-properties/?file_name=" +
+        encodeURIComponent(selectedItem.name) +
+        "&current_path=" +
+        encodeURIComponent("{{ current_path }}")
+    )
+    .then(response => response.json())
+    .then(data => {
+
+        console.log("Response:", data);
+
+        if (data.success) {
+
+            const panel = document.getElementById("fileInfoPanel");
+
+            panel.innerHTML = `
+                <h5 class="mb-3">
+                    📄 ${data.name}
+                </h5>
+
+                <table class="table table-sm table-bordered">
+                    <tr>
+                        <th>Type</th>
+                        <td>${data.type}</td>
+                    </tr>
+                    <tr>
+                        <th>Size</th>
+                        <td>${data.size} Bytes</td>
+                    </tr>
+                    <tr>
+                        <th>Modified</th>
+                        <td>${data.modified}</td>
+                    </tr>
+                    <tr>
+                        <th>Permissions</th>
+                        <td>${data.permissions}</td>
+                    </tr>
+                    <tr>
+                        <th>Location</th>
+                        <td style="word-break:break-all;">
+                            ${data.path}
+                        </td>
+                    </tr>
+                </table>
+            `;
+        }
+
+    })
+    .catch(error => {
+
+        console.error(error);
+
+        alert(error);
+
+    });
+
+});
+
+
+document.getElementById("ctxCopy").addEventListener("click", function(){
+
+    if(selectedItem == null)
+        return;
+
+    clipboardItem = selectedItem;
+
+    clipboardAction = "copy";
+
+    menu.style.display = "none";
+
+    alert("Copied : " + clipboardItem.name);
+
+});
+
+document.getElementById("ctxCut").addEventListener("click", function(){
+
+    if(selectedItem == null)
+        return;
+
+    clipboardItem = selectedItem;
+
+    clipboardAction = "cut";
+
+    menu.style.display = "none";
+
+    alert("Cut : " + clipboardItem.name);
+
+});
+
+document.getElementById("ctxPaste").addEventListener("click", function(){
+
+    if(clipboardItem == null){
+
+        alert("Clipboard Empty");
+
+        return;
+
+    }
+
+    menu.style.display = "none";
+
+    console.log("Clipboard :", clipboardItem);
+
+    console.log("Action :", clipboardAction);
+
+});
+
+
+</script>
+{% endblock %}

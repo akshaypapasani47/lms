@@ -1,0 +1,9 @@
+def add_chapter(request, module_id):
+    module = Module.objects.get(id=module_id)
+
+    if request.method == "POST":
+        title = request.POST.get("title")
+        Chapter.objects.create(title=title, module=module)
+        return redirect("course_detail", slug=module.course.slug)
+
+    return render(request, "course/add_chapter.html")

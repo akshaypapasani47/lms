@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+{% include 'snippets/messages.html' %}
+
+<nav>
+    <a href="{% url 'user_course_list' %}">My Courses</a> >
+    <span>{{ module.course.title }}</span> >
+    {{ module.title }}
+</nav>
+
+<div class="title-1">{{ module.title }} - Chapters</div>
+
+<div class="table-responsive p-3">
+    <h3>{{ module.title }} - Chapters</h3>
+
+    {% for chapter in chapters %}
+    <div class="card p-3 mb-2">
+
+        <a href="{% url 'lesson_list' chapter.id %}">
+            {{ chapter.title }}
+        </a>
+
+        <!-- {% if request.user.is_lecturer or request.user.is_superuser %}
+        <br><br>
+        <a href="{% url 'add_lesson' chapter.id %}"
+        class="btn btn-warning btn-sm">
+        + Add Lesson
+        </a> -->
+        {% endif %}
+
+    </div>
+    {% empty %}
+    <p>No Chapters</p>
+    {% endfor %}
+
+    {% if request.user.is_lecturer or request.user.is_superuser %}
+
+    <div class="mb-3">
+        <a href="{% url 'module_list' module.course.slug %}"
+        class="btn btn-outline-secondary">
+            ← Back to Modules
+        </a>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'add_chapter' module.id %}"
+        class="btn btn-success">
+        + Add Chapter
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+<!-- <h3>Chapters - {{ module.title }}</h3>
+
+{% for chapter in chapters %}
+    <a href="{% url 'lesson_list' chapter.id %}">
+        <div class="card p-2 mb-2">
+            {{ chapter.title }}
+        </div>
+    </a>
+{% empty %}
+    <p>No chapters</p>
+{% endfor %} -->

@@ -1,0 +1,74 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top main-header">
+    <div class="container-fluid px-4">
+
+        <!-- Sidebar Toggle -->
+        {% if user.is_authenticated %}
+        <button id="sidebar-toggle"
+                class="btn btn-light border me-3"
+                onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        {% endif %}
+
+        <!-- Logo + LMS Name -->
+        <a class="navbar-brand d-flex align-items-center" href="/">
+
+            <img src="{% static 'img/cdac_logo.png' %}"
+                 alt="CDAC Logo"
+                 height="50"
+                 class="me-3">
+
+
+            <img src="{% static 'img/nsm_logo.png' %}"
+                 alt="LMS Logo"
+                 height="50"
+                 class="me-3">
+
+            <img src="{% static 'img/chuk_logo.png' %}"
+                 alt="LMS Logo"
+                 height="50"
+                 class="me-3">
+
+    
+
+            <span class="fw-bold fs-4 text-primary">
+                HPC E-Learning Platform
+            </span>
+
+        </a>
+
+        <!-- Right Side Buttons -->
+        <div class="ms-auto">
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'profile' %}"
+                   class="btn btn-outline-primary me-2">
+                    Profile
+                </a>
+
+                <a href="{% url 'logout' %}"
+                   class="btn btn-danger">
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'login' %}"
+                   class="btn btn-outline-primary me-2">
+                    Login
+                </a>
+
+                <a href="{% url 'register' %}"
+                   class="btn btn-primary">
+                    Register
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+</nav>

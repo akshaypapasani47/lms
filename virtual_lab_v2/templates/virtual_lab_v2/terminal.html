@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Virtual Lab Terminal</title>
+   
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
+
+
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    body{
+        background:#f4f6f9;
+        font-family:Arial, sans-serif;
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .terminal-container{
+        width:90%;
+        max-width:1200px;
+        height:700px;
+        background:#1e1e1e;
+        border-radius:12px;
+        overflow:visible;
+        box-shadow:0 5px 20px rgba(0,0,0,0.25);
+    }
+
+    .terminal-header{
+        background:#2d2d2d;
+        color:white;
+        padding:12px 20px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        border-bottom:1px solid #444;
+    }
+
+    .terminal-title{
+        font-size:18px;
+        font-weight:bold;
+    }
+
+    .user-info{
+        color:#00ff88;
+        font-size:14px;
+    }
+
+    #terminal{
+        height:calc(100% - 55px);
+        padding:10px;
+        overflow:hidden;
+    }
+
+    /* .xterm-viewport {
+        overflow-y: auto !important;
+        scrollbar-width: thin;
+    }
+
+    .xterm-viewport::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .xterm-viewport::-webkit-scrollbar-thumb {
+        background: #666;
+        border-radius: 5px;
+    }
+
+    .xterm-viewport::-webkit-scrollbar-track {
+        background: #222;
+    } */
+</style>
+
+
+</head>
+
+<body>
+
+<input
+    type="hidden"
+    id="currentPath"
+    value="{{ current_path }}">
+
+
+<div class="terminal-container">
+
+<div class="terminal-header">
+
+    <div>
+        <div class="terminal-title">
+            Virtual Lab Terminal
+        </div>
+
+        <p style="color:white;">
+            TEST USER = {{ lab_user }}
+        </p>
+
+        <p style="color:white;">
+            CREATED = {{ lab_user.created_at }}
+        </p>
+
+        <p style="color:white;">
+            EXPIRY = {{ lab_user.expiry_date }}
+        </p>
+        <p>
+            Days Remaining :
+            {{ days_left }}
+        </p>
+
+    </div>
+    <div id="connection-status">
+        Connected
+    </div>
+
+    <div id="clock"></div>
+
+    <div style="display:flex;gap:15px;align-items:center;">
+        <div class="user-info">
+            User: {{ username }}
+        </div>
+
+        <a href="/virtual-lab2/logout/"
+           style="
+           color:white;
+           text-decoration:none;
+           background:red;
+           padding:6px 12px;
+           border-radius:5px;">
+           Logout
+        </a>
+    </div>
+
+</div>
+
+<div id="terminal"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+
+
+<script>
+
+    const term = new Terminal({
+        cursorBlink: true,
+        scrollback: 10000,
+        convertEol:true,
+        rows: 30,
+        cols: 120,
+        theme: {
+            background: '#1e1e1e'
+        }
+    });
+
+
+    // term.open(document.getElementById('terminal'));
+    const fitAddon = new FitAddon.FitAddon();
+
+    term.loadAddon(fitAddon);
+
+    term.open(
+        document.getElementById("terminal")
+    );
+
+    term.focus();
+
+    fitAddon.fit();
+    // const viewport = document.querySelector(".xterm-viewport");
+
+    // let isDragging = false;
+    // let startY = 0;
+    // let startScroll = 0;
+
+    // viewport.addEventListener("mousedown", (e) => {
+    //     isDragging = true;
+    //     startY = e.clientY;
+    //     startScroll = viewport.scrollTop;
+    // });
+
+    // document.addEventListener("mouseup", () => {
+    //     isDragging = false;
+    // });
+
+    // document.addEventListener("mousemove", (e) => {
+    //     if (!isDragging) return;
+
+    //     const delta = e.clientY - startY;
+
+    //     viewport.scrollTop = startScroll - delta;
+    // });
+
+
+    
+
+    // window.addEventListener(
+    //     "resize",
+    //     () => {
+    //         fitAddon.fit();
+    //     }
+    // );
+    window.addEventListener("resize", () => {
+        fitAddon.fit();
+
+        socket.send(JSON.stringify({
+            resize: {
+                cols: term.cols,
+                rows: term.rows
+            }
+        }));
+    });
+
+    const socket = new WebSocket(
+        "ws://" +
+        window.location.host +
+        "/ws/terminal/"
+    );
+
+    socket.onopen = function(){
+
+        document.getElementById(
+            "connection-status"
+        ).innerHTML = "🟢 Connected";
+
+        const currentPath =
+            document.getElementById("currentPath").value;
+
+        socket.send(
+            JSON.stringify({
+                current_path: currentPath
+            })
+        );
+    };
+
+    socket.onclose = function(){
+
+        document.getElementById(
+            "connection-status"
+        ).innerHTML = "🔴 Disconnected";
+    };
+
+    socket.onmessage = function(event) {
+
+        const data = JSON.parse(event.data);
+
+        if(data.output){
+            term.write(data.output);
+            term.scrollToBottom();
+        }
+
+    };
+
+    socket.onclose = function(){
+        term.write("\r\n*** Connection Closed ***\r\n");
+    };
+
+    term.onData(function(data){
+        socket.send(data);
+    });
+    setInterval(function(){
+
+        document.getElementById("clock").innerHTML =
+            new Date().toLocaleTimeString();
+
+    }, 1000);
+</script>
+
+</body>
+</html>
+
+{% endblock %}

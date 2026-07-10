@@ -1,0 +1,105 @@
+         {% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'student_list' %}">{% trans 'Students' %}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{% trans 'Add' %}</li>
+    </ol>
+</nav>
+
+<h4 class="mb-3 fw-bold"><i class="fas fa-user-graduate me-2"></i>{% trans 'Student Add Form' %}</h4>
+
+{% include 'snippets/messages.html' %}
+<form action="" method="POST">
+    {% csrf_token %}
+
+    <!-- Row 1 -->
+    <div class="row mb-4">
+
+        <!-- Login Information -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <p class="form-title">{% trans 'Login Information' %}</p>
+
+                <div class="card-body">
+                    {{ form.username|as_crispy_field }}
+                    {{ form.password1|as_crispy_field }}
+                    {{ form.password2|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <p class="form-title">{% trans 'Personal Info' %}</p>
+
+                <div class="card-body">
+                    {{ form.first_name|as_crispy_field }}
+                    {{ form.last_name|as_crispy_field }}
+                    {{ form.gender|as_crispy_field }}
+                    {{ form.email|as_crispy_field }}
+                    {{ form.address|as_crispy_field }}
+                    {{ form.phone|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Row 2 -->
+    <div class="row mb-4">
+
+        <div class="col-lg-6">
+            <div class="card">
+                <p class="form-title">{% trans 'Academic Information' %}</p>
+
+                <div class="card-body">
+                    {{ form.program|as_crispy_field }}
+                    {{ form.level|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            <button type="submit" class="btn btn-primary px-5">
+                {% trans 'Save' %}
+            </button>
+        </div>
+
+    </div>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+    {% endif %}
+
+    
+
+</form>
+<style>
+.card {
+    height: 100%;
+}
+
+.form-title {
+    padding: 12px 15px;
+    margin: 0;
+    font-weight: 600;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.card-body {
+    padding: 20px;
+}
+</style>
+{% endblock content %}

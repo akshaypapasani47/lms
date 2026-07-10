@@ -1,0 +1,997 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDAC LMS</title>
+
+    <link rel="stylesheet"
+          href="{% static 'vendor/bootstrap-5.3.2/css/bootstrap.min.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'vendor/fontawesome-6.5.1/css/all.min.css' %}">
+</head>
+
+<body>
+
+<!-- ================= HEADER - LOGOS ================= -->
+
+<header class="bg-white border-bottom py-2 shadow-sm">
+
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+            <img src="{% static 'img/cdac_logo.png' %}" height="70">
+
+            <img src="{% static 'img/nsm_logo.png' %}" height="70">
+
+            <img src="{% static 'img/chuk_logo.png' %}" height="70">
+
+            <!-- <img src="{% static 'img/cb_logo.jpg' %}" height="70"> -->
+
+        </div>
+
+    </div>
+
+</header>
+
+<!-- ================= NAVIGATION ================= -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+
+    <div class="container">
+
+        <a class="navbar-brand fw-bold" href="#">
+            HPC E-Learning Platform
+        </a>
+
+        <div class="ms-auto">
+
+            <a href="{% url 'login' %}" class="btn btn-light me-2">
+                Login
+            </a>
+
+            <a href="{% url 'register' %}" class="btn btn-warning">
+                Register
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- ================= IMAGE SLIDER ================= -->
+
+<div id="lmsSlider" class="carousel slide" data-bs-ride="carousel">
+
+    <div class="carousel-inner">
+
+
+        <div class="carousel-item active">
+            <img src="{% static 'img/banner5.png' %}"
+                 class="d-block w-100 slider-img">
+        </div>
+
+
+        <div class="carousel-item ">
+            <img src="{% static 'img/banner1.jpg' %}"
+                 class="d-block w-100 slider-img">
+        </div>
+
+        <div class="carousel-item">
+            <img src="{% static 'img/banner2.jpg' %}"
+                 class="d-block w-100 slider-img">
+        </div>
+
+        <div class="carousel-item">
+            <img src="{% static 'img/banner3.jpg' %}"
+                 class="d-block w-100 slider-img">
+        </div>
+
+        <div class="carousel-item">
+            <img src="{% static 'img/banner4.jpg' %}"
+                 class="d-block w-100 slider-img">
+        </div>
+
+    </div>
+
+    <button class="carousel-control-prev"
+            type="button"
+            data-bs-target="#lmsSlider"
+            data-bs-slide="prev">
+
+        <span class="carousel-control-prev-icon"></span>
+
+    </button>
+
+    <button class="carousel-control-next"
+            type="button"
+            data-bs-target="#lmsSlider"
+            data-bs-slide="next">
+
+        <span class="carousel-control-next-icon"></span>
+
+    </button>
+
+</div>
+
+<!-- ================= WELCOME ================= -->
+
+<section class="py-5 text-center">
+
+    <div class="container">
+
+        <h1 class="fw-bold">
+            Welcome to HPC E-Learning Platform
+        </h1>
+
+        <p class="lead">
+            Empowering learners through Online Courses, Virtual Labs,
+            Assessments and Digital Learning.
+        </p>
+
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+            Get Started
+        </a>
+
+    </div>
+
+</section>
+
+<script src="{% static 'vendor/bootstrap-5.3.2/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- ================= ABOUT SECTION ================= -->
+
+<section class="py-5 bg-light">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">About Our Initiative</h2>
+            <p class="text-muted">
+                Empowering learners through High Performance Computing, Digital Education, and Advanced Technologies.
+            </p>
+        </div>
+
+        <div class="row">
+
+            <!-- About C-HUK -->
+
+            <div class="col-lg-4 mb-4">
+
+                <div class="card h-100 shadow-sm">
+
+                    <div class="card-body">
+
+                        <h4 class="text-primary">About C-HUK</h4>
+
+                        <p>
+                            The Centre for High Performance Computing Upskilling and Knowledge Sharing (C-HUK),
+                            established by C-DAC Bengaluru under the Human Resource Development initiative of the
+                            National Supercomputing Mission (NSM) and the Ministry of Electronics and Information
+                            Technology (MeitY), Government of India, promotes inclusive skill development in High
+                            Performance Computing (HPC) and emerging technologies.
+                        </p>
+
+                        <p>
+                            C-HUK offers expert-led training in HPC, Artificial Intelligence, Embedded Systems,
+                            Cyber Security, Faculty Development Programmes, and blended learning to empower learners
+                            from diverse backgrounds with industry-relevant technical skills.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- About C-DAC -->
+
+            <div class="col-lg-4 mb-4">
+
+                <div class="card h-100 shadow-sm">
+
+                    <div class="card-body">
+
+                        <h4 class="text-success">About C-DAC</h4>
+
+                        <p>
+                            The Centre for Development of Advanced Computing (C-DAC) is the premier Research and
+                            Development organization of the Ministry of Electronics and Information Technology
+                            (MeitY), Government of India.
+                        </p>
+
+                        <p>
+                            C-DAC is dedicated to advanced computing, High Performance Computing, Artificial
+                            Intelligence, Cyber Security, Embedded Systems, Software Technologies, Digital
+                            Education, Healthcare, and e-Governance, contributing significantly to India's
+                            technological growth and digital transformation.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- About NSM -->
+
+            <div class="col-lg-4 mb-4">
+
+                <div class="card h-100 shadow-sm">
+
+                    <div class="card-body">
+
+                        <h4 class="text-danger">About NSM</h4>
+
+                        <p>
+                            The National Supercomputing Mission (NSM) is a flagship initiative of the Government
+                            of India jointly implemented by the Ministry of Electronics and Information Technology
+                            (MeitY) and the Department of Science and Technology (DST).
+                        </p>
+
+                        <p>
+                            The mission aims to strengthen India's supercomputing ecosystem by establishing
+                            world-class computing infrastructure, developing indigenous technologies, promoting
+                            research, and building skilled human resources in High Performance Computing and
+                            emerging technologies.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= PROGRAMS OFFERED ================= -->
+
+<section class="py-5 bg-light">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <h2 class="fw-bold">
+                Programs Offered
+            </h2>
+
+            <p class="text-muted">
+                Industry-oriented programs designed to build expertise in advanced computing and emerging technologies.
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-lg-4 col-md-6">
+                <div class="program-card">
+                    <i class="fas fa-server text-primary"></i>
+                    <h4>High Performance Computing</h4>
+                    <p>
+                        Learn parallel programming, cluster computing,
+                        MPI, OpenMP and GPU computing.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="program-card">
+                    <i class="fas fa-brain text-success"></i>
+                    <h4>Artificial Intelligence</h4>
+                    <p>
+                        Build intelligent applications using machine
+                        learning, deep learning and AI frameworks.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="program-card">
+                    <i class="fas fa-shield-alt text-danger"></i>
+                    <h4>Cyber Security</h4>
+                    <p>
+                        Learn ethical hacking, network security,
+                        cryptography and cyber defence techniques.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="program-card">
+                    <i class="fas fa-microchip text-warning"></i>
+                    <h4>Embedded Systems</h4>
+                    <p>
+                        Develop firmware and embedded applications
+                        using modern hardware platforms.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="program-card">
+                    <i class="fas fa-cloud text-info"></i>
+                    <h4>Cloud Computing</h4>
+                    <p>
+                        Understand cloud deployment, virtualization,
+                        containers and scalable infrastructure.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="program-card">
+                    <i class="fas fa-code text-secondary"></i>
+                    <h4>Software Development</h4>
+                    <p>
+                        Learn full-stack application development,
+                        databases and software engineering practices.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- Learning Journey -->
+<section class="py-5">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Learning Journey</h2>
+            <p class="text-muted">
+                Follow these simple steps to complete your learning experience.
+            </p>
+        </div>
+
+        <div class="row text-center g-4">
+
+            <!-- Register -->
+            <div class="col-lg col-md-4 col-6">
+                <div class="journey-card">
+                    <div class="journey-icon bg-primary">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h5 class="mt-3">Register</h5>
+                </div>
+            </div>
+
+            <!-- Login -->
+            <div class="col-lg col-md-4 col-6">
+                <div class="journey-card">
+                    <div class="journey-icon bg-success">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h5 class="mt-3">Login</h5>
+                </div>
+            </div>
+
+            <!-- Browse Courses -->
+            <div class="col-lg col-md-4 col-6">
+                <div class="journey-card">
+                    <div class="journey-icon bg-warning">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h5 class="mt-3">Browse Courses</h5>
+                </div>
+            </div>
+
+            <!-- Learn -->
+            <div class="col-lg col-md-4 col-6">
+                <div class="journey-card">
+                    <div class="journey-icon bg-info">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h5 class="mt-3">Learn Course</h5>
+                </div>
+            </div>
+
+            <!-- Virtual Lab -->
+            <div class="col-lg col-md-4 col-6">
+                <div class="journey-card">
+                    <div class="journey-icon bg-secondary">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h5 class="mt-3">Access Virtual Labs</h5>
+                </div>
+            </div>
+
+            <!-- Assessment -->
+            <div class="col-lg col-md-4 col-6">
+                <div class="journey-card">
+                    <div class="journey-icon bg-danger">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h5 class="mt-3">Take Assessments</h5>
+                </div>
+            </div>
+
+            <!-- Certificate -->
+            <div class="col-lg col-md-4 col-6">
+                <div class="journey-card">
+                    <div class="journey-icon bg-dark">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h5 class="mt-3">Get Certificate</h5>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Key Features -->
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Key Features</h2>
+            <p class="text-muted">
+                Everything you need for an effective digital learning experience.
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100 text-center p-4">
+                    <i class="fas fa-book fa-3x text-primary mb-3"></i>
+                    <h5>Online Courses</h5>
+                    <p>Access structured courses with comprehensive learning materials.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100 text-center p-4">
+                    <i class="fas fa-flask fa-3x text-success mb-3"></i>
+                    <h5>Virtual Labs</h5>
+                    <p>Practice programming and experiments in a real-time virtual environment.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100 text-center p-4">
+                    <i class="fas fa-file-alt fa-3x text-warning mb-3"></i>
+                    <h5>Assignments & Quiz</h5>
+                    <p>Complete assessments and monitor your learning performance.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100 text-center p-4">
+                    <i class="fas fa-certificate fa-3x text-danger mb-3"></i>
+                    <h5>Certificates</h5>
+                    <p>Earn certificates after successful completion of courses.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row g-4 mt-2">
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100 text-center p-4">
+                    <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
+                    <h5>Progress Tracking</h5>
+                    <p>Track your course completion and learning progress in real time.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100 text-center p-4">
+                    <i class="fas fa-users fa-3x text-secondary mb-3"></i>
+                    <h5>Expert Faculty</h5>
+                    <p>Learn from experienced trainers and industry professionals.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100 text-center p-4">
+                    <i class="fas fa-language fa-3x text-primary mb-3"></i>
+                    <h5>Multilingual Support</h5>
+                    <p>Access learning content in multiple Indian languages.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 h-100 text-center p-4">
+                    <i class="fas fa-laptop-code fa-3x text-success mb-3"></i>
+                    <h5>Hands-on Practice</h5>
+                    <p>Build practical skills through coding exercises and lab activities.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- Platform Statistics -->
+<section class="py-5">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Platform Statistics</h2>
+            <p class="text-muted">
+                Building the future of digital learning.
+            </p>
+        </div>
+
+        <div class="row text-center">
+
+            <div class="col-md-3 mb-4">
+                <div class="card shadow border-0 py-4">
+                    <h1 class="text-primary fw-bold">100+</h1>
+                    <h5>Courses</h5>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card shadow border-0 py-4">
+                    <h1 class="text-success fw-bold">500+</h1>
+                    <h5>Learners</h5>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card shadow border-0 py-4">
+                    <h1 class="text-warning fw-bold">20+</h1>
+                    <h5>Virtual Labs</h5>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card shadow border-0 py-4">
+                    <h1 class="text-danger fw-bold">50+</h1>
+                    <h5>Expert Trainers</h5>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+
+<!-- Latest Announcements -->
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Latest Announcements</h2>
+            <p class="text-muted">
+                Stay updated with the latest courses, workshops and events.
+            </p>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <span class="badge bg-primary mb-2">New Course</span>
+                        <h5>Advanced HPC Training</h5>
+                        <p>
+                            Registration is now open for the Advanced Certificate
+                            Course in High Performance Computing.
+                        </p>
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-alt"></i> July 2026
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <span class="badge bg-success mb-2">Workshop</span>
+                        <h5>AI & Machine Learning</h5>
+                        <p>
+                            Join our hands-on workshop covering AI, ML and Deep Learning fundamentals.
+                        </p>
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-alt"></i> August 2026
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <span class="badge bg-danger mb-2">Event</span>
+                        <h5>Virtual Lab Launch</h5>
+                        <p>
+                            Experience our new browser-based Virtual Lab for programming and HPC practice.
+                        </p>
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-alt"></i> Coming Soon
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- Success Stories -->
+<section class="py-5">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Success Stories</h2>
+            <p class="text-muted">
+                Hear from learners who have benefited from our programmes.
+            </p>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow border-0 h-100">
+                    <div class="card-body text-center">
+                        <img src="{% static 'img/student1.jpg' %}"
+                             class="rounded-circle mb-3"
+                             width="90"
+                             height="90"
+                             alt="Student">
+
+                        <h5>Rahul Kumar</h5>
+                        <small class="text-primary">HPC Learner</small>
+
+                        <p class="mt-3">
+                            "The Virtual Labs and expert guidance helped me
+                            gain practical HPC skills and boosted my confidence."
+                        </p>
+
+                        <div class="text-warning">
+                            ★★★★★
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow border-0 h-100">
+                    <div class="card-body text-center">
+                        <img src="{% static 'img/student2.jpg' %}"
+                             class="rounded-circle mb-3"
+                             width="90"
+                             height="90"
+                             alt="Student">
+
+                        <h5>Priya Sharma</h5>
+                        <small class="text-success">AI Learner</small>
+
+                        <p class="mt-3">
+                            "The blended learning model made learning flexible,
+                            interactive and easy to follow."
+                        </p>
+
+                        <div class="text-warning">
+                            ★★★★★
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow border-0 h-100">
+                    <div class="card-body text-center">
+                        <img src="{% static 'img/student3.jpg' %}"
+                             class="rounded-circle mb-3"
+                             width="90"
+                             height="90"
+                             alt="Student">
+
+                        <h5>Anjali Das</h5>
+                        <small class="text-danger">Cyber Security Learner</small>
+
+                        <p class="mt-3">
+                            "Excellent course content, hands-on Virtual Labs,
+                            and dedicated faculty made the learning experience outstanding."
+                        </p>
+
+                        <div class="text-warning">
+                            ★★★★★
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- Partner Organizations -->
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Our Partner Organizations</h2>
+            <p class="text-muted">
+                Working together to build India's future in High Performance Computing and Digital Learning.
+            </p>
+        </div>
+
+        <div class="row text-center align-items-center">
+
+            <div class="col-md-3 col-6 mb-4">
+                <img src="{% static 'img/cdac_logo.png' %}"
+                     class="img-fluid partner-logo"
+                     style="max-height:100px;"
+                     alt="C-DAC">
+                <h6 class="mt-3">C-DAC</h6>
+            </div>
+
+            <div class="col-md-3 col-6 mb-4">
+                <img src="{% static 'img/chuk_logo.png' %}"
+                     class="img-fluid partner-logo"
+                     style="max-height:100px;"
+                     alt="C-HUK">
+                <h6 class="mt-3">C-HUK</h6>
+            </div>
+
+            <div class="col-md-3 col-6 mb-4">
+                <img src="{% static 'img/nsm_logo.png' %}"
+                     class="img-fluid partner-logo"
+                     style="max-height:100px;"
+                     alt="NSM">
+                <h6 class="mt-3">National Supercomputing Mission</h6>
+            </div>
+
+            <div class="col-md-3 col-6 mb-4">
+                <img src="{% static 'img/dj-lms.png' %}"
+                     class="img-fluid partner-logo"
+                     style="max-height:100px;"
+                     alt="MeitY">
+                <h6 class="mt-3">MeitY</h6>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-light pt-5 pb-3">
+    <div class="container">
+
+        <div class="row">
+
+            <!-- About -->
+            <div class="col-lg-4 mb-4">
+                <h4 class="fw-bold">HPC E-learning Platform</h4>
+
+                <p>
+                    A modern Learning Management System developed under
+                    the C-HUK initiative of C-DAC Bengaluru to provide
+                    high-quality education in High Performance Computing,
+                    Artificial Intelligence, Cyber Security and emerging technologies.
+                </p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2 mb-4">
+                <h5>Quick Links</h5>
+
+                <ul class="list-unstyled">
+                    <li><a href="/" class="text-light text-decoration-none">Home</a></li>
+                    <li><a href="{% url 'login' %}" class="text-light text-decoration-none">Login</a></li>
+                    <li><a href="{% url 'register' %}" class="text-light text-decoration-none">Register</a></li>
+                    <li><a href="#" class="text-light text-decoration-none">Courses</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-lg-3 mb-4">
+                <h5>Contact</h5>
+
+                <p>
+                    <i class="fas fa-map-marker-alt me-2"></i>
+                    C-DAC Bengaluru
+                </p>
+
+                <p>
+                    <i class="fas fa-envelope me-2"></i>
+                    info@cdac.in
+                </p>
+
+                <p>
+                    <i class="fas fa-phone me-2"></i>
+                    +91-80-25093400
+                </p>
+            </div>
+
+            <!-- Social -->
+            <div class="col-lg-3 mb-4">
+                <h5>Connect With Us</h5>
+
+                <a href="#" class="text-light fs-4 me-3">
+                    <i class="fab fa-facebook"></i>
+                </a>
+
+                <a href="#" class="text-light fs-4 me-3">
+                    <i class="fab fa-twitter"></i>
+                </a>
+
+                <a href="#" class="text-light fs-4 me-3">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+
+                <a href="#" class="text-light fs-4">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+
+        </div>
+
+        <hr class="border-secondary">
+
+        <div class="text-center">
+            <p class="mb-0">
+                © 2026 HPC E-learning Platform |
+                Developed by C-DAC Bengaluru under National Supercomputing Mission (NSM)
+            </p>
+        </div>
+
+    </div>
+</footer>
+
+</body>
+</html>
+
+<style>
+
+.slider-img{
+    height:500px;
+    object-fit:cover;
+}
+
+header img{
+    transition:0.3s;
+}
+
+header img:hover{
+    transform:scale(1.08);
+}
+
+.navbar-brand{
+    font-size:28px;
+}
+.feature-card{
+    background:#fff;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    transition:.3s;
+    height:100%;
+}
+
+.feature-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 15px 30px rgba(0,0,0,.15);
+}
+
+.feature-icon{
+    font-size:50px;
+    margin-bottom:20px;
+}
+
+.feature-card h4{
+    font-weight:600;
+    margin-bottom:15px;
+}
+
+.feature-card p{
+    color:#666;
+}
+.program-card{
+    background:#fff;
+    border-radius:15px;
+    padding:30px;
+    text-align:center;
+    height:100%;
+    transition:.3s;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.program-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 15px 30px rgba(0,0,0,.15);
+}
+
+.program-card i{
+    font-size:55px;
+    margin-bottom:20px;
+}
+
+.program-card h4{
+    font-weight:600;
+    margin-bottom:15px;
+}
+
+.program-card p{
+    color:#666;
+}
+.journey-card{
+    padding:20px;
+    transition:0.3s;
+}
+
+.journey-card:hover{
+    transform:translateY(-8px);
+}
+
+.journey-icon{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:auto;
+    color:#fff;
+    font-size:35px;
+    box-shadow:0 10px 20px rgba(0,0,0,.15);
+}
+
+.journey-card h5{
+    font-weight:600;
+    margin-top:20px;
+}
+
+
+.partner-logo{
+    transition:0.3s;
+    filter: grayscale(20%);
+}
+
+.partner-logo:hover{
+    transform:scale(1.08);
+    filter:none;
+}
+
+footer a{
+    transition:0.3s;
+}
+
+footer a:hover{
+    color:#0d6efd !important;
+    padding-left:5px;
+}
+
+footer i{
+    transition:0.3s;
+}
+
+footer i:hover{
+    transform:scale(1.2);
+}
+</style>

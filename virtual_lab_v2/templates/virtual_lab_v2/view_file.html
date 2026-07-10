@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+
+
+<div class="container-fluid mt-4">
+    {% csrf_token %}
+    <div class="card shadow">
+
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0">
+                📄 {{ file_name }}
+            </h5>
+
+            <div>
+
+                <button
+                    id="saveBtn"
+                    class="btn btn-success btn-sm me-2">
+
+                    💾 Save
+
+                </button>
+
+                <a
+                    href="{% url 'files' %}?path={{ current_path }}"
+                    class="btn btn-light btn-sm">
+
+                    ⬅ Back
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if error %}
+
+                <div class="alert alert-danger">
+
+                    {{ error }}
+
+                </div>
+
+            {% else %}
+
+
+
+            <textarea id="editor">{{ content }}</textarea>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- <textarea
+class="form-control"
+rows="30"
+readonly
+style="
+font-family:Consolas;
+font-size:15px;
+background:#f8f9fa;
+">
+
+{{ content }}
+
+</textarea> -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/shell/shell.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
+
+<input
+    type="hidden"
+    id="fileName"
+    value="{{ file_name }}">
+
+<script>
+
+let isDirty = false;
+
+let mode = "text/plain";
+
+switch ("{{ extension }}") {
+
+    case "py":
+        mode = "python";
+        break;
+
+    case "c":
+    case "cpp":
+    case "h":
+        mode = "text/x-csrc";
+        break;
+
+    case "java":
+        mode = "text/x-java";
+        break;
+
+    case "js":
+        mode = "javascript";
+        break;
+
+    case "html":
+    case "htm":
+        mode = "htmlmixed";
+        break;
+
+    case "css":
+        mode = "css";
+        break;
+
+    case "xml":
+        mode = "xml";
+        break;
+
+    case "json":
+        mode = "application/json";
+        break;
+
+    case "sql":
+        mode = "text/x-sql";
+        break;
+
+    case "sh":
+        mode = "shell";
+        break;
+
+    case "md":
+        mode = "markdown";
+        break;
+
+    case "txt":
+        mode = "text/plain";
+        break;
+
+    default:
+    mode = "text/plain";
+}
+
+var editor = CodeMirror.fromTextArea(
+    document.getElementById("editor"),
+    {
+
+        lineNumbers:true,
+
+        readOnly: false,
+
+        theme:"material-darker",
+
+        mode: mode,
+
+        indentUnit:4,
+
+        tabSize:4,
+
+        lineWrapping:true
+
+    }
+);
+
+editor.setSize("100%","700px");
+
+editor.on("change", function () {
+
+    isDirty = true;
+
+    document.title = "● " + document.title.replace(/^●\s*/, "");
+
+});
+
+editor.setOption("extraKeys", {
+
+    "Ctrl-S": function(cm){
+
+        saveCurrentFile();
+
+        return false;
+
+    },
+
+    "Cmd-S": function(cm){
+
+        saveCurrentFile();
+
+        return false;
+
+    }
+
+});
+
+
+function saveCurrentFile(){
+
+    console.log("Saving...");
+
+    let content = editor.getValue();
+
+    let fileName = document.getElementById("fileName").value;
+
+    let csrf = document.querySelector(
+        "[name=csrfmiddlewaretoken]"
+    ).value;
+
+    fetch("/virtual-lab2/save-file/",{
+
+        method:"POST",
+
+        headers:{
+
+            "X-CSRFToken":csrf,
+
+            "Content-Type":"application/x-www-form-urlencoded"
+
+        },
+
+        body:
+
+            "file_name="+encodeURIComponent(fileName)+
+            "&current_path="+encodeURIComponent("{{ current_path }}")+
+            "&content="+encodeURIComponent(content)
+
+    })
+
+    .then(response=>response.json())
+
+    .then(data=>{
+
+        if(data.success){
+
+            isDirty = false;
+
+            document.title = document.title.replace(/^●\s*/, "");
+
+            alert("✅ File Saved Successfully");
+
+        }
+
+        else{
+
+            alert("❌ "+data.error);
+
+        }
+
+    });
+
+}
+
+document.getElementById("saveBtn").addEventListener(
+    "click",
+    saveCurrentFile
+);
+
+
+window.addEventListener("beforeunload", function (e) {
+
+    if (!isDirty)
+        return;
+
+    e.preventDefault();
+
+    e.returnValue = "";
+
+});
+
+
+
+// document.getElementById("saveBtn").addEventListener("click", function(){
+
+//     let content = editor.getValue();
+
+//     let fileName = document.getElementById("fileName").value;
+
+//     let csrf = document.querySelector(
+//         "[name=csrfmiddlewaretoken]"
+//     ).value;
+
+//     fetch("/virtual-lab2/save-file/", {
+
+//         method: "POST",
+
+//         headers: {
+
+//             "X-CSRFToken": csrf,
+
+//             "Content-Type": "application/x-www-form-urlencoded"
+
+//         },
+
+//         body:
+
+//             "file_name=" + encodeURIComponent(fileName) +
+
+//             "&current_path=" + encodeURIComponent("{{ current_path }}") +
+
+//             "&content=" + encodeURIComponent(content)
+
+//     })
+
+//     .then(response => response.json())
+
+//     .then(data => {
+
+//         if(data.success){
+
+//             alert("✅ File Saved Successfully");
+
+//         }
+
+//         else{
+
+//             alert("❌ " + data.error);
+
+//         }
+
+//     });
+
+// });
+
+</script>
+
+{% endblock %}

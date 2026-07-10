@@ -1,0 +1,653 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Faculty Dashboard</title>
+
+    <style>
+        body{
+            font-family:Arial;
+            background:#f4f6f9;
+            padding:30px;
+        }
+
+        h1{
+            margin-bottom:20px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th,td{
+            padding:12px;
+            border:1px solid #ddd;
+            text-align:center;
+        }
+
+        th{
+            background:#2c3e50;
+            color:white;
+        }
+
+        .online{
+            color:green;
+            font-weight:bold;
+        }
+
+        .offline{
+            color:red;
+            font-weight:bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Faculty Dashboard</h1>
+
+
+<form method="GET" style="margin-bottom:20px;">
+    <input
+        type="text"
+        name="search"
+        placeholder="Search Username"
+        value="{{ request.GET.search }}"
+        style="
+            padding:8px;
+            width:250px;
+            border:1px solid #ccc;
+            border-radius:5px;
+        "
+    >
+
+    <button
+        type="submit"
+        style="
+            padding:8px 15px;
+            background:#007bff;
+            color:white;
+            border:none;
+            border-radius:5px;
+        "
+    >
+        Search
+    </button>
+
+    <a href="{% url 'faculty_dashboard' %}"
+       style="
+            padding:8px 15px;
+            background:#6c757d;
+            color:white;
+            text-decoration:none;
+            border-radius:5px;
+       ">
+       Reset
+    </a>
+</form>
+
+
+</form>
+
+<div style="
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    margin-bottom:25px;
+">
+
+    <div style="
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        min-width:180px;
+        text-align:center;
+    ">
+        <h3>Total Users</h3>
+        <h2>{{ total_users }}</h2>
+    </div>
+
+    <div style="
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        min-width:180px;
+        text-align:center;
+    ">
+        <h3>Active Users</h3>
+        <h2 style="color:green;">{{ active_users }}</h2>
+    </div>
+
+    <div style="
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        min-width:180px;
+        text-align:center;
+    ">
+        <h3>Offline Users</h3>
+        <h2 style="color:red;">{{ inactive_users }}</h2>
+    </div>
+
+    <div style="
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        min-width:180px;
+        text-align:center;
+    ">
+        <h3>Average Session</h3>
+        <h2>{{ avg_minutes }} min</h2>
+    </div>
+
+    <div style="
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        min-width:180px;
+        text-align:center;
+    ">
+        <h3>Longest Session</h3>
+        <h2>{{ longest_minutes }} min</h2>
+    </div>
+
+    <div style="
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        min-width:180px;
+        text-align:center;
+    ">
+        <h3>Most Active User</h3>
+        <h2>{{ most_active_user }}</h2>
+    </div>
+
+</div>
+
+<table id="session-table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Status</th>
+            <th>Login Time</th>
+            <th>Logout Time</th>
+            <th>Duration</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for session in sessions %}
+        <tr>
+            <td>
+                <a href="javascript:void(0);"
+                   onclick="showUser('{{ session.username }}')">
+                    {{ session.username }}
+                </a>
+            </td>
+
+            <td>
+                {% if session.status == "active" %}
+                    🟢 Active
+                {% elif session.status == "idle" %}
+                    🟡 Idle
+                {% else %}
+                    🔴 Offline
+                {% endif %}
+            </td>
+
+            <td>{{ session.login_time }}</td>
+
+            <td>
+                {% if session.logout_time %}
+                    {{ session.logout_time }}
+                {% else %}
+                    --
+                {% endif %}
+            </td>
+
+            <td>{{ session.duration }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<h2>Session Stats (Per User)</h2>
+
+<table id="stats-table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Status</th>
+            <th>Total Sessions</th>
+            <th>Last Seen</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for user in session_stats %}
+        <tr>
+            <td>
+                <a href="javascript:void(0);"
+                   onclick="showUser('{{ user.username }}')">
+                    {{ user.username }}
+                </a>
+            </td>
+
+            <td>
+
+                {% if user.total_sessions == 0 %}
+
+                    ⚪ Never Logged In
+
+                {% else %}
+
+                    🟢 Has Login History
+
+                {% endif %}
+
+            </td>
+
+            <td>{{ user.total_sessions }}</td>
+            <td>{{ user.last_seen }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- <script>
+setInterval(function(){
+    location.reload();
+},5000);
+</script> -->
+
+
+<h2>Virtual Lab Users</h2>
+<form method="GET" style="margin-bottom:15px;">
+
+    <input
+        type="text"
+        name="lab_search"
+        placeholder="Search Linux Username"
+        value="{{ request.GET.lab_search }}"
+        style="
+            padding:8px;
+            width:250px;
+            border:1px solid #ccc;
+            border-radius:5px;
+        "
+    >
+
+    <button
+        type="submit"
+        style="
+            padding:8px 15px;
+            background:#007bff;
+            color:white;
+            border:none;
+            border-radius:5px;
+        "
+    >
+        Search
+    </button>
+
+</form>
+
+<form method="post" id="bulkForm">
+{% csrf_token %}
+<div style="margin-bottom:15px;">
+
+    Days:
+
+    <input
+        type="number"
+        name="bulk_days"
+        form="bulkForm"
+        value="30"
+        min="1"
+        style="width:80px;">
+
+    <button
+        type="submit"
+        form="bulkForm"
+        formaction="/virtual-lab2/bulk-extend/">
+
+        Extend Selected
+
+    </button>
+
+    <button
+        type="submit"
+        form="bulkForm"
+        formaction="/virtual-lab2/bulk-reduce/">
+
+        Reduce Selected
+
+    </button>
+
+    <button
+        type="submit"
+        form="bulkForm"
+        formaction="/virtual-lab2/bulk-disable/">
+
+        Disable Selected
+
+    </button>
+
+    <button
+        type="submit"
+        form="bulkForm"
+        formaction="/virtual-lab2/bulk-enable/">
+
+        Enable Selected
+
+    </button>
+
+    <br><br>
+
+    Expiry Date:
+
+    <input
+        type="date"
+        name="expiry_date"
+        form="bulkForm">
+
+    <button
+        type="submit"
+        form="bulkForm"
+        formaction="/virtual-lab2/set-expiry/"
+        onclick="return confirm('Set selected users expiry date?');">
+
+        Set Expiry
+
+    </button>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>
+                <input
+                    type="checkbox"
+                    id="selectAll">
+            </th>
+            <th>LMS User</th>
+            <th>Linux User</th>
+            <th>Created</th>
+            <th>Expiry</th>
+            <th>Days Remaining</th>
+            <th>Status</th>
+            <th>Extend Lab Facility\Usage</th>
+            <th>Reduce FAcility usage</th>
+            <th>Account Control</th>
+        </tr>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for u in lab_users %}
+
+        <tr>
+            <td>
+                <input
+                    type="checkbox"
+                    name="selected_users"
+                    value="{{ u.id }}">
+            </td>
+
+            <td>{{ u.lms_user }}</td>
+
+            <td>{{ u.linux_user }}</td>
+
+            <td>{{ u.created }}</td>
+
+            <td>{{ u.expiry }}</td>
+
+            <td>{{ u.days_left }}</td>
+
+            <td>
+
+            {% if u.is_disabled %}
+
+                🔴 Disabled
+
+            {% elif u.status == "Expired" %}
+
+                🟠 Expired
+
+            {% else %}
+
+                🟢 Active
+
+            {% endif %}
+
+            </td>
+            <td>
+
+            <form method="post"
+                action="/virtual-lab2/extend-user/{{ u.id }}/"
+                onsubmit="return confirm('Are you sure you want to extend this account?');">
+
+                {% csrf_token %}
+
+                <input
+                    type="number"
+                    name="extend_days"
+                    min="1"
+                    value="1"
+                    style="width:70px;"
+                >
+
+                <button type="submit">
+                    Extend
+                </button>
+
+            </form>
+
+            </td>
+
+
+            <td>
+
+            <form method="post"
+                action="/virtual-lab2/reduce-user/{{ u.id }}/"
+                onsubmit="return confirm('Are you sure you want to reduce this account validity?');">
+
+                {% csrf_token %}
+
+                <input
+                    type="number"
+                    name="reduce_days"
+                    min="1"
+                    value="1"
+                    style="width:70px;"
+                >
+
+                <button type="submit"
+                        style="background:red;color:white;">
+                    Reduce
+                </button>
+
+            </form>
+
+            </td>
+
+            <td>
+
+            <form method="post"
+                action="/virtual-lab2/toggle-user/{{ u.id }}/"
+                onsubmit="return confirm('Are you sure?');">
+
+                {% csrf_token %}
+
+                {% if u.is_disabled %}
+
+                    <button type="submit"
+                            style="background:green;color:white;">
+
+                        Enable
+
+                    </button>
+
+                {% else %}
+
+                    <button type="submit"
+                            style="background:red;color:white;">
+
+                        Disable
+
+                    </button>
+
+                {% endif %}
+
+            </form>
+
+            </td>
+
+            <!-- <td>
+
+                <a href="/virtual-lab2/extend-user/{{ u.id }}/">
+                    Extend Days
+                </a>
+
+            </td> -->
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+</form>
+
+
+<script>
+function showUser(username){
+
+    fetch(`/virtual-lab2/user-report/${username}/`)
+    .then(res => res.json())
+    .then(data => {
+
+        document.getElementById("popup-content").innerHTML = `
+            <p><b>Username:</b> ${data.username}</p>
+            <p><b>Total Sessions:</b> ${data.total_sessions}</p>
+            <p><b>Total Usage:</b> ${data.total_usage}</p>
+            <p><b>Longest Session:</b> ${data.longest_session}</p>
+            <p><b>Last Login:</b> ${data.last_login}</p>
+        `;
+
+        document.getElementById("popup").style.display = "block";
+    });
+}
+
+function formatTime(dt) {
+    if (!dt) return "--";
+
+    let date = new Date(dt);
+
+    return date.toLocaleString("en-IN", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+    });
+}
+
+function refreshDashboard(){
+
+    fetch("/virtual-lab2/faculty-dashboard-data/")
+    .then(res => res.json())
+    .then(data => {
+
+        let rows = "";
+
+        data.sessions.forEach(s => {
+
+            let status = "🔴 Offline";
+            if(s.status === "active") status = "🟢 Active";
+            if(s.status === "idle") status = "🟡 Idle";
+
+            rows += `
+                <tr>
+                    <td>
+                        <a href="javascript:void(0);" onclick="showUser('${s.username}')">
+                            ${s.username}
+                        </a>
+                    </td>
+
+                    <td>${status}</td>
+                    <td>${formatTime(s.login_time)}</td>
+                    <td>${formatTime(s.logout_time)}</td>
+                    <td>${s.duration}</td>
+                </tr>
+            `;
+        });
+
+        document.querySelector("table tbody").innerHTML = rows;
+    });
+}
+
+// auto refresh every 5 seconds
+setInterval(refreshDashboard, 2000);
+
+// first load
+refreshDashboard();
+
+document
+.getElementById("selectAll")
+.addEventListener("change", function(){
+
+    let checkboxes =
+        document.querySelectorAll(
+            'input[name="selected_users"]'
+        );
+
+    checkboxes.forEach(cb => {
+
+        cb.checked =
+            this.checked;
+
+    });
+
+});
+
+</script>
+</body>
+</html>
+<div id="popup" style="
+    display:none;
+    position:fixed;
+    top:20%;
+    left:35%;
+    background:white;
+    padding:20px;
+    border:2px solid #333;
+    z-index:999;
+">
+    <h3>User Info</h3>
+    <div id="popup-content"></div>
+
+    <button onclick="document.getElementById('popup').style.display='none'">
+        Close
+    </button>
+</div>
+
+
+{% endblock %}
+
+
+
+

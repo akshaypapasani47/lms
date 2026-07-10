@@ -1,0 +1,7 @@
+<h2>Add Chapter</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="Chapter Title" required>
+    <button type="submit">Add Chapter</button>
+</form>

@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+{% load static %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero-section text-center py-5">
+    <div class="container">
+        <h1>Welcome to HPC E-Learning Platform</h1>
+        <p class="lead">
+            Empowering learners through interactive courses,
+            virtual labs and multilingual learning.
+        </p>
+    </div>
+</section>
+<div class="text-center my-5">
+    <img src="{% static 'img/cdac_logo.png' %}"
+         alt="HPC E-Learning Platform"
+         style="max-height:120px;">
+</div>
+<div class="text-center mb-5">
+    <h1>HPC E-Learning Platform</h1>
+    <p class="text-muted">
+        Smart Learning • Virtual Labs • Multilingual Education
+    </p>
+</div>
+<!-- ABOUT -->
+<section class="container py-5">
+    <h2>About Us</h2>
+
+    <p>
+        Our Learning Management System provides students,
+        teachers and administrators with a modern digital
+        learning environment.
+    </p>
+
+     <p>
+        The Learning Management System (LMS) provides a modern platform
+        for students, faculty and administrators to manage learning
+        activities efficiently.
+    </p>
+
+    <p>
+        Our platform supports online courses, virtual laboratories,
+        assessments, multilingual learning and progress tracking.
+    </p>
+</section>
+
+
+
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h3>Our Vision</h3>
+            <p>
+                To provide accessible, innovative and high-quality
+                digital education for all learners.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h3>Our Mission</h3>
+            <p>
+                Empower learners through practical training,
+                virtual labs and industry-relevant programs.
+            </p>
+        </div>
+    </div>
+
+</div>
+<!-- Why Choose Us -->
+<section class="container py-5">
+    <div class="text-center mb-5">
+        <h2>Why Choose Us?</h2>
+        <p class="text-muted">
+            A modern learning platform designed for students, teachers, and administrators.
+        </p>
+    </div>
+
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 p-4">
+                <i class="fas fa-laptop-code fa-3x text-primary mb-3"></i>
+                <h4>Virtual Labs</h4>
+                <p>
+                    Practice programming and experiments in an interactive environment.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 p-4">
+                <i class="fas fa-book-open fa-3x text-success mb-3"></i>
+                <h4>Structured Courses</h4>
+                <p>
+                    Learn through organized modules, chapters and lessons.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 p-4">
+                <i class="fas fa-chart-line fa-3x text-danger mb-3"></i>
+                <h4>Track Progress</h4>
+                <p>
+                    Monitor learning progress and continue from where you stopped.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Services -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Our Services</h2>
+
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                        <h4>E-Learning</h4>
+                        <p>
+                            Access structured courses, video lessons,
+                            assessments, and learning resources.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-flask fa-3x text-success mb-3"></i>
+                        <h4>Virtual Labs</h4>
+                        <p>
+                            Practice concepts through interactive
+                            virtual lab simulations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-certificate fa-3x text-warning mb-3"></i>
+                        <h4>Certifications</h4>
+                        <p>
+                            Complete courses and earn certificates
+                            to showcase your achievements.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-calendar fa-3x text-warning mb-3"></i>
+                        <h4>Assesments</h4>
+                        <p>
+                            Track learning progress effectively.
+                            Quizzes and evaluations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+
+    <h2 class="text-center mb-4">What We Offer</h2>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h4>Online Courses</h4>
+                <p>Structured learning modules.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h4>Virtual Labs</h4>
+                <p>Hands-on practical experience.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h4>Assessments</h4>
+                <p>Track learning progress effectively.</p>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+<!-- WHAT WE OFFER -->
+<!-- <section class="container py-5">
+    <h2>What We Offer</h2>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <h4>Online Courses</h4>
+            <p>Video-based structured learning.</p>
+        </div>
+
+        <div class="col-md-4">
+            <h4>Virtual Labs</h4>
+            <p>Practical hands-on experience.</p>
+        </div>
+
+        <div class="col-md-4">
+            <h4>Assessments</h4>
+            <p>Quizzes and evaluations.</p>
+        </div>
+
+    </div>
+</section> -->
+<section class="bg-light py-5">
+
+    <div class="container text-center">
+
+        <h2>Platform Statistics</h2>
+
+        <h3>{{ total_courses }}</h3>
+        <p>Courses Available</p>
+
+    </div>
+
+</section>
+<style>
+    .color-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+    }
+
+    .bg-purple {
+        background-color: #6f42c1;
+    }
+
+    .card-header-ne {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .card-header-ne .title {
+        vertical-align: middle;
+    }
+
+    .hero-section{
+        background: linear-gradient(135deg,#0d6efd,#6610f2);
+        color:white;
+        border-radius:15px;
+        margin-bottom:30px;
+    }
+
+    .hero-section h1{
+        font-size:3rem;
+        font-weight:bold;
+    }
+
+    .hero-section p{
+        font-size:1.2rem;
+    }
+</style>
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">{% trans 'Home' %}</li>
+    </ol>
+</nav>
+
+{% if request.user.is_superuser %}
+<div class="manage-wrap">
+    <a class="btn btn-primary" href="{% url 'add_item' %}"><i class="fas fa-plus"></i>{% trans 'Add New Post' %}</a>
+</div>
+{% endif %}
+
+{% include 'snippets/messages.html' %}
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <a href="/en/programs/" class="btn btn-outline-primary w-100 p-4">
+            📚 Courses
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="/en/programs/my_courses/" class="btn btn-outline-success w-100 p-4">
+            🎓 My Learning
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="/virtual-lab2/" class="btn btn-outline-warning w-100 p-4">
+            🧪 Virtual Lab
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="/en/quiz/" class="btn btn-outline-info w-100 p-4">
+            📝 Quiz
+        </a>
+    </div>
+
+</div>
+
+<!-- <div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2>{{ total_courses }}</h2>
+                <p>Total Courses</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2>{{ total_lessons }}</h2>
+                <p>Total Lessons</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2>{{ total_users }}</h2>
+                <p>Total Learners</p>
+            </div>
+        </div>
+    </div>
+
+</div> -->
+
+<!-- <div>
+    <div class="title-1">{% trans 'News' %} &amp; {% trans 'Events' %}</div>
+</div>
+
+<div class="col-md-2 ms-auto d-flex">
+    <div class="me-3">
+        <span class="color-indicator bg-primary"></span> {% trans 'News' %}
+    </div>
+    <div>
+        <span class="color-indicator bg-purple"></span> {% trans 'Events' %}
+    </div>
+</div> -->
+
+<div class="container-fluid">
+    {% if items %}
+    <div class="row">
+        {% for item in items %}
+        <div class="col-md-4 mb-4">
+            <div class="bg-white border">
+                <div class="card-header-ne {% if item.posted_as == 'News' %}{% trans 'news' %}{% else %}{% trans 'events' %}{% endif %} p-2">
+                    <span class="p-0">
+                        {{ item.title|title }}
+                    </span>
+                    {% if request.user.is_superuser %}
+                    <div class="dropstart">
+                        <button class="btn btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v text-white"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'edit_post' pk=item.id %}"><i
+                                    class="fas fa-pencil-alt"></i>{% trans 'Edit' %}</a>
+                            <a class="dropdown-item" href="{% url 'delete_post' pk=item.id %}"><i
+                                    class="fas fa-trash-alt"></i>{% trans 'Delete' %}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="p-2 my-2" style="min-height: 120px;">{{ item.summary }}</div>
+
+                <div class="bg-light p-1 small text-secondary text-end pe-3">
+                    <i class="fa fa-calendar small unstyled"></i>
+                    {{ item.updated_date|timesince }} {% trans 'ago' %}
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <h4 class="text-center mt-5 py-5 text-muted">
+        <i class="fa-regular fa-folder-open me-2"></i>{% trans 'Important news and events will appear here.' %}
+    </h4>
+
+    {% endif %}
+
+</div>
+
+{% endblock content %}

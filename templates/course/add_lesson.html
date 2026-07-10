@@ -1,0 +1,7 @@
+<h2>Add Lesson</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="Lesson Title" required>
+    <button type="submit">Add Lesson</button>
+</form>

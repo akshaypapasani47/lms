@@ -1,0 +1,32 @@
+
+
+{% extends "base.html" %}
+Virtual Lab
+
+{% block content %}
+
+<h1>Available Virtual Labs</h1>
+
+{% for lab in labs %}
+
+<div style="border:1px solid black; padding:10px; margin:10px;">
+    <h3>{{ lab.title }}</h3>
+    <p>{{ lab.description }}</p>
+
+    <a href="{% url 'lab_detail' lab.id %}">
+        Open Lab
+    </a>
+</div>
+
+{% endfor %}
+
+{% endblock %}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,244 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>{% block title %}CDAC{% endblock title %}</title>
+
+    <link rel="shortcut icon" href="{% static 'img/cdac_logo.png' %}" type="image/x-icon">
+
+    <!-- Fontawesome icons -->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/fontawesome-6.5.1/css/all.min.css' %}">
+
+    <!-- Bootstrap5 -->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap-5.3.2/css/bootstrap.min.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.min.css' %}">
+
+    <!-- <script src="https://js.stripe.com/v3/"></script> -->
+    {% block header %}{% endblock %}
+</head>
+
+
+<body>
+
+    <!-- Header -->
+    {% block topbar %}
+        {% include 'common_header.html' %}
+    {% endblock %}
+
+    <!-- Space below the fixed header -->
+    <div style="height: 60px;"></div>
+
+    <!-- Sidebar -->
+    {% block sidebar %}
+        {% include 'aside.html' %}
+    {% endblock %}
+
+    <!-- Main Content -->
+    {% block maincontent %}
+    <div id="main">
+        <div class="container-fluid" id="main-content">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+    {% endblock %}
+
+    <script src="{% url 'javascript-catalog' %}"></script>
+    <script src="{% static 'vendor/jquery-3.7.1/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap-5.3.2/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block js %}{% endblock %}
+
+    {% if request.user.is_authenticated %}
+
+<!-- Chatbot Overlay -->
+<div id="chatbot-overlay" onclick="closeChatbot()" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:transparent;
+z-index:9998;
+"></div>
+
+<!-- Chatbot Container -->
+<div id="chatbot-iframe-container" style="
+display:none;
+position:fixed;
+bottom:166px;
+right:24px;
+width:360px;
+height:calc(100vh - 200px);
+max-height:560px;
+z-index:9999;
+border-radius:20px;
+overflow:hidden;
+">
+
+<iframe
+id="chatbot-iframe"
+src=""
+style="
+width:100%;
+height:100%;
+border:none;
+background:transparent;">
+</iframe>
+
+</div>
+
+<style>
+
+#chatbot-toggle-btn{
+position:relative;
+}
+
+#chatbot-toggle-btn::before{
+content:'';
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+border-radius:50%;
+border:2px solid rgba(13,148,136,.5);
+animation:chatbotRingPulse 2s infinite;
+pointer-events:none;
+}
+
+@keyframes chatbotRingPulse{
+0%{
+transform:scale(1);
+opacity:.8;
+}
+100%{
+transform:scale(1.6);
+opacity:0;
+}
+}
+
+#chatbot-toggle-btn:hover{
+transform:scale(1.1);
+box-shadow:0 6px 28px rgba(13,148,136,.6)!important;
+}
+
+#chatbot-toggle-btn.chatbot-open::before{
+animation:none;
+border:none;
+}
+
+</style>
+
+<button
+id="chatbot-toggle-btn"
+onclick="toggleChatbot()"
+style="
+position:fixed;
+bottom:100px;
+right:24px;
+z-index:10000;
+width:58px;
+height:58px;
+border-radius:50%;
+background:linear-gradient(135deg,#0d9488,#0f766e);
+border:none;
+color:white;
+font-size:24px;
+cursor:pointer;
+box-shadow:0 4px 20px rgba(13,148,136,.5);
+display:flex;
+align-items:center;
+justify-content:center;
+transition:all .2s;
+">
+💬
+</button>
+
+<script>
+
+let chatbotOpen=false;
+let chatbotLoaded=false;
+
+let userId="{{ request.user.id }}";
+
+let userRole="{% if request.user.is_superuser %}admin{% elif request.user.is_lecturer %}lecturer{% elif request.user.is_student %}student{% else %}student{% endif %}";
+
+function closeChatbot(){
+
+document.getElementById("chatbot-iframe-container").style.display="none";
+
+document.getElementById("chatbot-overlay").style.display="none";
+
+const btn=document.getElementById("chatbot-toggle-btn");
+
+btn.innerHTML="💬";
+btn.style.fontSize="24px";
+btn.style.background="linear-gradient(135deg,#0d9488,#0f766e)";
+btn.style.boxShadow="0 4px 20px rgba(13,148,136,.5)";
+btn.classList.remove("chatbot-open");
+
+chatbotOpen=false;
+
+}
+
+window.addEventListener("message",function(e){
+
+if(e.data==="close-chatbot"){
+closeChatbot();
+}
+
+});
+
+function toggleChatbot(){
+
+const container=document.getElementById("chatbot-iframe-container");
+const overlay=document.getElementById("chatbot-overlay");
+const iframe=document.getElementById("chatbot-iframe");
+const btn=document.getElementById("chatbot-toggle-btn");
+
+if(!chatbotOpen){
+
+if(!chatbotLoaded){
+
+iframe.src="http://localhost:5180?userId="+userId+"&role="+userRole+"&open=true";
+
+chatbotLoaded=true;
+
+}
+
+container.style.display="block";
+overlay.style.display="block";
+
+btn.innerHTML="✕";
+btn.style.fontSize="20px";
+btn.style.background="#475569";
+btn.style.boxShadow="none";
+btn.classList.add("chatbot-open");
+
+chatbotOpen=true;
+
+}
+else{
+
+closeChatbot();
+
+}
+
+}
+
+</script>
+
+{% endif %}
+
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+<h2>Add Module</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="Module name" required>
+    <button type="submit">Save</button>
+</form>

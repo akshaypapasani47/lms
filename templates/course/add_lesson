@@ -1,0 +1,9 @@
+def add_lesson(request, chapter_id):
+    chapter = Chapter.objects.get(id=chapter_id)
+
+    if request.method == "POST":
+        title = request.POST.get("title")
+        Lesson.objects.create(title=title, chapter=chapter)
+        return redirect("course_detail", slug=chapter.module.course.slug)
+
+    return render(request, "course/add_lesson.html")
