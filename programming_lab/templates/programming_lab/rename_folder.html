@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h3>
+
+        Rename Folder
+
+    </h3>
+
+    <br>
+
+    <form
+
+    method="POST"
+
+    action="{% url 'rename_folder' folder_name %}">
+
+        {% csrf_token %}
+
+        <input
+
+        type="hidden"
+
+        name="current_path"
+
+        value="{{ current_path }}">
+
+        <input
+
+        type="text"
+
+        name="new_name"
+
+        class="form-control"
+
+        placeholder="Enter New Folder Name"
+
+        required>
+
+        <br>
+
+        <button
+
+        type="submit"
+
+        class="btn btn-success">
+
+            Rename Folder
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

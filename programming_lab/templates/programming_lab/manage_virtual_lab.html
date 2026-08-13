@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+
+        <h2>
+            Manage Virtual Lab
+        </h2>
+
+        <p class="text-muted">
+            Update the configuration and status of this virtual lab.
+        </p>
+
+    </div>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+
+            <strong>
+                {{ lab.name }}
+            </strong>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- Lab Name -->
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Lab Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="name"
+                        class="form-control"
+                        value="{{ lab.name }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Lab Type -->
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Lab Type
+                    </label>
+
+                    <select
+                        name="lab_type"
+                        class="form-control"
+                        required
+                    >
+
+                        {% for value, label in lab_types %}
+
+                            <option
+                                value="{{ value }}"
+                                {% if lab.lab_type == value %}
+                                    selected
+                                {% endif %}
+                            >
+
+                                {{ label }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="5"
+                    >{{ lab.description }}</textarea>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Lab Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="form-control"
+                    >
+
+                        <option
+                            value="ACTIVE"
+                            {% if lab.status == "ACTIVE" %}
+                                selected
+                            {% endif %}
+                        >
+                            Active
+                        </option>
+
+                        <option
+                            value="INACTIVE"
+                            {% if lab.status == "INACTIVE" %}
+                                selected
+                            {% endif %}
+                        >
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <button
+                    type="submit"
+                    class="btn btn-success"
+                >
+
+                    Save Changes
+
+                </button>
+
+
+                <a
+                    href="{% url 'virtual_lab_management' %}"
+                    class="btn btn-secondary"
+                >
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Lab Information -->
+
+    <div class="card shadow-sm mt-4">
+
+        <div class="card-header">
+
+            Lab Information
+
+        </div>
+
+
+        <div class="card-body">
+
+            <p>
+                <strong>Created By:</strong>
+
+                {{ lab.created_by.get_full_name|default:lab.created_by.username }}
+            </p>
+
+            <p>
+                <strong>Created:</strong>
+
+                {{ lab.created_at|date:"d M Y, H:i" }}
+            </p>
+
+            <p>
+                <strong>Last Updated:</strong>
+
+                {{ lab.updated_at|date:"d M Y, H:i" }}
+            </p>
+
+            <p>
+                <strong>Current Status:</strong>
+
+                {% if lab.status == "ACTIVE" %}
+
+                    <span class="badge bg-success">
+                        Active
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-danger">
+                        Inactive
+                    </span>
+
+                {% endif %}
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="mt-4">
+
+        <a
+            href="{% url 'virtual_lab_management' %}"
+            class="btn btn-primary"
+        >
+
+            ← Back to Virtual Labs
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,651 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+
+
+    <div class="text-center mb-4">
+
+
+        <h2>
+
+            File Manager
+
+        </h2>
+
+
+        <p>
+
+            Manage Programming Files
+
+        </p>
+
+        <!-- <h5>
+
+        Current Path :
+
+        {{ current_path|default:"Programming Lab" }}
+
+        </h5> -->
+
+
+        <form method="GET">
+
+            <input
+
+            type="hidden"
+
+            name="path"
+
+            value="{{ current_path }}">
+
+            <input
+
+            type="text"
+
+            name="search"
+
+            class="form-control"
+
+            placeholder="Search Files or Folders"
+
+            value="{{ search_query }}">
+
+        </form>
+
+        <br>
+
+
+    </div>
+
+    <!-- Docker Status -->
+
+    <div class="card shadow mb-3">
+
+        <div class="card-body text-center">
+
+            <h5>Docker Lab Status</h5>
+
+            {% if container_status == "RUNNING" %}
+
+                <span class="badge bg-success">
+                    🟢 Running
+                </span>
+
+            {% elif container_status == "STOPPED" %}
+
+                <span class="badge bg-warning">
+                    🟡 Stopped
+                </span>
+
+            {% else %}
+
+                <span class="badge bg-danger">
+                    🔴 Not Created
+                </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Folder Section -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header">
+
+            Folders
+
+        </div>
+
+        ...
+
+
+
+
+    <div class="dropdown mb-4">
+
+        <button
+
+        class="btn btn-success dropdown-toggle"
+
+        type="button"
+
+        data-bs-toggle="dropdown">
+
+            + New
+
+        </button>
+
+        <ul class="dropdown-menu">
+
+            <li>
+
+                <a
+
+                class="dropdown-item"
+
+                href="#"
+
+                onclick="showAction('file')">
+
+                    Create File
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a
+
+                class="dropdown-item"
+
+                href="#"
+
+                onclick="showAction('folder')">
+
+                    Create Folder
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a
+
+                class="dropdown-item"
+
+                href="#"
+
+                onclick="showAction('uploadfile')">
+
+                    Upload File
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a
+
+                class="dropdown-item"
+
+                href="#"
+
+                onclick="showAction('uploadfolder')">
+
+                    Upload Folder
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+    <div id="actionArea"></div>
+
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header">
+
+            Folders
+
+        </div>
+
+        <div class="card-body">
+
+            {% if folders %}
+
+                <ul class="list-group">
+
+                    {% for folder in folders %}
+
+                    <li class="list-group-item d-flex justify-content-between">
+
+
+                        {% if current_path %}
+
+                        <a href="?path={{ current_path }}/{{ folder }}">
+
+                            📁 {{ folder }}
+
+                        </a>
+
+                        {% else %}
+
+                        <a href="?path={{ folder }}">
+
+                            📁 {{ folder }}
+
+                        </a>
+
+                        {% endif %}
+
+
+                        <div class="dropdown">
+
+                            <button
+
+                            class="btn btn-sm btn-secondary dropdown-toggle"
+
+                            type="button"
+
+                            data-bs-toggle="dropdown">
+
+                                Actions
+
+                            </button>
+
+                            <ul class="dropdown-menu">
+
+                                <li>
+
+                                    <a
+
+                                    class="dropdown-item"
+
+                                    href="{% url 'rename_folder_page' folder %}?path={{ current_path }}">
+
+                                        Rename
+
+                                    </a>
+
+                                </li>
+
+                                <li>
+
+                                    <a
+
+                                    class="dropdown-item"
+
+                                    href="{% url 'download_folder' folder %}?path={{ current_path }}">
+
+                                        Download
+
+                                    </a>
+
+                                </li>
+
+                                <li>
+
+                                    <a
+
+                                    class="dropdown-item text-danger"
+
+                                    href="{% url 'delete_folder' folder %}?path={{ current_path }}"
+
+                                    onclick="return confirm('Delete Folder?')">
+
+                                        Delete
+
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                No Folders Available.
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+
+    <div class="card shadow mb-4">
+
+
+        {% if current_path %}
+
+        <a
+        href="?path={{ parent_path }}"
+        class="btn btn-secondary mb-3">
+        Back Folder
+        </a>
+
+        {% endif %}
+
+        <div class="card-header">
+            Programming Files
+        </div>
+
+
+        <div class="card-body">
+
+        {% if files %}
+
+        <form
+
+        method="POST"
+
+        action="{% url 'delete_selected_files' %}">
+
+        {% csrf_token %}
+
+        <input
+
+        type="hidden"
+
+        name="current_path"
+
+        value="{{ current_path }}">
+
+            <ul class="list-group">
+
+                {% for file in files %}
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                    <div class="d-flex align-items-center">
+
+                        <input
+                        type="checkbox"
+                        name="selected_files"
+                        value="{{ file.name }}"
+                        class="me-2">
+
+                        <a href="{% url 'open_file' file.name %}?path={{ current_path }}"
+                        class="text-decoration-none">
+
+                            {% if ".py" in file.name %}
+                            🐍
+                            {% elif ".java" in file.name %}
+                            ☕
+                            {% elif ".cpp" in file.name %}
+                            ⚙
+                            {% elif ".txt" in file.name %}
+                            📄
+                            {% elif ".pdf" in file.name %}
+                            📕
+                            {% elif ".png" in file.name or ".jpg" in file.name or ".jpeg" in file.name %}
+                            🖼
+                            {% else %}
+                            📄
+                            {% endif %}
+
+                            {{ file.name }}
+
+                            <br>
+
+                            <small>
+
+                            Size :
+
+                            {{ file.display_size }}
+
+                            |
+
+                            Modified :
+
+                            {{ file.display_modified }}
+
+                            </small>
+
+                        </a>
+
+                    </div>
+
+                    <div class="dropdown">
+
+                        <button
+
+                        class="btn btn-sm btn-secondary dropdown-toggle"
+
+                        type="button"
+
+                        data-bs-toggle="dropdown">
+
+                            Actions
+
+                        </button>
+
+                        <ul class="dropdown-menu">
+
+                            <li>
+
+                                <a
+
+                                class="dropdown-item"
+
+                                href="{% url 'download_file' file.name %}?path={{ current_path }}">
+
+                                    Download
+
+                                </a>
+
+                            </li>
+
+                            <li>
+
+                                <a
+
+                                class="dropdown-item"
+
+                                href="{% url 'move_file_page' file.name %}?path={{ current_path }}">
+
+                                    Move
+
+                                </a>
+
+                            </li>
+
+                            {% if ".pdf" in file.name or ".png" in file.name or ".jpg" in file.name or ".jpeg" in file.name or ".gif" in file.name %}
+
+                            <li>
+
+                                <a
+
+                                class="dropdown-item"
+
+                                href="{% url 'preview_file' file.name %}?path={{ current_path }}">
+
+                                    Preview
+
+                                </a>
+
+                            </li>
+
+                            {% endif %}
+
+                            <li>
+
+                                <a
+
+                                class="dropdown-item"
+
+                                href="{% url 'copy_file_page' file.name %}?path={{ current_path }}">
+
+                                    Copy
+
+                                </a>
+
+                            </li>
+
+                            <li>
+
+                                <a
+
+                                class="dropdown-item"
+
+                                href="{% url 'rename_file_page' file.name %}?path={{ current_path }}">
+
+                                    Rename
+
+                                </a>
+
+                            </li>
+
+                            <li>
+
+                                <a
+
+                                class="dropdown-item text-danger"
+
+                                href="{% url 'delete_file' file.name %}?path={{ current_path }}">
+
+                                    Delete
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+            <br>
+
+            <button
+
+            type="submit"
+
+            class="btn btn-danger">
+
+            Delete Selected
+
+            </button>
+
+            </form>
+
+        {% else %}
+
+            No Files Available.
+
+        {% endif %}
+
+        </div>
+
+    </div>
+    <!-- <a
+
+    href="{% url 'start_lab' %}"
+
+    class="btn btn-success">
+
+    Start Docker Lab
+
+    </a>
+
+    <a href="{% url 'stop_lab' %}"
+    class="btn btn-warning">
+        Stop Lab
+    </a>
+
+    <a href="{% url 'restart_lab' %}"
+    class="btn btn-success">
+        Restart Lab
+    </a>
+
+    <a href="{% url 'delete_lab' %}"
+    class="btn btn-danger"
+    onclick="return confirm('Delete Docker Lab?')">
+        Delete Lab
+    </a> -->
+
+
+
+
+    <div class="text-center">
+
+
+        <a
+            href="{% url 'programming_workspace' %}"
+            class="btn btn-primary">
+
+            Back to Workspace
+
+        </a>
+
+        <a
+            href="{% url 'programming_terminal' %}"
+            class="btn btn-dark">
+
+            Back to Terminal
+
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+function showAction(type){
+
+    if(type=="file"){
+
+        document.getElementById("actionArea").innerHTML=`
+
+        <form method="POST" action="{% url 'create_file' %}">
+
+        {% csrf_token %}
+
+        <input type="hidden"
+
+        name="current_path"
+
+        value="{{ current_path }}">
+
+        <input
+
+        type="text"
+
+        name="file_name"
+
+        class="form-control mb-2"
+
+        placeholder="main.py">
+
+        <button
+
+        class="btn btn-success">
+
+            Create File
+
+        </button>
+
+        </form>
+
+        `;
+    }
+
+}
+
+</script>
+
+{% endblock %}
+
+

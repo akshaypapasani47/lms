@@ -1,0 +1,533 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-info alert-dismissible fade show shadow-sm" role="alert">
+            {{ message }}
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+<!-- ========================================================= -->
+<!-- PAGE HEADER -->
+<!-- ========================================================= -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="fw-bold mb-1">
+            💻 Programming Workspace
+        </h2>
+
+        <p class="text-muted mb-0">
+            Container Based Programming Environment
+        </p>
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- LAB STATUS -->
+<!-- ========================================================= -->
+
+<div class="card shadow-sm border-0 mb-4">
+
+    <div class="card-header bg-dark text-white">
+        <strong>Lab Status</strong>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row text-center">
+
+            <!-- LANGUAGE -->
+
+            <div class="col-md-3 mb-3 mb-md-0">
+
+                <h6 class="text-muted">
+                    Language
+                </h6>
+
+                <h5 class="fw-bold text-primary">
+                    {{ language }}
+                </h5>
+
+            </div>
+
+
+            <!-- DOCKER STATUS -->
+
+            <div class="col-md-3 mb-3 mb-md-0">
+
+                <h6 class="text-muted">
+                    Docker Lab
+                </h6>
+
+                {% if container_status == "RUNNING" %}
+
+                    <h5 class="fw-bold text-success">
+                        🟢 Running
+                    </h5>
+
+                {% elif container_status == "STOPPED" %}
+
+                    <h5 class="fw-bold text-warning">
+                        🟡 Stopped
+                    </h5>
+
+                {% else %}
+
+                    <h5 class="fw-bold text-danger">
+                        🔴 Not Created
+                    </h5>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- WORKSPACE -->
+
+            <div class="col-md-3 mb-3 mb-md-0">
+
+                <h6 class="text-muted">
+                    Workspace
+                </h6>
+
+                <h5 class="fw-bold text-success">
+                    {{ status }}
+                </h5>
+
+            </div>
+
+
+            <!-- EXPIRY -->
+
+            <div class="col-md-3">
+
+                <h6 class="text-muted">
+                    Expiry Date
+                </h6>
+
+                <h5 class="fw-bold text-danger">
+                    {{ expiry }}
+                </h5>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- LAB CONTROLS -->
+<!-- ========================================================= -->
+
+<div class="card shadow-sm border-0 mb-4">
+
+    <div class="card-header bg-dark text-white">
+        <strong>Lab Controls</strong>
+    </div>
+
+    <div class="card-body text-center">
+
+
+        <!-- NOT CREATED -->
+
+        {% if container_status == "NOT CREATED" %}
+
+            <div class="py-2">
+
+                <div class="display-6 mb-2">
+                    🧪
+                </div>
+
+                <p class="text-muted">
+                    Your programming lab has not been started yet.
+                </p>
+
+                <a
+                    href="{% url 'start_lab' %}"
+                    class="btn btn-success btn-lg"
+                >
+                    ▶ Start Lab
+                </a>
+
+            </div>
+
+
+        <!-- STOPPED -->
+
+        {% elif container_status == "STOPPED" %}
+
+            <div class="py-2">
+
+                <span class="badge bg-warning text-dark mb-3">
+                    🟡 Lab is stopped
+                </span>
+
+                <p class="text-muted">
+                    Start the lab to access the programming environment.
+                </p>
+
+                <a
+                    href="{% url 'start_lab' %}"
+                    class="btn btn-success me-2"
+                >
+                    ▶ Start Lab
+                </a>
+
+                <a
+                    href="{% url 'delete_lab' %}"
+                    class="btn btn-danger"
+                    onclick="return confirm('Are you sure you want to permanently delete this programming lab?')"
+                >
+                    🗑 Delete Lab
+                </a>
+
+            </div>
+
+
+        <!-- RUNNING -->
+
+        {% elif container_status == "RUNNING" %}
+
+            <div class="py-2">
+
+                <span class="badge bg-success mb-3">
+                    🟢 Lab is Ready
+                </span>
+
+                <div>
+
+                    <a
+                        href="{% url 'stop_lab' %}"
+                        class="btn btn-warning me-2"
+                        onclick="return confirm('Stop the programming lab?')"
+                    >
+                        ⏹ Stop Lab
+                    </a>
+
+                    <a
+                        href="{% url 'restart_lab' %}"
+                        class="btn btn-primary me-2"
+                        onclick="return confirm('Restart the programming lab?')"
+                    >
+                        🔄 Restart Lab
+                    </a>
+
+                    <a
+                        href="{% url 'delete_lab' %}"
+                        class="btn btn-danger"
+                        onclick="return confirm('Delete this programming lab permanently?')"
+                    >
+                        🗑 Delete Lab
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- PROGRAMMING LAB FEATURES -->
+<!-- ========================================================= -->
+
+{% if container_status == "RUNNING" %}
+
+<div class="card shadow-sm border-0 mb-4">
+
+    <div class="card-header bg-dark text-white">
+        <strong>Programming Lab</strong>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+
+            <!-- TERMINAL -->
+
+            <div class="col-md-6 mb-4">
+
+                <div class="card h-100 border-0 shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <div class="display-4 mb-3">
+                            💻
+                        </div>
+
+                        <h4 class="fw-bold">
+                            Programming Terminal
+                        </h4>
+
+                        <p class="text-muted">
+                            Execute commands and run programs
+                            inside your programming environment.
+                        </p>
+
+                        <a
+                            href="{% url 'programming_terminal' %}"
+                            class="btn btn-dark"
+                        >
+                            Open Terminal
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FILE MANAGER -->
+
+            <div class="col-md-6 mb-4">
+
+                <div class="card h-100 border-0 shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <div class="display-4 mb-3">
+                            📁
+                        </div>
+
+                        <h4 class="fw-bold">
+                            File Manager
+                        </h4>
+
+                        <p class="text-muted">
+                            Create, edit, upload and manage
+                            your programming files.
+                        </p>
+
+                        <a
+                            href="{% url 'file_manager' %}"
+                            class="btn btn-success"
+                        >
+                            Open File Manager
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ASSIGNMENTS -->
+
+            <div class="col-md-6 mb-4">
+
+                <div class="card h-100 border-0 shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <div class="display-4 mb-3">
+                            📝
+                        </div>
+
+                        <h4 class="fw-bold">
+                            Assignments
+                        </h4>
+
+                        <p class="text-muted">
+                            View and submit programming
+                            assignments.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="alert('Assignments module coming soon.')"
+                        >
+                            Open Assignments
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- LAB RESOURCES -->
+
+            <div class="col-md-6 mb-4">
+
+                <div class="card h-100 border-0 shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <div class="display-4 mb-3">
+                            🧪
+                        </div>
+
+                        <h4 class="fw-bold">
+                            Lab Resources
+                        </h4>
+
+                        <p class="text-muted">
+                            Additional programming laboratory
+                            resources and tools.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            onclick="alert('Lab resources coming soon.')"
+                        >
+                            Open Resources
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<!-- ========================================================= -->
+<!-- WORKSPACE USAGE -->
+<!-- ========================================================= -->
+
+<div class="card shadow-sm border-0 mb-4">
+
+    <div class="card-header">
+        <strong>Workspace Usage</strong>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row text-center">
+
+
+            <!-- RAM -->
+
+            <div class="col-md-4 mb-3 mb-md-0">
+
+                <h6 class="text-muted">
+                    Allocated RAM
+                </h6>
+
+                <h5 class="fw-bold">
+                    {{ ram }} MB
+                </h5>
+
+            </div>
+
+
+            <!-- STORAGE -->
+
+            <div class="col-md-4 mb-3 mb-md-0">
+
+                <h6 class="text-muted">
+                    Allocated Storage
+                </h6>
+
+                <h5 class="fw-bold">
+                    {{ storage }} MB
+                </h5>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="col-md-4">
+
+                <h6 class="text-muted">
+                    Lab Status
+                </h6>
+
+                {% if container_status == "RUNNING" %}
+
+                    <h5 class="fw-bold text-success">
+                        🟢 {{ status }}
+                    </h5>
+
+                {% elif container_status == "STOPPED" %}
+
+                    <h5 class="fw-bold text-warning">
+                        🟡 {{ status }}
+                    </h5>
+
+                {% else %}
+
+                    <h5 class="fw-bold text-danger">
+                        🔴 {{ status }}
+                    </h5>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- LATEST OUTPUT -->
+<!-- ========================================================= -->
+
+<div class="card shadow-sm border-0 mb-4">
+
+    <div class="card-header bg-dark text-white">
+        <strong>Latest Program Output</strong>
+    </div>
+
+    <div class="card-body">
+
+        <pre class="mb-0">{{ output|default:"No Program Executed Yet." }}</pre>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- EXIT -->
+<!-- ========================================================= -->
+
+<div class="text-center mb-4">
+
+    <a
+        href="{% url 'programming_logout' %}"
+        class="btn btn-outline-danger"
+    >
+        🚪 Exit Programming Workspace
+    </a>
+
+</div>
+
+
+{% endblock %}

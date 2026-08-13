@@ -529,9 +529,11 @@ def lab_terminal(request):
 
 def logout_view(request):
 
-    request.session.flush()
+    request.session.pop("lab_username", None)
+    request.session.pop("lab_password", None)
 
     return redirect("/virtual-lab2/login/")
+
 
 def faculty_dashboard(request):
 
@@ -1212,6 +1214,51 @@ def files_view(request):
 
         items = []
 
+        def format_size(size):
+
+            if size < 1024:
+                return f"{size} B"
+
+            elif size < 1024 * 1024:
+                return f"{size / 1024:.1f} KB"
+
+            elif size < 1024 * 1024 * 1024:
+                return f"{size / (1024 * 1024):.1f} MB"
+
+            else:
+                return f"{size / (1024 * 1024 * 1024):.1f} GB"
+            
+        def format_modified(timestamp):
+
+            modified = datetime.fromtimestamp(timestamp)
+
+            now = datetime.now()
+
+            diff = now - modified
+
+            if diff.days == 0:
+
+                return "Today " + modified.strftime("%I:%M %p")
+
+            elif diff.days == 1:
+
+                return "Yesterday"
+
+            elif diff.days < 7:
+
+                return f"{diff.days} days ago"
+
+            elif diff.days < 30:
+
+                weeks = diff.days // 7
+                return f"{weeks} week{'s' if weeks > 1 else ''} ago"
+
+            else:
+
+                return modified.strftime("%d-%b-%Y")
+
+
+
         for file in sftp.listdir_attr(full_path):
 
             name = file.filename
@@ -1231,7 +1278,7 @@ def files_view(request):
                     icon = "fa-file-code text-primary"
 
                 elif ext == "java":
-                    icon = "fa-java text-danger"
+                    icon = "fa-mug-hot text-danger"
 
                 elif ext in ["html", "htm"]:
                     icon = "fa-html5 text-danger"
@@ -1270,8 +1317,8 @@ def files_view(request):
 
                 "name": name,
                 "is_dir": is_dir,
-                "size": file.st_size,
-                "modified": file.st_mtime,
+                "size": format_size(file.st_size),
+                "modified": format_modified(file.st_mtime),
                 "icon": icon,
 
             })
@@ -1291,6 +1338,28 @@ def files_view(request):
         print("CURRENT PATH =", current_path)
         print("HOME =", home)
 
+
+        breadcrumbs = []
+
+        if current_path:
+
+            parts = current_path.split("/")
+
+            temp = ""
+
+            for part in parts:
+
+                temp = part if temp == "" else temp + "/" + part
+
+                breadcrumbs.append({
+
+                    "name": part,
+
+                    "path": temp
+
+                })
+
+
         return render(
 
             request,
@@ -1308,6 +1377,8 @@ def files_view(request):
                 "parent_path": parent_path,
 
                 "display_path": display_path,
+
+                "breadcrumbs": breadcrumbs,
 
             },
 
@@ -2002,3 +2073,147 @@ def file_properties(request):
             "error": str(e)
 
         })
+    
+
+def copy_item(request):
+
+    if request.method != "POST":
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid Request"
+        })
+
+    request.session["clipboard"] = {
+
+        "name": request.POST.get("item_name"),
+
+        "current_path": request.POST.get("current_path", ""),
+
+        "is_dir": request.POST.get("is_dir"),
+
+        "action": "copy"
+
+    }
+
+    return JsonResponse({
+        "success": True
+    })
+
+
+def cut_item(request):
+
+    if request.method != "POST":
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid Request"
+        })
+
+    request.session["clipboard"] = {
+
+        "name": request.POST.get("item_name"),
+
+        "current_path": request.POST.get("current_path", ""),
+
+        "is_dir": request.POST.get("is_dir"),
+
+        "action": "cut"
+
+    }
+
+    return JsonResponse({
+        "success": True
+    })
+
+
+def paste_item(request):
+
+    if request.method != "POST":
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid Request"
+        })
+
+    clipboard = request.session.get("clipboard")
+
+    if not clipboard:
+        return JsonResponse({
+            "success": False,
+            "error": "Clipboard Empty"
+        })
+
+    linux_username = request.session["lab_username"]
+    linux_password = request.session["lab_password"]
+
+    destination_path = request.POST.get("current_path", "")
+
+    home = f"/home/{linux_username}"
+
+    # Source Path
+    if clipboard["current_path"]:
+        source = f"{home}/{clipboard['current_path']}/{clipboard['name']}"
+    else:
+        source = f"{home}/{clipboard['name']}"
+
+    # Destination Path
+    if destination_path:
+        destination = f"{home}/{destination_path}/{clipboard['name']}"
+    else:
+        destination = f"{home}/{clipboard['name']}"
+
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    try:
+
+        ssh.connect(
+            hostname="10.182.4.176",
+            username=linux_username,
+            password=linux_password,
+            look_for_keys=False,
+            allow_agent=False,
+        )
+
+        # COPY
+        if clipboard["action"] == "copy":
+
+            if clipboard["is_dir"] == "true":
+
+                command = f'cp -r "{source}" "{destination}"'
+
+            else:
+
+                command = f'cp "{source}" "{destination}"'
+
+        # CUT
+        else:
+
+            command = f'mv "{source}" "{destination}"'
+
+        stdin, stdout, stderr = ssh.exec_command(command)
+
+        error = stderr.read().decode().strip()
+
+        ssh.close()
+
+        if error:
+
+            return JsonResponse({
+                "success": False,
+                "error": error
+            })
+
+        # Clear clipboard after CUT
+        if clipboard["action"] == "cut":
+            del request.session["clipboard"]
+
+        return JsonResponse({
+            "success": True
+        })
+
+    except Exception as e:
+
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
+        })
+

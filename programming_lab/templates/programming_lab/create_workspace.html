@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header">
+
+            Create Programming Workspace
+
+        </div>
+
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <label>
+
+                    Language
+
+                </label>
+
+                <select
+
+                class="form-control mb-3"
+
+                name="language"
+
+                required>
+
+
+                    <option value="PYTHON">
+
+                        Python
+
+                    </option>
+
+                    <option value="JAVA">
+
+                        Java
+
+                    </option>
+
+                    <option value="CPP">
+
+                        C++
+
+                    </option>
+
+                </select>
+
+
+
+                <label>
+
+                    RAM (MB)
+
+                </label>
+
+                <input
+
+                type="number"
+
+                name="ram"
+
+                class="form-control mb-3"
+
+                placeholder="2048"
+                min="512"
+                required>
+
+
+
+                <label>
+
+                    Storage (MB)
+
+                </label>
+
+                <input
+
+                type="number"
+
+                name="storage"
+
+                class="form-control mb-3"
+
+                placeholder="10240"
+                min="1024"
+
+                required>
+
+
+
+                <label>
+
+                    Expiry (Days)
+
+                </label>
+
+                <input
+
+                type="number"
+
+                name="expiry"
+
+                class="form-control mb-3"
+
+                placeholder="7"
+                min="1"
+
+                required>
+
+
+
+                <button 
+                type="submit"
+                class="btn btn-success">
+
+                    Create Workspace
+
+                </button>
+
+
+            </form>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

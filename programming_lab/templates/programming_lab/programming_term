@@ -1,0 +1,488 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="text-center mb-4">
+
+        <h2>
+
+            Programming Terminal
+
+        </h2>
+
+        <p>
+
+            Container Based Programming Environment
+
+        </p>
+
+    </div>
+
+
+
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+
+            <div class="row text-center">
+
+
+                <div class="col-md-4">
+
+                    <h6>
+
+                        Workspace Status
+
+                    </h6>
+
+                    <p class="fw-bold text-success">
+
+                        {{ workspace_status }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <h6>
+
+                    Docker Container
+
+                    </h6>
+
+                    {% if container_status == "RUNNING" %}
+
+                    <p class="fw-bold text-success">
+                    🟢 Running
+                    </p>
+
+                    {% elif container_status == "STOPPED" %}
+
+                    <p class="fw-bold text-warning">
+                    🟡 Stopped
+                    </p>
+
+                    {% else %}
+
+                    <p class="fw-bold text-danger">
+                    🔴 Not Created
+                    </p>
+
+                    {% endif %}
+
+                    <p class="fw-bold text-danger">
+
+                        {{ container_status }}
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="col-md-4">
+
+                    <h6>
+
+                        Language
+
+                    </h6>
+
+                    <p class="fw-bold text-primary">
+
+                        {{ language }}
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- <div class="text-center mb-4">
+
+
+        {% if container_status == "NOT_CREATED" %}
+
+        <a href="{% url 'start_lab' %}"
+        class="btn btn-success">
+
+        Create Docker Lab
+
+        </a>
+
+        {% elif container_status == "STOPPED" %}
+
+        <a href="{% url 'start_lab' %}"
+        class="btn btn-success">
+
+        Start Lab
+
+        </a>
+
+        <a href="{% url 'delete_lab' %}"
+        class="btn btn-danger">
+
+        Delete Lab
+
+        </a>
+
+        {% elif container_status == "RUNNING" %}
+
+        <a href="{% url 'restart_lab' %}"
+        class="btn btn-warning">
+
+        Restart
+
+        </a>
+
+        <a href="{% url 'stop_lab' %}"
+        class="btn btn-danger">
+
+        Stop
+
+        </a>
+
+        <a href="{% url 'delete_lab' %}"
+        class="btn btn-dark">
+
+        Delete
+
+        </a>
+
+        {% endif %}
+
+
+    </div> -->
+
+
+
+
+    <div class="card shadow mb-4">
+
+
+        <div class="card-header bg-dark text-white">
+
+            Programming Terminal
+
+        </div>
+
+
+        <div class="card-body bg-dark text-white p-0">
+
+            <div
+                id="terminal"
+                style="
+                    height: 450px;
+                    width: 100%;
+                    background: #000;
+                    padding: 15px;
+                "
+            ></div>
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <div class="card shadow mb-4">
+
+
+        <div class="card-header">
+
+            Output Console
+
+        </div>
+
+
+        <div class="card-body">
+
+            <pre>
+
+            {{ output }}
+
+            </pre>
+
+        </div>
+
+        <div class="card shadow mb-4">
+
+
+            <div class="card-header">
+
+                Workspace Monitoring
+
+            </div>
+
+
+            <div class="card-body">
+
+
+                <div class="row text-center">
+
+
+                    <div class="col-md-3">
+
+                        <h6>
+
+                            CPU Usage
+
+                        </h6>
+
+                        <p>
+
+                            {{ cpu }}
+
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="col-md-3">
+
+                        <h6>
+
+                            RAM Usage
+
+                        </h6>
+
+                        <p>
+
+                            {{ ram }}
+
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="col-md-3">
+
+                        <h6>
+
+                            Storage Usage
+
+                        </h6>
+
+                        <p>
+
+                            {{ storage }}
+
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="col-md-3">
+
+                        <h6>
+
+                            Expiry
+
+                        </h6>
+
+                        <p>
+
+                            {{ expiry }}
+
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+                <hr>
+
+
+                <h6>
+
+                    Container ID
+
+                </h6>
+
+
+                <p>
+
+                    {{ container_id }}
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <div class="text-center">
+
+
+        <a href="{% url 'programming_workspace' %}"
+
+        class="btn btn-primary">
+
+            Back to Workspace
+
+        </a>
+
+
+    </div>
+
+
+
+</div>
+
+
+<!-- XTERM.JS -->
+
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css"
+>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js">
+</script>
+
+
+<script>
+
+    const terminal = new Terminal({
+
+        cursorBlink: true,
+
+        fontSize: 15,
+
+        theme: {
+
+            background: "#000000",
+
+            foreground: "#ffffff"
+
+        }
+
+    });
+
+
+    terminal.open(
+        document.getElementById("terminal")
+    );
+
+
+    terminal.write(
+        "\r\nConnecting to Docker Programming Lab...\r\n"
+    );
+
+
+    const protocol =
+        window.location.protocol === "https:"
+            ? "wss://"
+            : "ws://";
+
+
+    const socket = new WebSocket(
+
+        protocol
+        +
+        window.location.host
+        +
+        "/ws/programming-terminal/"
+
+    );
+
+
+    socket.onopen = function() {
+
+        terminal.write(
+            "\r\nConnected.\r\n\r\n"
+        );
+
+    };
+
+
+    socket.onmessage = function(event) {
+
+        const data = JSON.parse(
+            event.data
+        );
+
+
+        if (data.output) {
+
+            terminal.write(
+                data.output
+            );
+
+        }
+
+    };
+
+
+    socket.onclose = function() {
+
+        terminal.write(
+            "\r\n\r\nConnection closed.\r\n"
+        );
+
+    };
+
+
+    socket.onerror = function(error) {
+
+        terminal.write(
+            "\r\nTerminal connection error.\r\n"
+        );
+
+        console.error(
+            "WebSocket error:",
+            error
+        );
+
+    };
+
+
+    terminal.onData(function(data) {
+
+        if (
+            socket.readyState ===
+            WebSocket.OPEN
+        ) {
+
+            socket.send(
+                JSON.stringify({
+
+                    input: data
+
+                })
+            );
+
+        }
+
+    });
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h3>
+
+        Rename File
+
+    </h3>
+
+    <br>
+
+    <form
+
+    method="POST"
+
+    action="{% url 'rename_file' file_name %}">
+
+        {% csrf_token %}
+
+        <input
+
+        type="hidden"
+
+        name="current_path"
+
+        value="{{ current_path }}">
+
+        <input
+
+        type="text"
+
+        name="new_name"
+
+        class="form-control"
+
+        placeholder="Enter New File Name"
+
+        required>
+
+        <br>
+
+        <button
+
+        type="submit"
+
+        class="btn btn-success">
+
+            Rename File
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

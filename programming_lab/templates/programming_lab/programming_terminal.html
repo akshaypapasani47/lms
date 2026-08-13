@@ -1,0 +1,651 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+
+    <!-- HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                💻 Programming Terminal
+            </h2>
+
+            <p class="text-muted mb-0">
+                Container Based Programming Environment
+            </p>
+        </div>
+
+        <div>
+
+            <a
+                href="{% url 'programming_workspace' %}"
+                class="btn btn-outline-primary me-2"
+            >
+                ← Workspace
+            </a>
+
+            <a
+                href="{% url 'file_manager' %}"
+                class="btn btn-outline-success"
+            >
+                📁 File Manager
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATUS CARD -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-dark text-white">
+
+            <strong>
+                Lab Status
+            </strong>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row text-center">
+
+                <!-- STATUS -->
+
+                <div class="col-md-4 mb-3 mb-md-0">
+
+                    <h6 class="text-muted">
+                        Lab Status
+                    </h6>
+
+                    {% if container_status == "RUNNING" %}
+
+                        <h5 class="fw-bold text-success">
+                            🟢 Running
+                        </h5>
+
+                    {% elif container_status == "STOPPED" %}
+
+                        <h5 class="fw-bold text-warning">
+                            🟡 Stopped
+                        </h5>
+
+                    {% else %}
+
+                        <h5 class="fw-bold text-danger">
+                            🔴 Not Created
+                        </h5>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- LANGUAGE -->
+
+                <div class="col-md-4 mb-3 mb-md-0">
+
+                    <h6 class="text-muted">
+                        Language
+                    </h6>
+
+                    <h5 class="fw-bold text-primary">
+                        {{ language }}
+                    </h5>
+
+                </div>
+
+
+                <!-- WORKSPACE -->
+
+                <div class="col-md-4">
+
+                    <h6 class="text-muted">
+                        Workspace
+                    </h6>
+
+                    <h5 class="fw-bold text-success">
+                        {{ workspace_status }}
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% if container_status == "RUNNING" %}
+
+
+        <!-- TERMINAL -->
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-dark text-white">
+
+                <strong>
+                    💻 Terminal
+                </strong>
+
+                <span class="float-end">
+
+                    <span class="badge bg-success">
+                        🟢 Connected
+                    </span>
+
+                </span>
+
+            </div>
+
+
+            <div class="card-body bg-dark p-0">
+
+                <div
+                    id="terminal"
+                    style="
+                        height: 500px;
+                        width: 100%;
+                        background: #000000;
+                        padding: 15px;
+                    "
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- OUTPUT CONSOLE -->
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-dark text-white">
+
+                <strong>
+                    📤 Output Console
+                </strong>
+
+            </div>
+
+            <div class="card-body">
+
+                <pre
+                    class="mb-0"
+                    style="
+                        min-height: 80px;
+                        white-space: pre-wrap;
+                    "
+                >{{ output|default:"No Program Executed Yet." }}</pre>
+
+            </div>
+
+        </div>
+
+
+        <!-- WORKSPACE MONITORING -->
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header">
+
+                <strong>
+                    📊 Workspace Monitoring
+                </strong>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div class="row text-center">
+
+                    <!-- CPU -->
+
+                    <div class="col-md-3 mb-3 mb-md-0">
+
+                        <h6 class="text-muted">
+                            CPU Usage
+                        </h6>
+
+                        <h5 class="fw-bold">
+                            {{ cpu }}
+                        </h5>
+
+                    </div>
+
+
+                    <!-- RAM -->
+
+                    <div class="col-md-3 mb-3 mb-md-0">
+
+                        <h6 class="text-muted">
+                            RAM Usage
+                        </h6>
+
+                        <h5 class="fw-bold">
+                            {{ ram }}
+                        </h5>
+
+                    </div>
+
+
+                    <!-- STORAGE -->
+
+                    <div class="col-md-3 mb-3 mb-md-0">
+
+                        <h6 class="text-muted">
+                            Storage
+                        </h6>
+
+                        <h5 class="fw-bold">
+                            {{ storage }}
+                        </h5>
+
+                    </div>
+
+
+                    <!-- EXPIRY -->
+
+                    <div class="col-md-3">
+
+                        <h6 class="text-muted">
+                            Expiry
+                        </h6>
+
+                        <h5 class="fw-bold text-danger">
+                            {{ expiry }}
+                        </h5>
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+                <!-- CONTAINER ID -->
+
+                <div class="text-center">
+
+                    <small class="text-muted">
+                        Container ID
+                    </small>
+
+                    <br>
+
+                    <code>
+                        {{ container_id }}
+                    </code>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    {% else %}
+
+
+        <!-- LAB NOT RUNNING -->
+
+        <div class="card shadow-sm text-center mb-4">
+
+            <div class="card-body py-5">
+
+                <div class="display-3 mb-3">
+                    ⚠️
+                </div>
+
+                <h4 class="fw-bold">
+                    Programming Lab Is Not Running
+                </h4>
+
+                <p class="text-muted">
+                    Start the lab from the Programming Workspace
+                    before using the terminal.
+                </p>
+
+                <a
+                    href="{% url 'programming_workspace' %}"
+                    class="btn btn-success"
+                >
+                    ← Go to Workspace
+                </a>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- BACK BUTTON -->
+
+    <div class="text-center mb-4">
+
+        <a
+            href="{% url 'programming_workspace' %}"
+            class="btn btn-outline-primary"
+        >
+            ← Back to Programming Workspace
+        </a>
+
+    </div>
+
+</div>
+
+
+{% if container_status == "RUNNING" %}
+
+<!-- ====================================================== -->
+<!-- XTERM.JS -->
+<!-- ====================================================== -->
+
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css"
+>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js">
+</script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /*
+     * ------------------------------------------------------
+     * CREATE XTERM TERMINAL
+     * ------------------------------------------------------
+     */
+
+    const terminalElement =
+        document.getElementById("terminal");
+
+
+    if (!terminalElement) {
+
+        console.error(
+            "Terminal element not found."
+        );
+
+        return;
+
+    }
+
+
+    const terminal = new Terminal({
+
+        cursorBlink: true,
+
+        fontSize: 15,
+
+        fontFamily:
+            "Consolas, 'Courier New', monospace",
+
+        theme: {
+
+            background: "#000000",
+
+            foreground: "#ffffff",
+
+            cursor: "#ffffff",
+
+            selectionBackground: "#555555"
+
+        },
+
+        scrollback: 5000
+
+    });
+
+
+    /*
+     * ------------------------------------------------------
+     * OPEN TERMINAL
+     * ------------------------------------------------------
+     */
+
+    terminal.open(
+        terminalElement
+    );
+
+
+    /*
+     * ------------------------------------------------------
+     * INITIAL MESSAGE
+     * ------------------------------------------------------
+     */
+
+    terminal.write(
+        "\r\nConnecting to Docker Programming Lab...\r\n"
+    );
+
+
+    /*
+     * ------------------------------------------------------
+     * WEBSOCKET PROTOCOL
+     * ------------------------------------------------------
+     */
+
+    const protocol =
+        window.location.protocol === "https:"
+            ? "wss://"
+            : "ws://";
+
+
+    /*
+     * ------------------------------------------------------
+     * WEBSOCKET CONNECTION
+     *
+     * IMPORTANT:
+     * Keep this URL exactly the same as
+     * websocket_urlpatterns.py
+     * ------------------------------------------------------
+     */
+
+    const socket = new WebSocket(
+
+        protocol
+        +
+        window.location.host
+        +
+        "/ws/programming-terminal/"
+
+    );
+
+
+    /*
+     * ------------------------------------------------------
+     * WEBSOCKET OPEN
+     * ------------------------------------------------------
+     */
+
+    socket.onopen = function () {
+
+        console.log(
+            "Programming terminal WebSocket connected."
+        );
+
+
+        terminal.write(
+            "\r\nConnected to Docker Programming Lab.\r\n\r\n"
+        );
+
+    };
+
+
+    /*
+     * ------------------------------------------------------
+     * RECEIVE OUTPUT FROM DOCKER
+     * ------------------------------------------------------
+     */
+
+    socket.onmessage = function (event) {
+
+        try {
+
+            const data =
+                JSON.parse(event.data);
+
+
+            if (data.output) {
+
+                terminal.write(
+                    data.output
+                );
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Terminal message parsing error:",
+                error
+            );
+
+        }
+
+    };
+
+
+    /*
+     * ------------------------------------------------------
+     * WEBSOCKET CLOSE
+     * ------------------------------------------------------
+     */
+
+    socket.onclose = function () {
+
+        console.log(
+            "Programming terminal WebSocket closed."
+        );
+
+
+        terminal.write(
+            "\r\n\r\nConnection closed.\r\n"
+        );
+
+    };
+
+
+    /*
+     * ------------------------------------------------------
+     * WEBSOCKET ERROR
+     * ------------------------------------------------------
+     */
+
+    socket.onerror = function (error) {
+
+        console.error(
+            "Programming terminal WebSocket error:",
+            error
+        );
+
+
+        terminal.write(
+            "\r\nTerminal connection error.\r\n"
+        );
+
+    };
+
+
+    /*
+     * ------------------------------------------------------
+     * SEND KEYBOARD INPUT TO DJANGO
+     *
+     * THIS PART IS CRITICAL.
+     *
+     * Without this:
+     *
+     * - terminal appears
+     * - Docker may connect
+     * - output may appear
+     * - BUT KEYBOARD INPUT WILL NOT WORK
+     * ------------------------------------------------------
+     */
+
+    terminal.onData(function (data) {
+
+        console.log(
+            "Terminal input:",
+            JSON.stringify(data)
+        );
+
+
+        if (
+            socket.readyState ===
+            WebSocket.OPEN
+        ) {
+
+            socket.send(
+
+                JSON.stringify({
+
+                    input: data
+
+                })
+
+            );
+
+        }
+
+    });
+
+
+    /*
+     * ------------------------------------------------------
+     * FOCUS TERMINAL
+     * ------------------------------------------------------
+     */
+
+    terminal.focus();
+
+
+    /*
+     * ------------------------------------------------------
+     * CLICK TERMINAL TO FOCUS
+     * ------------------------------------------------------
+     */
+
+    terminalElement.addEventListener(
+        "click",
+        function () {
+
+            terminal.focus();
+
+        }
+    );
+
+});
+
+</script>
+
+{% endif %}
+
+
+{% endblock %}

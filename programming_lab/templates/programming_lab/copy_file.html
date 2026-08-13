@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h3>
+
+        Copy File
+
+    </h3>
+
+    <br>
+
+    <form
+
+    method="POST"
+
+    action="{% url 'copy_file' file_name %}">
+
+        {% csrf_token %}
+
+        <input
+
+        type="hidden"
+
+        name="current_path"
+
+        value="{{ current_path }}">
+
+        <select
+
+        name="destination_folder"
+
+        class="form-control"
+
+        required>
+
+            {% for folder in folders %}
+
+            <option value="{{ folder }}">
+
+                {{ folder }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br>
+
+        <button
+
+        type="submit"
+
+        class="btn btn-success">
+
+            Copy File
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

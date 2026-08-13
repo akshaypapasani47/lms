@@ -32,12 +32,17 @@
     }
 
     .terminal-container{
-        width:90%;
-        max-width:1200px;
+        width:1200px;
         height:700px;
+        max-width:1200px;
+        min-width:700px;
+        min-height:400px;
+
+        resize: both;
+        overflow: auto;
+
         background:#1e1e1e;
         border-radius:12px;
-        overflow:visible;
         box-shadow:0 5px 20px rgba(0,0,0,0.25);
     }
 
@@ -65,6 +70,10 @@
         height:calc(100% - 55px);
         padding:10px;
         overflow:hidden;
+    }
+
+    .xterm{
+        font-family: Consolas, "Courier New", monospace !important;
     }
 
     /* .xterm-viewport {
@@ -134,15 +143,30 @@
             User: {{ username }}
         </div>
 
-        <a href="/virtual-lab2/logout/"
-           style="
-           color:white;
-           text-decoration:none;
-           background:red;
-           padding:6px 12px;
-           border-radius:5px;">
-           Logout
-        </a>
+        <div style="display:flex;gap:10px;align-items:center;">
+
+            <a href="{% url 'workspace' %}"
+            class="btn btn-dark btn-sm">
+
+                🏠 Workspace
+
+            </a>
+
+            <a href="javascript:history.back()"
+            class="btn btn-secondary btn-sm">
+
+                ⬅ Back
+
+            </a>
+
+            <a href="{% url 'lab_logout' %}"
+            class="btn btn-danger btn-sm">
+
+                🚪 Logout
+
+            </a>
+
+        </div>
     </div>
 
 </div>
@@ -163,6 +187,14 @@
         convertEol:true,
         rows: 30,
         cols: 120,
+        fontFamily: "Consolas, 'Courier New', monospace",
+
+        fontSize: 15,
+
+        lineHeight: 1.1,
+
+        letterSpacing: 0,
+
         theme: {
             background: '#1e1e1e'
         }
@@ -205,31 +237,49 @@
     //     viewport.scrollTop = startScroll - delta;
     // });
 
+    // window.addEventListener("resize", () => {
+    //     fitAddon.fit();
 
-    
-
-    // window.addEventListener(
-    //     "resize",
-    //     () => {
-    //         fitAddon.fit();
-    //     }
-    // );
-    window.addEventListener("resize", () => {
-        fitAddon.fit();
-
-        socket.send(JSON.stringify({
-            resize: {
-                cols: term.cols,
-                rows: term.rows
-            }
-        }));
-    });
+    //     socket.send(JSON.stringify({
+    //         resize: {
+    //             cols: term.cols,
+    //             rows: term.rows
+    //         }
+    //     }));
+    // });
 
     const socket = new WebSocket(
         "ws://" +
         window.location.host +
         "/ws/terminal/"
     );
+
+    const terminalContainer =
+        document.querySelector(".terminal-container");
+
+    const resizeObserver = new ResizeObserver(() => {
+
+        fitAddon.fit();
+
+        if (socket.readyState === WebSocket.OPEN) {
+
+            socket.send(JSON.stringify({
+
+                resize: {
+
+                    cols: term.cols,
+
+                    rows: term.rows
+
+                }
+
+            }));
+
+        }
+
+    });
+
+    resizeObserver.observe(terminalContainer);
 
     socket.onopen = function(){
 

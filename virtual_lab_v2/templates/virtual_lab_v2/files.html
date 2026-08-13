@@ -32,6 +32,31 @@
         Manage your Virtual Lab files and folders
     </p>
 
+    <div class="mb-3">
+
+        <a href="{% url 'workspace' %}"
+        class="btn btn-dark">
+
+            🏠 Workspace
+
+        </a>
+
+        <a href="javascript:history.back()"
+        class="btn btn-secondary">
+
+            ⬅ Back
+
+        </a>
+
+        <a href="{% url 'lab_logout' %}"
+        class="btn btn-danger float-end">
+
+            🚪 Logout
+
+        </a>
+
+    </div>
+
     <hr>
 
     
@@ -47,6 +72,46 @@
             <br>
 
             {{ display_path }}
+
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm mb-3">
+
+        <div class="card-body">
+
+            <nav aria-label="breadcrumb">
+
+                <ol class="breadcrumb mb-0">
+
+                    <li class="breadcrumb-item">
+
+                        <a href="{% url 'files' %}">
+
+                            🏠 Home
+
+                        </a>
+
+                    </li>
+
+                    {% for crumb in breadcrumbs %}
+
+                    <li class="breadcrumb-item">
+
+                        <a href="{% url 'files' %}?path={{ crumb.path|urlencode }}">
+
+                            {{ crumb.name }}
+
+                        </a>
+
+                    </li>
+
+                    {% endfor %}
+
+                </ol>
+
+            </nav>
 
         </div>
 
@@ -107,6 +172,7 @@
                 class="mt-3">
 
                 <form
+                    id="uploadFormElement"
                     method="POST"
                     enctype="multipart/form-data"
                     action="{% url 'upload_file' %}">
@@ -118,12 +184,49 @@
                         name="current_path"
                         value="{{ current_path }}">
 
-                    <input
-                        type="file"
-                        name="file"
-                        class="form-control mb-2">
+                    <div
+                        id="dropZone"
+                        class="border rounded text-center p-5 mb-3"
+                        style="
+                            cursor:pointer;
+                            border:2px dashed #0d6efd !important;
+                            background:#f8f9fa;
+                        ">
+
+                        <h4>📂 Drag & Drop Files Here</h4>
+
+                        <p class="text-muted mb-2">
+                            or click to browse
+                        </p>
+
+                        <input
+                            type="file"
+                            id="fileInput"
+                            name="file"
+                            hidden>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary"
+                            onclick="document.getElementById('fileInput').click()">
+
+                            Browse File
+
+                        </button>
+
+                        <p
+                            id="selectedFile"
+                            class="mt-3 text-success fw-bold">
+
+                            No file selected
+
+                        </p>
+
+                    </div>
 
                     <button
+                        type="button"
+                        id="uploadBtn"
                         class="btn btn-success">
 
                         Upload
@@ -224,12 +327,6 @@
 
             </button>
 
-            <input
-                type="text"
-                id="searchBox"
-                class="form-control d-inline-block float-end"
-                style="width:250px"
-                placeholder="Search Files">
 
         </div>
 
@@ -247,7 +344,19 @@
 
                 </div>
 
+                
+
                 <div class="card-body">
+
+                    <div class="mb-3">
+
+                        <input
+                            type="text"
+                            id="searchBox"
+                            class="form-control"
+                            placeholder="🔍 Search files and folders...">
+
+                    </div>
 
                     <table class="table table-hover">
 
@@ -262,6 +371,8 @@
                                 <th>Size</th>
 
                                 <th>Actions</th>
+
+                                <th>Modified</th>
 
                             </tr>
 
@@ -314,7 +425,13 @@
 
                             <td>
 
-                                {{ item.size }} bytes
+                                {{ item.size }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.modified }}
 
                             </td>
 
@@ -961,13 +1078,51 @@ document.getElementById("ctxCopy").addEventListener("click", function(){
     if(selectedItem == null)
         return;
 
-    clipboardItem = selectedItem;
-
-    clipboardAction = "copy";
-
     menu.style.display = "none";
 
-    alert("Copied : " + clipboardItem.name);
+    let csrf = document.querySelector(
+        "[name=csrfmiddlewaretoken]"
+    ).value;
+
+    fetch("/virtual-lab2/copy-item/", {
+
+        method: "POST",
+
+        headers: {
+
+            "X-CSRFToken": csrf,
+
+            "Content-Type": "application/x-www-form-urlencoded"
+
+        },
+
+        body:
+
+            "item_name=" + encodeURIComponent(selectedItem.name) +
+
+            "&current_path=" + encodeURIComponent("{{ current_path }}") +
+
+            "&is_dir=" + selectedItem.isDir
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if(data.success){
+
+            alert("📄 Copied : " + selectedItem.name);
+
+        }
+
+        else{
+
+            alert(data.error);
+
+        }
+
+    });
 
 });
 
@@ -976,34 +1131,239 @@ document.getElementById("ctxCut").addEventListener("click", function(){
     if(selectedItem == null)
         return;
 
-    clipboardItem = selectedItem;
-
-    clipboardAction = "cut";
-
     menu.style.display = "none";
 
-    alert("Cut : " + clipboardItem.name);
+    let csrf = document.querySelector(
+        "[name=csrfmiddlewaretoken]"
+    ).value;
+
+    fetch("/virtual-lab2/cut-item/", {
+
+        method: "POST",
+
+        headers: {
+
+            "X-CSRFToken": csrf,
+
+            "Content-Type": "application/x-www-form-urlencoded"
+
+        },
+
+        body:
+
+            "item_name=" + encodeURIComponent(selectedItem.name) +
+
+            "&current_path=" + encodeURIComponent("{{ current_path }}") +
+
+            "&is_dir=" + selectedItem.isDir
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if(data.success){
+
+            alert("✂ Cut : " + selectedItem.name);
+
+        }
+
+        else{
+
+            alert(data.error);
+
+        }
+
+    });
 
 });
 
 document.getElementById("ctxPaste").addEventListener("click", function(){
 
-    if(clipboardItem == null){
+    let csrf = document.querySelector(
+        "[name=csrfmiddlewaretoken]"
+    ).value;
 
-        alert("Clipboard Empty");
+    menu.style.display = "none";
+
+    fetch("/virtual-lab2/paste-item/", {
+
+        method: "POST",
+
+        headers: {
+
+            "X-CSRFToken": csrf,
+
+            "Content-Type":"application/x-www-form-urlencoded"
+
+        },
+
+        body:
+
+            "current_path=" +
+
+            encodeURIComponent("{{ current_path }}")
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if(data.success){
+
+            alert("✅ Paste Successful");
+
+            location.reload();
+
+        }
+
+        else{
+
+            alert("❌ " + data.error);
+
+        }
+
+    });
+
+});
+
+
+const dropZone =
+    document.getElementById("dropZone");
+
+const fileInput =
+    document.getElementById("fileInput");
+
+const selectedFile =
+    document.getElementById("selectedFile");
+
+fileInput.addEventListener("change", function(){
+
+    if(fileInput.files.length){
+
+        selectedFile.innerHTML =
+            "✅ " + fileInput.files[0].name;
+
+    }
+
+});
+
+dropZone.addEventListener("dragover", function(e){
+
+    e.preventDefault();
+
+    dropZone.style.background = "#dbeafe";
+
+});
+
+dropZone.addEventListener("dragleave", function(){
+
+    dropZone.style.background = "#f8f9fa";
+
+});
+
+dropZone.addEventListener("drop", function(e){
+
+    e.preventDefault();
+
+    dropZone.style.background = "#f8f9fa";
+
+    fileInput.files = e.dataTransfer.files;
+
+    if(fileInput.files.length){
+
+        selectedFile.innerHTML =
+            "✅ " + fileInput.files[0].name + " selected";
+
+    }
+
+});
+
+document.getElementById("uploadBtn").addEventListener("click", function(){
+
+    if(fileInput.files.length === 0){
+
+        alert("Please select a file.");
 
         return;
 
     }
 
-    menu.style.display = "none";
+    let formData = new FormData();
 
-    console.log("Clipboard :", clipboardItem);
+    formData.append(
+        "csrfmiddlewaretoken",
+        document.querySelector("[name=csrfmiddlewaretoken]").value
+    );
 
-    console.log("Action :", clipboardAction);
+    formData.append(
+        "current_path",
+        "{{ current_path }}"
+    );
+
+    formData.append(
+        "file",
+        fileInput.files[0]
+    );
+
+    fetch("/virtual-lab2/upload/", {
+
+        method: "POST",
+
+        body: formData
+
+    })
+
+    .then(response => {
+
+        if(response.ok){
+
+            location.reload();
+
+        }
+
+        else{
+
+            alert("Upload Failed");
+
+        }
+
+    });
 
 });
 
+
+const searchBox =
+    document.getElementById("searchBox");
+
+searchBox.addEventListener("keyup", function(){
+
+    let value =
+        searchBox.value.toLowerCase();
+
+    document.querySelectorAll(".file-row")
+    .forEach(function(row){
+
+        let fileName =
+            row.dataset.name.toLowerCase();
+
+        if(fileName.includes(value)){
+
+            row.style.display = "";
+
+        }
+
+        else{
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+});
 
 </script>
 {% endblock %}

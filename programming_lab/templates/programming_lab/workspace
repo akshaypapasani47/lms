@@ -1,0 +1,409 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if messages %}
+
+{% for message in messages %}
+
+<div class="alert alert-success">
+
+    {{ message }}
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+
+<div class="container mt-5">
+
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold">
+            Programming Workspace
+        </h2>
+
+        <p class="text-muted">
+            Container Based Programming Environment
+        </p>
+
+    </div>
+
+
+    <!-- STATUS CARD -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+
+            <div class="row text-center">
+
+                <div class="col-md-4">
+
+                    <h6>Language</h6>
+
+                    <p class="fw-bold text-primary">
+                        {{ language }}
+                    </p>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <h6>Docker Lab</h6>
+
+                    {% if container_status == "RUNNING" %}
+
+                    <p class="fw-bold text-success">
+                    🟢 Running
+                    </p>
+
+                    {% elif container_status == "STOPPED" %}
+
+                    <p class="fw-bold text-warning">
+                    🟡 Stopped
+                    </p>
+
+                    {% else %}
+
+                    <p class="fw-bold text-danger">
+                    🔴 Not Created
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <h6>Expiry date</h6>
+
+                    <p class="fw-bold text-danger">
+                        {{ expiry }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- RESOURCE USAGE -->
+
+    <!-- WORKSPACE DETAILS -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+
+            <div class="row text-center">
+
+                <div class="col-md-4">
+
+                    <h6>
+                        RAM
+                    </h6>
+
+                    <p class="fw-bold">
+
+                        {{ ram }} MB
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="col-md-4">
+
+                    <h6>
+                        Storage
+                    </h6>
+
+                    <p class="fw-bold">
+
+                        {{ storage }} MB
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="col-md-4">
+
+                    <h6>
+                        Workspace Status
+                    </h6>
+
+                    <p class="fw-bold text-success">
+
+                        {{ status }}
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TERMINAL & FILE MANAGER -->
+
+    <div class="row">
+
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow text-center">
+
+                <div class="card-body">
+
+                    <h1>
+                        💻
+                    </h1>
+
+                    <h4>
+                        Programming Terminal
+                    </h4>
+
+                    <p class="text-muted">
+                        Execute and manage programs.
+                    </p>
+
+                    <a href="{% url 'programming_terminal' %}"
+
+                    class="btn btn-dark">
+
+                        Open Terminal
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow text-center">
+
+                <div class="card-body">
+
+                    <h1>
+                        📁
+                    </h1>
+
+                    <h4>
+                        File Manager
+                    </h4>
+
+                    <p class="text-muted">
+                        Manage programming files.
+                    </p>
+
+                    <a href="{% url 'file_manager' %}"
+
+                    class="btn btn-success">
+
+                        Open File Manager
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <!-- ASSIGNMENTS & LOGOUT -->
+
+    <div class="row">
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow text-center">
+
+                <div class="card-body">
+
+                    <h1>
+                        📝
+                    </h1>
+
+                    <h4>
+                        Assignments
+                    </h4>
+
+                    <p class="text-muted">
+                        View and submit assignments.
+                    </p>
+
+                    <button class="btn btn-primary"
+                    onclick="alert('Coming Soon')">
+
+                        Open Assignments
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow text-center">
+
+                <div class="card-body">
+
+                    <h1>
+                        🚪
+                    </h1>
+
+                    <h4>
+                        Logout
+                    </h4>
+
+                    <p class="text-muted">
+                        Exit Programming Workspace.
+                    </p>
+
+                    <a href="{% url 'programming_logout' %}"
+
+                    class="btn btn-danger">
+
+                        Logout
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <!-- OUTPUT CONSOLE -->
+
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-dark text-white">
+
+            Output Console
+
+        </div>
+
+        <div class="card-body">
+
+            <p class="text-muted mb-0">
+
+                No Program Executed Yet.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- LAB CONTROLS -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-dark text-white text-center">
+
+            Lab Controls
+
+        </div>
+
+        <div class="card-body text-center">
+
+            {% if container_status == "NOT CREATED" %}
+
+                <a
+                    href="{% url 'start_lab' %}"
+                    class="btn btn-success"
+                >
+                    ▶ Start Lab
+                </a>
+
+            {% elif container_status == "STOPPED" %}
+
+                <a
+                    href="{% url 'start_lab' %}"
+                    class="btn btn-success"
+                >
+                    ▶ Start Lab
+                </a>
+
+                <a
+                    href="{% url 'delete_lab' %}"
+                    class="btn btn-danger"
+                    onclick="return confirm('Delete this programming lab?')"
+                >
+                    🗑 Delete Lab
+                </a>
+
+            {% elif container_status == "RUNNING" %}
+
+                <a
+                    href="{% url 'stop_lab' %}"
+                    class="btn btn-warning"
+                >
+                    ⏹ Stop Lab
+                </a>
+
+                <a
+                    href="{% url 'restart_lab' %}"
+                    class="btn btn-primary"
+                >
+                    🔄 Restart Lab
+                </a>
+
+                <a
+                    href="{% url 'delete_lab' %}"
+                    class="btn btn-danger"
+                    onclick="return confirm('Delete this programming lab?')"
+                >
+                    🗑 Delete Lab
+                </a>
+
+            {% endif %}
+
+        </div>
+
+</div>
+
+    
+
+
+
+</div>
+
+{% endblock %}

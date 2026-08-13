@@ -7,22 +7,22 @@ import subprocess
 import whisper
 from django.utils.text import slugify
 from deep_translator import GoogleTranslator
+from .languages import LANGUAGES_CONFIG
 
-
-SUPPORTED_LANGUAGES = {
-    "hi": {
-        "name": "Hindi",
-        "tts": create_hindi_audio,
-    },
-    "te": {
-        "name": "Telugu",
-        "tts": create_telugu_audio,
-    },
-    "kn": {
-        "name": "Kannada",
-        "tts": create_kannada_audio,
-    },
-}
+# SUPPORTED_LANGUAGES = {
+#     "hi": {
+#         "name": "Hindi",
+#         "tts": create_hindi_audio,
+#     },
+#     "te": {
+#         "name": "Telugu",
+#         "tts": create_telugu_audio,
+#     },
+#     "kn": {
+#         "name": "Kannada",
+#         "tts": create_kannada_audio,
+#     },
+# }
 
 def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
     return "".join(random.choice(chars) for _ in range(size))

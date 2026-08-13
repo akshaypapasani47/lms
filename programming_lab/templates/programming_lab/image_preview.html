@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 text-center">
+
+    <h3>{{ file_name }}</h3>
+
+    <br>
+
+    <img
+
+    src="{% url 'download_file' file_name %}?path={{ current_path }}"
+
+    class="img-fluid">
+
+    <br><br>
+
+    <a
+
+    href="{% url 'file_manager' %}?path={{ current_path }}"
+
+    class="btn btn-primary">
+
+        Back
+
+    </a>
+
+</div>
+
+{% endblock %}

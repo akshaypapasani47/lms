@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header">
+            <h3>{{ lab.name }}</h3>
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                <strong>Lab Type:</strong>
+                {{ lab.get_lab_type_display }}
+            </p>
+
+            <p>
+                {{ lab.description|default:"No description available." }}
+            </p>
+
+            <hr>
+
+            <div class="alert alert-success">
+                You have access to this virtual lab.
+            </div>
+
+            <h5>Virtual Lab Environment</h5>
+
+            <p>
+                The actual environment for this lab will be connected here.
+            </p>
+
+            <!-- Later we will connect the actual
+                 Python / AI / Big Data / Quantum / HPC
+                 environment here. -->
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

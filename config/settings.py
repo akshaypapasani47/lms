@@ -68,6 +68,7 @@ PROJECT_APPS = [
     "virtual_lab",
     'interactive_terminal',
     'virtual_lab_v2',
+    'programming_lab',
 ]
 
 # Combine all apps

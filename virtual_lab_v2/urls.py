@@ -31,7 +31,7 @@ urlpatterns = [
     path(
         "logout/",
         views.logout_view,
-        name="logout"
+        name="lab_logout"
     ),
 
     path(
@@ -146,6 +146,24 @@ urlpatterns = [
         "file-properties/",
         views.file_properties,
         name="file_properties"
+    ),
+
+    path(
+        "copy-item/",
+        views.copy_item,
+        name="copy_item"
+    ),
+
+    path(
+        "cut-item/",
+        views.cut_item,
+        name="cut_item"
+    ),
+
+    path(
+        "paste-item/",
+        views.paste_item,
+        name="paste_item"
     ),
 
     # path(

@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- ===================================================== -->
+<!-- PROGRAMMING WORKSPACE - EXISTING FEATURE -->
+<!-- ===================================================== -->
+
+<div class="text-center">
+    <h2>
+        Programming Workspace
+    </h2>
+
+    <p>
+        Container Based Programming Environment
+    </p>
+</div>
+
+<div class="row mt-5">
+
+    <!-- Open Programming Workspace -->
+    <div class="col-md-6 mb-4">
+
+        <div class="card shadow text-center h-100">
+
+            <div class="card-body">
+
+                <h3>
+                    Programming Workspace
+                </h3>
+
+                <p>
+                    Access your container-based programming environment.
+                </p>
+
+                <a
+                    href="{% url 'programming_workspace' %}"
+                    class="btn btn-success">
+
+                    Open Workspace
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Create Workspace - Admin/Lecturer -->
+    {% if request.user.is_superuser or request.user.is_lecturer %}
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow text-center h-100">
+
+                <div class="card-body">
+
+                    <h3>
+                        Create Workspace
+                    </h3>
+
+                    <p>
+                        Create a programming workspace.
+                    </p>
+
+                    <a
+                        href="{% url 'create_workspace' %}"
+                        class="btn btn-primary">
+
+                        Create Workspace
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<hr class="my-5">
+
+
+<!-- ===================================================== -->
+<!-- VIRTUAL LABS -->
+<!-- ===================================================== -->
+
+<div class="container mt-4">
+
+    <div class="text-center mb-5">
+
+        <h2>
+            Virtual Labs
+        </h2>
+
+        <p class="text-muted">
+            Access the virtual laboratory environments available in the LMS.
+        </p>
+
+    </div>
+
+
+    {% if labs %}
+
+        <div class="row">
+
+            {% for lab in labs %}
+
+                <div class="col-md-6 col-lg-4 mb-4">
+
+                    <div class="card shadow-sm h-100">
+
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between align-items-start">
+
+                                <h4>
+                                    {{ lab.name }}
+                                </h4>
+
+                                {% if lab.status == "ACTIVE" %}
+
+                                    <span class="badge bg-success">
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <span class="badge bg-info mb-3">
+
+                                {{ lab.get_lab_type_display }}
+
+                            </span>
+
+
+                            <p class="text-muted">
+
+                                {{ lab.description|default:"No description available." }}
+
+                            </p>
+
+
+                            <!-- Lab access -->
+
+                            {% if lab.status == "ACTIVE" %}
+
+                                {% if request.user.is_superuser or request.user.is_lecturer %}
+
+                                    <a
+                                        href="{% url 'manage_virtual_lab' lab.id %}"
+                                        class="btn btn-primary">
+
+                                        Manage Lab
+
+                                    </a>
+
+                                {% else %}
+
+                                    {% if lab.user_has_access %}
+
+                                        <a
+                                            href="{% url 'open_virtual_lab' lab.id %}"
+                                            class="btn btn-success">
+
+                                            Open Lab
+
+                                        </a>
+
+                                    {% else %}
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-warning"
+                                            onclick="alert('You are not assigned to use this virtual lab. Please contact your administrator or lecturer.')">
+
+                                            <i class="fas fa-lock"></i>
+                                            Access Not Granted
+
+                                        </button>
+
+                                    {% endif %}
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    disabled>
+
+                                    Lab Inactive
+
+                                </button>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info text-center">
+
+            No virtual labs are currently available.
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- Admin/Lecturer controls -->
+
+    {% if request.user.is_superuser or request.user.is_lecturer %}
+
+        <div class="text-center mt-4">
+
+            <a
+                href="{% url 'create_virtual_lab' %}"
+                class="btn btn-primary">
+
+                + Create Virtual Lab
+
+            </a>
+
+            <a
+                href="{% url 'virtual_lab_management' %}"
+                class="btn btn-secondary">
+
+                Manage Virtual Labs
+
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

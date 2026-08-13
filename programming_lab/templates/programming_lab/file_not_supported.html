@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5 text-center">
+
+    <h3>
+
+        {{ file_name }}
+
+    </h3>
+
+    <br>
+
+    <div class="alert alert-warning">
+
+        This file cannot be opened in the editor.
+
+        <br><br>
+
+        Please download the file.
+
+    </div>
+
+    <a
+
+    href="{% url 'download_file' file_name %}?path={{ current_path }}"
+
+    class="btn btn-success">
+
+        Download File
+
+    </a>
+
+    <a
+
+    href="{% url 'file_manager' %}?path={{ current_path }}"
+
+    class="btn btn-primary">
+
+        Back
+
+    </a>
+
+</div>
+
+{% endblock %}

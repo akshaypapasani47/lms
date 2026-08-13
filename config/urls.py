@@ -13,6 +13,10 @@ urlpatterns = [
     path('en/virtual-lab/', include('virtual_lab.urls')),
     path('terminal/', include('interactive_terminal.urls')),
     path('virtual-lab2/', include('virtual_lab_v2.urls')),
+    path(
+        "programming-lab/",
+        include("programming_lab.urls")
+    ),
     
     #path('virtual-lab/', include('virtual_lab.urls')),
 ]
