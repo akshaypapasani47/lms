@@ -37,7 +37,7 @@ def get_client():
 #     }
 
 
-def create_container(username):
+def create_container(username,virtual_lab):
 
     client = get_client()
 
@@ -47,13 +47,23 @@ def create_container(username):
         username
     )
 
-    container_name = f"{safe_username}_lab"
+    safe_lab_name = re.sub(
+        r'[^a-zA-Z0-9_.-]',
+        '_',
+        virtual_lab.name
+    )
+
+    safe_username = safe_username.lower()
+    safe_lab_name = safe_lab_name.lower()
+
+    container_name = f"{safe_username}_{safe_lab_name}_lab".lower()
 
     # Django's physical directory for this student's files
     host_workspace = os.path.join(
         settings.MEDIA_ROOT,
         "programming_lab",
-        safe_username
+        safe_username,
+        safe_lab_name
     )
 
     # Make sure the directory exists

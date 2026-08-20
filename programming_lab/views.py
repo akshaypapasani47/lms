@@ -6,7 +6,7 @@ from django.contrib import messages
 
 import os
 from django.conf import settings
-
+import re
 from django.http import FileResponse
 
 
@@ -281,12 +281,28 @@ def programming_home(request):
 
 def programming_workspace(request):
 
+    virtual_lab_id = request.session.get(
+        "virtual_lab_id"
+    )
+
+    virtual_lab = None
+
+    if virtual_lab_id:
+
+        virtual_lab = VirtualLab.objects.filter(
+            id=virtual_lab_id,
+            lab_type="PROGRAMMING",
+            status="ACTIVE"
+        ).first()
+
     lab = ProgrammingLab.objects.filter(
         created_by=request.user
     ).last()
 
+
     container = StudentContainer.objects.filter(
-        user=request.user
+        user=request.user,
+        virtual_lab=virtual_lab
     ).first()
 
     # -----------------------------------------
@@ -330,6 +346,8 @@ def programming_workspace(request):
         container_status = "NOT CREATED"
 
     context = {
+
+        "virtual_lab": virtual_lab,
 
         "language":
         lab.language if lab else "--",
@@ -793,17 +811,37 @@ def file_manager(request):
 
 
 
-
 def get_student_directory(request, sub_path=""):
 
     username = get_safe_username(
         request.user.username
     )
 
+    virtual_lab_id = request.session.get(
+        "virtual_lab_id"
+    )
+
+    if not virtual_lab_id:
+        raise ValueError(
+            "No virtual lab selected."
+        )
+
+    virtual_lab = get_object_or_404(
+        VirtualLab,
+        id=virtual_lab_id
+    )
+
+    safe_lab_name = re.sub(
+        r'[^a-zA-Z0-9_.-]',
+        '_',
+        virtual_lab.name
+    ).lower()
+
     directory = os.path.join(
         settings.MEDIA_ROOT,
         "programming_lab",
         username,
+        safe_lab_name,
         sub_path
     )
 
@@ -813,6 +851,29 @@ def get_student_directory(request, sub_path=""):
     )
 
     return directory
+
+
+
+
+# def get_student_directory(request, sub_path=""):
+
+#     username = get_safe_username(
+#         request.user.username
+#     )
+
+#     directory = os.path.join(
+#         settings.MEDIA_ROOT,
+#         "programming_lab",
+#         username,
+#         sub_path
+#     )
+
+#     os.makedirs(
+#         directory,
+#         exist_ok=True
+#     )
+
+#     return directory
 
 PROGRAMMING_FILES=[
 
@@ -2731,10 +2792,22 @@ def delete_selected_files(request):
 
 def start_lab(request):
 
+    virtual_lab_id = request.session.get(
+        "virtual_lab_id"
+    )
+
+    virtual_lab = get_object_or_404(
+        VirtualLab,
+        id=virtual_lab_id,
+        lab_type="PROGRAMMING",
+        status="ACTIVE"
+    )
+
     username = request.user.username
 
     student_container = StudentContainer.objects.filter(
-        user=request.user
+        user=request.user,
+        virtual_lab=virtual_lab
     ).first()
 
     # ------------------------------------------------
@@ -2803,17 +2876,16 @@ def start_lab(request):
     # ------------------------------------------------
 
     container = create_container(
-        username
+        username,
+        virtual_lab
     )
 
     StudentContainer.objects.create(
 
         user=request.user,
-
+        virtual_lab=virtual_lab,
         container_name=container["name"],
-
         container_id=container["id"],
-
         status="running"
 
     )
@@ -3150,6 +3222,18 @@ def manage_virtual_lab(request, lab_id):
 
 def manage_virtual_lab_access(request, lab_id):
 
+    if not (
+        request.user.is_superuser
+        or request.user.is_lecturer
+    ):
+        messages.error(
+            request,
+            "You do not have permission to manage virtual lab access."
+        )
+
+        return redirect("programming_home")
+
+
     lab = get_object_or_404(
         VirtualLab,
         id=lab_id
@@ -3271,6 +3355,53 @@ def virtual_labs(request):
         }
     )
 
+# def open_virtual_lab(request, lab_id):
+
+#     lab = get_object_or_404(
+#         VirtualLab,
+#         id=lab_id
+#     )
+
+#     # Lab itself is inactive
+#     if lab.status != "ACTIVE":
+#         messages.error(
+#             request,
+#             "This virtual lab is currently inactive."
+#         )
+#         return redirect("programming_home")
+
+#     # Check student's permission
+#     access = VirtualLabAccess.objects.filter(
+#         lab=lab,
+#         student=request.user,
+#         is_active=True
+#     ).first()
+
+#     if not access:
+#         messages.warning(
+#             request,
+#             "You are not assigned to use this virtual lab. Please contact your administrator or lecturer."
+#         )
+#         return redirect("programming_home")
+
+#     # Optional expiry check
+#     if access.expires_at:
+#         if timezone.now() > access.expires_at:
+#             messages.error(
+#                 request,
+#                 "Your access to this virtual lab has expired."
+#             )
+#             return redirect("programming_home")
+
+#     return render(
+#         request,
+#         "programming_lab/open_virtual_lab.html",
+#         {
+#             "lab": lab,
+#         }
+#     )
+
+
 def open_virtual_lab(request, lab_id):
 
     lab = get_object_or_404(
@@ -3278,41 +3409,107 @@ def open_virtual_lab(request, lab_id):
         id=lab_id
     )
 
-    # Lab itself is inactive
+    # -----------------------------------------
+    # 1. Check whether Virtual Lab is active
+    # -----------------------------------------
+
     if lab.status != "ACTIVE":
+
         messages.error(
             request,
             "This virtual lab is currently inactive."
         )
+
         return redirect("programming_home")
 
-    # Check student's permission
+
+    # -----------------------------------------
+    # 2. Check Virtual Lab permission
+    # -----------------------------------------
+
+    if request.user.is_superuser or request.user.is_lecturer:
+
+        has_access = True
+
+    else:
+
+        has_access = VirtualLabAccess.objects.filter(
+            lab=lab,
+            student=request.user,
+            is_active=True
+        ).exists()
+
+
+    if not has_access:
+
+        messages.warning(
+            request,
+            "You are not assigned to use this virtual lab."
+        )
+
+        return redirect("programming_home")
+
+
+    # -----------------------------------------
+    # 3. Check access expiry
+    # -----------------------------------------
+
     access = VirtualLabAccess.objects.filter(
         lab=lab,
         student=request.user,
         is_active=True
     ).first()
 
-    if not access:
-        messages.warning(
-            request,
-            "You are not assigned to use this virtual lab. Please contact your administrator or lecturer."
-        )
-        return redirect("programming_home")
 
-    # Optional expiry check
-    if access.expires_at:
+    if access and access.expires_at:
+
         if timezone.now() > access.expires_at:
+
             messages.error(
                 request,
                 "Your access to this virtual lab has expired."
             )
+
             return redirect("programming_home")
+
+
+    # -----------------------------------------
+    # 4. Connect Virtual Lab type
+    #    to the actual environment
+    # -----------------------------------------
+
+    if lab.lab_type == "PROGRAMMING":
+
+        request.session["virtual_lab_id"] = lab.id
+
+        return redirect(
+            "programming_workspace"
+        )
+
+
+    # -----------------------------------------
+    # 5. Other virtual lab types
+    # -----------------------------------------
+    # if lab.lab_type == "QUANTUM":
+
+    #     return render(
+    #         request,
+    #         "programming_lab/quantum_lab.html",
+    #         {
+    #             "lab": lab,
+    #             "lab_url": "https://qniverse.in/",
+    #         },
+    #     )
+
+    if lab.lab_type == "QUANTUM":
+        return render(request, "programming_lab/quantum_lab.html")
+
+
 
     return render(
         request,
         "programming_lab/open_virtual_lab.html",
         {
-            "lab": lab,
+            "lab": lab
         }
     )
