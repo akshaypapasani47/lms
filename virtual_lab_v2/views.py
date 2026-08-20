@@ -26,7 +26,7 @@ User = get_user_model()
 
 ADMIN_HOST = "10.182.4.176"
 ADMIN_USER = "test"
-SSH_KEY = r"C:\Users\pakshaykumar\.ssh\id_ed25519"
+SSH_KEY = r"C:\Users\Shikha M\.ssh\id_ed25519"
 
 # Create your views here.
 # client = None
