@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Evaluation Results: {{ submission.assignment.title }}</h2>
+    <a href="{% url 'assignment_detail' submission.assignment.id %}" class="btn btn-outline-secondary">
+      &larr; Back to Assignment
+    </a>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Overall Performance</h5>
+        <span class="badge bg-primary fs-5">
+          Score: {{ submission.obtained_marks }} / {{ submission.assignment.total_marks }}
+        </span>
+      </div>
+      <p class="text-muted mb-1 mt-2">Submitted by: <strong>{{ submission.student.username }}</strong></p>
+      <p class="text-muted">Submitted at: {{ submission.submitted_at|date:"M d, Y H:i" }}</p>
+      
+      {% if submission.ai_feedback %}
+        <div class="alert alert-secondary mt-3">
+          <strong>Summary Feedback:</strong> {{ submission.ai_feedback }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <h4 class="mb-3">Detailed Answers & Feedback</h4>
+
+  {% for answer in answers %}
+    <div class="card shadow-sm mb-4 border">
+      <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Q{{ answer.question.question_number }} Answer</h5>
+        <span class="badge {% if answer.obtained_marks > 0 %}bg-success{% else %}bg-danger{% endif %} fs-6">
+          Marks: {{ answer.obtained_marks }} / {{ answer.question.marks }}
+        </span>
+      </div>
+
+      <div class="card-body">
+        <p><strong>Submitted Code:</strong></p>
+        <pre class="bg-dark text-light p-3 rounded"><code>{{ answer.submitted_code|default:"# No code submitted" }}</code></pre>
+
+        <p class="mt-3"><strong>Execution & Test Case Logs:</strong></p>
+        <pre class="bg-light p-3 border rounded"><code>{{ answer.execution_output|default:"No execution log recorded." }}</code></pre>
+
+        {% if answer.ai_analysis %}
+          <div class="alert alert-info mt-3">
+            <strong>AI Analysis:</strong>
+            <pre class="mb-0 border-0 bg-transparent" style="white-space: pre-wrap;">{{ answer.ai_analysis }}</pre>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="d-flex justify-content-between">
+    <a href="{% url 'assignment_list' %}" class="btn btn-secondary">&larr; Back to Assignments List</a>
+    <a href="{% url 'assignment_detail' submission.assignment.id %}" class="btn btn-primary">Try Again / View Assignment &rarr;</a>
+  </div>
+</div>
+{% endblock %}

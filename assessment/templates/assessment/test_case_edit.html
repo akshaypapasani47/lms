@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+    <!-- BACK BUTTON -->
+    <div class="mb-3">
+
+        <a href="{% url 'test_case_create' question.pk %}"
+           class="btn btn-outline-secondary">
+
+            ← Back to Test Cases
+
+        </a>
+
+    </div>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+
+            <strong>
+                Edit Test Case {{ test_case.order }}
+            </strong>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <p class="text-muted">
+
+                Q{{ question.order }}.
+                {{ question.question_text }}
+
+            </p>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- FORM ERRORS -->
+                {% if form.non_field_errors %}
+
+                    <div class="alert alert-danger">
+
+                        {{ form.non_field_errors }}
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- INPUT DATA -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        <strong>
+                            Input Data
+                        </strong>
+
+                    </label>
+
+                    {{ form.input_data }}
+
+                    {% if form.input_data.errors %}
+
+                        <div class="text-danger mt-1">
+
+                            {{ form.input_data.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- EXPECTED OUTPUT -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        <strong>
+                            Expected Output
+                        </strong>
+
+                    </label>
+
+                    {{ form.expected_output }}
+
+                    {% if form.expected_output.errors %}
+
+                        <div class="text-danger mt-1">
+
+                            {{ form.expected_output.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- COMPARISON TYPE -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        <strong>
+                            Output Comparison
+                        </strong>
+
+                    </label>
+
+                    {{ form.comparison_type }}
+
+                    {% if form.comparison_type.errors %}
+
+                        <div class="text-danger mt-1">
+
+                            {{ form.comparison_type.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+                    {% if form.comparison_type.help_text %}
+
+                        <small class="text-muted d-block mt-1">
+
+                            {{ form.comparison_type.help_text }}
+
+                        </small>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- TOLERANCE -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        <strong>
+                            Floating Point Tolerance
+                        </strong>
+
+                    </label>
+
+                    {{ form.tolerance }}
+
+                    {% if form.tolerance.errors %}
+
+                        <div class="text-danger mt-1">
+
+                            {{ form.tolerance.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+                    {% if form.tolerance.help_text %}
+
+                        <small class="text-muted d-block mt-1">
+
+                            {{ form.tolerance.help_text }}
+
+                        </small>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- MARKS -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        <strong>
+                            Marks
+                        </strong>
+
+                    </label>
+
+                    {{ form.marks }}
+
+                    {% if form.marks.errors %}
+
+                        <div class="text-danger mt-1">
+
+                            {{ form.marks.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- HIDDEN -->
+                <div class="form-check mb-4">
+
+                    {{ form.is_hidden }}
+
+                    <label class="form-check-label">
+
+                        Hidden Test Case
+
+                    </label>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Save Changes
+
+                </button>
+
+
+                <a
+                    href="{% url 'test_case_create' question.pk %}"
+                    class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

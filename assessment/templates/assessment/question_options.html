@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+    <a
+        href="{% url 'assessment_detail' assessment.pk %}"
+        class="btn btn-outline-secondary mb-3"
+    >
+        ← Back to Assessment
+    </a>
+
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <h3>
+                Manage Options
+            </h3>
+
+            <p class="text-muted">
+                Q{{ question.order }}.
+                {{ question.question_text }}
+            </p>
+
+            <span class="badge bg-secondary">
+                {{ question.get_question_type_display }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- ADD OPTION -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <strong>
+                Add Option
+            </strong>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {% for field in form %}
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% for error in field.errors %}
+                            <div class="text-danger">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                {% endfor %}
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    + Add Option
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- EXISTING OPTIONS -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <strong>
+                Existing Options
+            </strong>
+        </div>
+
+        <div class="card-body">
+
+            {% if options %}
+
+                {% for option in options %}
+
+                    <div class="border rounded p-3 mb-3">
+
+                        <div class="d-flex justify-content-between">
+
+                            <div>
+
+                                <strong>
+                                    Option {{ option.order }}
+                                </strong>
+
+                                <div class="mt-2">
+                                    {{ option.option_text }}
+                                </div>
+
+                                {% if option.is_correct %}
+
+                                    <span class="badge bg-success mt-2">
+                                        Correct
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary mt-2">
+                                        Incorrect
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div>
+
+                                <a
+                                    href="{% url 'option_edit' option.pk %}"
+                                    class="btn btn-warning btn-sm"
+                                >
+                                    Edit
+                                </a>
+
+                                <a
+                                    href="{% url 'option_delete' option.pk %}"
+                                    class="btn btn-danger btn-sm"
+                                >
+                                    Delete
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p class="text-muted">
+                    No options added yet.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

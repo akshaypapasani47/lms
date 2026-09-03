@@ -1,0 +1,423 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+    <!-- BACK BUTTON -->
+    <div class="mb-3">
+        <a href="{% url 'assessment_detail' assessment.pk %}"
+           class="btn btn-secondary">
+            ← Back to Assessment
+        </a>
+    </div>
+
+
+    <!-- QUESTION INFORMATION -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <strong>Programming Question</strong>
+        </div>
+
+        <div class="card-body">
+
+            <h4>
+                Q{{ question.order }}.
+                {{ question.question_text }}
+            </h4>
+
+            <p class="text-muted mb-0">
+                Language:
+                {{ question.get_language_display }}
+
+                &nbsp; | &nbsp;
+
+                Marks:
+                {{ question.marks }}
+            </p>
+
+        </div>
+    </div>
+
+
+    <!-- ADD TEST CASE -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <strong>Add Test Case</strong>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- FORM ERRORS -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+
+                <!-- INPUT -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        <strong>Input Data</strong>
+                    </label>
+
+                    {{ form.input_data }}
+
+                    {% if form.input_data.errors %}
+                        <div class="text-danger mt-1">
+                            {{ form.input_data.errors }}
+                        </div>
+                    {% endif %}
+
+                    <small class="text-muted d-block mt-2">
+
+                        Enter the complete input exactly as the
+                        program will receive it.
+
+                        <br><br>
+
+                        Example:
+
+                        <pre class="bg-light p-2 rounded mt-2">10
+20</pre>
+
+                        The input format depends on the programming
+                        question.
+
+                    </small>
+
+                </div>
+
+
+                <!-- EXPECTED OUTPUT -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        <strong>Expected Output</strong>
+                    </label>
+
+                    {{ form.expected_output }}
+
+                    {% if form.expected_output.errors %}
+                        <div class="text-danger mt-1">
+                            {{ form.expected_output.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <!-- COMPARISON TYPE -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        <strong>Output Comparison</strong>
+                    </label>
+
+                    {{ form.comparison_type }}
+
+                    {% if form.comparison_type.errors %}
+                        <div class="text-danger mt-1">
+                            {{ form.comparison_type.errors }}
+                        </div>
+                    {% endif %}
+
+                    {% if form.comparison_type.help_text %}
+                        <small class="text-muted d-block mt-1">
+                            {{ form.comparison_type.help_text }}
+                        </small>
+                    {% endif %}
+
+                </div>
+
+
+                <!-- TOLERANCE -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        <strong>Floating Point Tolerance</strong>
+                    </label>
+
+                    {{ form.tolerance }}
+
+                    {% if form.tolerance.errors %}
+                        <div class="text-danger mt-1">
+                            {{ form.tolerance.errors }}
+                        </div>
+                    {% endif %}
+
+                    {% if form.tolerance.help_text %}
+                        <small class="text-muted d-block mt-1">
+                            {{ form.tolerance.help_text }}
+                        </small>
+                    {% endif %}
+
+                </div>
+
+
+                <!-- MARKS -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        <strong>Marks</strong>
+                    </label>
+
+                    {{ form.marks }}
+
+                    {% if form.marks.errors %}
+                        <div class="text-danger mt-1">
+                            {{ form.marks.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <!-- VISIBILITY -->
+                <div class="mb-4">
+
+                    <div class="form-check">
+
+                        {{ form.is_hidden }}
+
+                        <label class="form-check-label">
+                            Hidden Test Case
+                        </label>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Checked = Hidden Test Case
+                        <br>
+                        Unchecked = Public Test Case
+                    </small>
+
+                </div>
+
+
+                <!-- SAVE -->
+                <button type="submit"
+                        class="btn btn-success">
+                    Save Test Case
+                </button>
+
+                <a href="{% url 'assessment_detail' assessment.pk %}"
+                   class="btn btn-secondary">
+                    Back
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- PUBLIC TEST CASES -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <strong>
+                    Public Test Cases
+                </strong>
+
+                <span class="badge bg-success">
+                    {{ public_test_cases.count }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body">
+
+            {% for test_case in public_test_cases %}
+
+                <div class="border rounded p-3 mb-3">
+
+                    <div class="d-flex justify-content-between">
+
+                        <strong>
+                            Test Case {{ test_case.order }}
+                        </strong>
+
+                        <span>
+                            {{ test_case.marks }} marks
+                        </span>
+
+                    </div>
+
+                    <hr>
+
+
+                    <p class="mb-1">
+                        <strong>Input:</strong>
+                    </p>
+
+                    <pre class="bg-light p-3 rounded">{{ test_case.input_data }}</pre>
+
+
+                    <p class="mb-1">
+                        <strong>Expected Output:</strong>
+                    </p>
+
+                    <pre class="bg-light p-3 rounded">{{ test_case.expected_output }}</pre>
+
+
+                    <p class="mb-1">
+                        <strong>Comparison:</strong>
+                        {{ test_case.get_comparison_type_display }}
+                    </p>
+
+
+                    {% if test_case.comparison_type == "FLOAT" %}
+                        <p class="mb-1">
+                            <strong>Tolerance:</strong>
+                            {{ test_case.tolerance }}
+                        </p>
+                    {% endif %}
+
+
+                    <div class="mt-3">
+
+                        <a href="{% url 'test_case_edit' test_case.id %}"
+                           class="btn btn-outline-primary btn-sm">
+                            Edit
+                        </a>
+
+
+                        <a href="{% url 'test_case_delete' test_case.id %}"
+                           class="btn btn-outline-danger btn-sm">
+                            Delete
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <p class="text-muted mb-0">
+                    No public test cases added yet.
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- HIDDEN TEST CASES -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <strong>
+                    Hidden Test Cases
+                </strong>
+
+                <span class="badge bg-danger">
+                    {{ hidden_test_cases.count }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body">
+
+            {% for test_case in hidden_test_cases %}
+
+                <div class="border rounded p-3 mb-3">
+
+                    <div class="d-flex justify-content-between">
+
+                        <strong>
+                            Test Case {{ test_case.order }}
+                        </strong>
+
+                        <span>
+                            {{ test_case.marks }} marks
+                        </span>
+
+                    </div>
+
+                    <hr>
+
+
+                    <p class="mb-1">
+                        <strong>Input:</strong>
+                    </p>
+
+                    <pre class="bg-light p-3 rounded">{{ test_case.input_data }}</pre>
+
+
+                    <p class="mb-1">
+                        <strong>Expected Output:</strong>
+                    </p>
+
+                    <pre class="bg-light p-3 rounded">{{ test_case.expected_output }}</pre>
+
+
+                    <p class="mb-1">
+                        <strong>Comparison:</strong>
+                        {{ test_case.get_comparison_type_display }}
+                    </p>
+
+
+                    {% if test_case.comparison_type == "FLOAT" %}
+                        <p class="mb-1">
+                            <strong>Tolerance:</strong>
+                            {{ test_case.tolerance }}
+                        </p>
+                    {% endif %}
+
+
+                    <div class="mt-3">
+
+                        <a href="{% url 'test_case_edit' test_case.id %}"
+                           class="btn btn-outline-primary btn-sm">
+                            Edit
+                        </a>
+
+
+                        <a href="{% url 'test_case_delete' test_case.id %}"
+                           class="btn btn-outline-danger btn-sm">
+                            Delete
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <p class="text-muted mb-0">
+                    No hidden test cases added yet.
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

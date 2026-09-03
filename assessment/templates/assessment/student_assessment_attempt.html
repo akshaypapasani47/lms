@@ -1,0 +1,3026 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid mt-4 mb-5">
+
+    <!-- ====================================================== -->
+    <!-- ASSESSMENT HEADER -->
+    <!-- ====================================================== -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-start">
+
+                <div>
+
+                    <h2 class="mb-1">
+                        {{ assessment.title }}
+                    </h2>
+
+                    {% if assessment.description %}
+
+                        <p class="text-muted mb-2">
+                            {{ assessment.description }}
+                        </p>
+
+                    {% endif %}
+
+                    <span class="badge bg-secondary">
+                        Attempt {{ submission.attempt_number }}
+                    </span>
+
+                </div>
+
+
+                <div class="text-end">
+
+                    <div>
+                        <strong>
+                            {{ assessment.total_marks }}
+                        </strong>
+                        Marks
+                    </div>
+
+                    <div class="text-muted">
+
+                        {{ questions.count }}
+                        Questions
+
+                    </div>
+
+                    {% if assessment.duration_minutes %}
+
+                        <div class="mt-2">
+
+                            <span class="badge bg-warning text-dark">
+
+                                ⏱
+                                {{ assessment.duration_minutes }}
+                                minutes
+
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ====================================================== -->
+    <!-- MAIN LAYOUT -->
+    <!-- ====================================================== -->
+
+    <div class="row g-4">
+
+
+        <!-- ================================================== -->
+        <!-- QUESTION NAVIGATOR -->
+        <!-- ================================================== -->
+
+        <div class="col-lg-3">
+
+            <div class="card shadow-sm"
+                 style="position: sticky; top: 20px;">
+
+                <div class="card-header">
+
+                    <strong>
+                        Questions
+                    </strong>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <div class="row g-2">
+
+                        {% for item in questions %}
+
+                            <div class="col-4 col-md-3 col-lg-4">
+
+                                <a
+                                    href="?question={{ item.id }}"
+                                    class="question-nav-btn
+                                    {% if selected_question and item.id == selected_question.id %}
+                                        active-question
+                                    {% elif item.id in answered_question_ids %}
+                                        answered-question
+                                    {% else %}
+                                        unanswered-question
+                                    {% endif %}"
+
+                                >
+
+                                    <div class="question-number">
+                                        Q{{ forloop.counter }}
+                                    </div>
+
+                                    <div class="question-type">
+
+                                        {% if item.question_type == "MCQ" %}
+                                            MCQ
+                                        {% elif item.question_type == "MULTIPLE_SELECT" %}
+                                            Multi
+                                        {% elif item.question_type == "FILL_BLANK" %}
+                                            Fill
+                                        {% elif item.question_type == "THEORY" %}
+                                            Theory
+                                        {% elif item.question_type == "PROGRAMMING" %}
+                                            Code
+                                        {% endif %}
+
+                                    </div>
+
+                                </a>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- ====================================== -->
+                    <!-- LEGEND -->
+                    <!-- ====================================== -->
+
+                    <hr>
+
+
+                    <div class="small">
+
+                        <div class="d-flex align-items-center mb-2">
+
+                            <span class="legend-box legend-current"></span>
+
+                            Current
+
+                        </div>
+
+
+                        <div class="d-flex align-items-center mb-2">
+
+                            <span class="legend-box legend-answered"></span>
+
+                            Answered
+
+                        </div>
+
+
+                        <div class="d-flex align-items-center">
+
+                            <span class="legend-box legend-unanswered"></span>
+
+                            Not Answered
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- QUESTION CONTENT -->
+        <!-- ================================================== -->
+
+        <div class="col-lg-9">
+
+
+            {% if selected_question %}
+
+
+                <form method="POST"
+                      id="assessment-form">
+
+                    {% csrf_token %}
+
+
+                    <!-- ====================================== -->
+                    <!-- CURRENT QUESTION -->
+                    <!-- ====================================== -->
+
+                    <div class="card shadow-sm mb-4">
+
+                        <div class="card-header">
+
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <div>
+
+                                    <span class="badge bg-primary">
+
+                                        Question
+                                        {{ current_question_index|add:1 }}
+
+                                    </span>
+
+                                    <span class="badge bg-secondary ms-2">
+
+                                        {{ selected_question.get_question_type_display }}
+
+                                    </span>
+
+                                </div>
+
+
+                                <strong>
+
+                                    {{ selected_question.marks }}
+                                    Marks
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+
+                            <!-- ================================== -->
+                            <!-- QUESTION TEXT -->
+                            <!-- ================================== -->
+
+                            <h4 class="mb-4">
+
+                                {{ selected_question.question_text }}
+
+                            </h4>
+
+
+                            <!-- ================================== -->
+                            <!-- MCQ -->
+                            <!-- ================================== -->
+
+                            {% if selected_question.question_type == "MCQ" %}
+
+
+                                {% for option in selected_question.options.all %}
+
+                                    <div class="form-check border rounded p-3 mb-2">
+
+                                        <input
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="question_{{ selected_question.id }}"
+                                            value="{{ option.id }}"
+                                            id="option_{{ option.id }}"
+
+                                            
+
+                                                {% if selected_answer == option.id|stringformat:"s" %}
+                                                    checked
+                                                {% endif %}
+
+                                            
+
+                                        >
+
+                                        <label
+                                            class="form-check-label ms-2"
+                                            for="option_{{ option.id }}"
+                                        >
+
+                                            {{ option.option_text }}
+
+                                        </label>
+
+                                    </div>
+
+                                {% empty %}
+
+                                    <div class="alert alert-warning">
+
+                                        No options have been configured
+                                        for this question.
+
+                                    </div>
+
+                                {% endfor %}
+
+
+                            <!-- ================================== -->
+                            <!-- MULTIPLE SELECT -->
+                            <!-- ================================== -->
+
+                            {% elif selected_question.question_type == "MULTIPLE_SELECT" %}
+
+
+                                <div class="alert alert-info">
+
+                                    Select all correct answers.
+
+                                </div>
+
+
+                                {% for option in selected_question.options.all %}
+
+                                    <div class="form-check border rounded p-3 mb-2">
+
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="question_{{ selected_question.id }}"
+                                            value="{{ option.id }}"
+                                            id="option_{{ option.id }}"
+
+                                            {% if option.id|stringformat:"s" in selected_multiple_answers %}
+                                                checked
+                                            {% endif %}
+
+                                        >
+
+                                        <label
+                                            class="form-check-label ms-2"
+                                            for="option_{{ option.id }}"
+                                        >
+
+                                            {{ option.option_text }}
+
+                                        </label>
+
+                                    </div>
+
+                                {% empty %}
+
+                                    <div class="alert alert-warning">
+
+                                        No options have been configured
+                                        for this question.
+
+                                    </div>
+
+                                {% endfor %}
+
+
+                            <!-- ================================== -->
+                            <!-- FILL BLANK -->
+                            <!-- ================================== -->
+
+                            {% elif selected_question.question_type == "FILL_BLANK" %}
+
+
+                                <label class="form-label">
+
+                                    <strong>
+                                        Your Answer
+                                    </strong>
+
+                                </label>
+
+
+                                <input
+                                    type="text"
+                                    name="question_{{ selected_question.id }}"
+                                    class="form-control form-control-lg"
+
+                                    value="{{ selected_answer }}"
+
+                                    placeholder="Enter your answer"
+                                >
+
+
+                            <!-- ================================== -->
+                            <!-- THEORY -->
+                            <!-- ================================== -->
+
+                            {% elif selected_question.question_type == "THEORY" %}
+
+
+                                <label class="form-label">
+
+                                    <strong>
+                                        Your Answer
+                                    </strong>
+
+                                </label>
+
+
+                                <textarea
+                                    name="question_{{ selected_question.id }}"
+                                    class="form-control"
+                                    rows="10"
+                                    placeholder="Enter your answer..."
+                                >{{ selected_answer }}</textarea>
+
+
+                            <!-- ================================== -->
+                            <!-- PROGRAMMING -->
+                            <!-- ================================== -->
+
+                            {% elif selected_question.question_type == "PROGRAMMING" %}
+
+
+                                <!-- LANGUAGE -->
+
+                                <div class="alert alert-info">
+
+                                    <strong>
+                                        Language:
+                                    </strong>
+
+                                    {{ selected_question.get_language_display }}
+
+                                </div>
+
+
+                                <!-- INPUT DESCRIPTION -->
+
+                                {% if selected_question.input_description %}
+
+                                    <div class="mb-3">
+
+                                        <strong>
+                                            Input:
+                                        </strong>
+
+                                        <div class="mt-1">
+
+                                            {{ selected_question.input_description }}
+
+                                        </div>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- OUTPUT DESCRIPTION -->
+
+                                {% if selected_question.output_description %}
+
+                                    <div class="mb-3">
+
+                                        <strong>
+                                            Output:
+                                        </strong>
+
+                                        <div class="mt-1">
+
+                                            {{ selected_question.output_description }}
+
+                                        </div>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- CONSTRAINTS -->
+
+                                {% if selected_question.constraints %}
+
+                                    <div class="mb-3">
+
+                                        <strong>
+                                            Constraints:
+                                        </strong>
+
+                                        <div class="mt-1">
+
+                                            {{ selected_question.constraints }}
+
+                                        </div>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- MONACO -->
+
+                                <label class="form-label mt-3">
+
+                                    <strong>
+                                        Your Code
+                                    </strong>
+
+                                </label>
+
+
+                                <div
+                                    id="editor_{{ selected_question.id }}"
+                                    class="monaco-editor-container"
+                                    data-question-id="{{ selected_question.id }}"
+                                    data-language="{{ selected_question.language|lower }}"
+                                ></div>
+
+
+                                <!-- HIDDEN CODE FIELD -->
+
+                                <textarea
+                                    id="code_{{ selected_question.id }}"
+                                    name="question_{{ selected_question.id }}"
+                                    style="display:none;"
+                                >{{ selected_answer }}</textarea>
+
+
+                                <!-- ================================================== -->
+                                <!-- CUSTOM INPUT / OUTPUT TERMINAL -->
+                                <!-- ================================================== -->
+
+                                <label class="form-label mt-3">
+                                    <strong>
+                                        Custom Input / Output
+                                    </strong>
+                                </label>
+
+                                <textarea
+                                    id="input_{{ selected_question.id }}"
+                                    class="form-control font-monospace"
+                                    rows="10"
+                                    spellcheck="false"
+                                    autocomplete="off"
+                                    placeholder="Click Run Code to start the program..."
+                                ></textarea>
+
+                                <small class="text-muted">
+                                    Run your program interactively. When the program asks for
+                                    input, type your value and press Enter.
+                                </small>
+
+
+                                <!-- ================================================== -->
+                                <!-- RUN BUTTONS -->
+                                <!-- ================================================== -->
+
+                                <div class="mt-3 d-flex gap-2">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        onclick="runCode(
+                                            {{ selected_question.id }},
+                                            '{{ selected_question.language }}',
+                                            this
+                                        )"
+                                    >
+                                        ▶ Run Code
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-success"
+                                        onclick="checkCode(
+                                            {{ selected_question.id }},
+                                            '{{ selected_question.language }}',
+                                            this
+                                        )"
+                                    >
+                                        ✓ Run & Check
+                                    </button>
+
+                                </div>
+
+
+                                <!-- ================================================== -->
+                                <!-- CUSTOM EXECUTION STATUS -->
+                                <!-- ================================================== -->
+
+                                <div
+                                    id="result_{{ selected_question.id }}"
+                                    class="mt-3"
+                                    style="display:none;"
+                                >
+
+                                    <div class="card">
+
+                                        <div class="card-header">
+                                            <strong>
+                                                Custom Execution
+                                            </strong>
+                                        </div>
+
+                                        <div class="card-body">
+
+                                            <div
+                                                id="status_{{ selected_question.id }}"
+                                                class="mb-2"
+                                            ></div>
+
+                                            <div
+                                                id="error_container_{{ selected_question.id }}"
+                                                style="display:none;"
+                                            >
+
+                                                <strong class="text-danger">
+                                                    Error:
+                                                </strong>
+
+                                                <pre
+                                                    id="error_{{ selected_question.id }}"
+                                                    class="bg-light border rounded p-3 text-danger mt-2"
+                                                    style="white-space:pre-wrap;"
+                                                ></pre>
+
+                                            </div>
+
+                                            <div
+                                                id="time_{{ selected_question.id }}"
+                                                class="text-muted mt-2"
+                                            ></div>
+
+                                        </div>
+
+                                    </div>
+
+</div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ====================================== -->
+                    <!-- CURRENT QUESTION ID -->
+                    <!-- ====================================== -->
+
+                    <input
+                        type="hidden"
+                        name="current_question"
+                        value="{{ selected_question.id }}"
+                    >
+
+
+                    <!-- ====================================== -->
+                    <!-- NAVIGATION -->
+                    <!-- ====================================== -->
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+
+
+                        {% if previous_question %}
+
+                            <button
+                                type="submit"
+                                name="action"
+                                value="save"
+                                class="btn btn-outline-secondary"
+                                formaction="?question={{ previous_question.id }}"
+                            >
+
+                                ← Previous
+
+                            </button>
+
+                        {% else %}
+
+                            <a
+                                href="{% url 'student_assessment_start' assessment.pk %}"
+                                class="btn btn-outline-secondary"
+                            >
+
+                                ← Back
+
+                            </a>
+
+                        {% endif %}
+
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="save"
+                            class="btn btn-primary"
+                        >
+
+                            Save Answer
+
+                        </button>
+
+
+                        {% if next_question %}
+
+                            <button
+                                type="submit"
+                                name="action"
+                                value="save"
+                                class="btn btn-primary"
+                                formaction="?question={{ next_question.id }}"
+                            >
+
+                                Next →
+
+                            </button>
+
+                        {% else %}
+
+                            <button
+                                type="submit"
+                                name="action"
+                                value="submit"
+                                class="btn btn-success"
+                                onclick="
+                                    return confirm(
+                                        'Are you sure you want to submit this assessment? You will not be able to modify it after submission.'
+                                    );
+                                "
+                            >
+
+                                Submit Assessment
+
+                            </button>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- ====================================== -->
+                    <!-- FINAL SUBMIT -->
+                    <!-- ====================================== -->
+
+                    {% if next_question %}
+
+                        <div class="text-center mb-4">
+
+                            <button
+                                type="submit"
+                                name="action"
+                                value="submit"
+                                class="btn btn-outline-success"
+                                onclick="
+                                    return confirm(
+                                        'Are you sure you want to submit this assessment? You will not be able to modify it after submission.'
+                                    );
+                                "
+                            >
+
+                                Submit Assessment
+
+                            </button>
+
+                        </div>
+
+                    {% endif %}
+
+
+                </form>
+
+
+            {% else %}
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body text-center py-5">
+
+                        <h4>
+                            No questions available.
+                        </h4>
+
+                        <p class="text-muted">
+                            This assessment does not contain any questions.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ====================================================== -->
+<!-- STYLES -->
+<!-- ====================================================== -->
+
+<style>
+
+    .question-nav-btn {
+
+        display: block;
+
+        text-decoration: none;
+
+        text-align: center;
+
+        border: 1px solid #dee2e6;
+
+        border-radius: 8px;
+
+        padding: 10px 5px;
+
+        transition: 0.2s;
+
+    }
+
+
+    .question-nav-btn:hover {
+
+        transform: translateY(-2px);
+
+    }
+
+
+    .question-number {
+
+        font-weight: 600;
+
+        font-size: 16px;
+
+    }
+
+
+    .question-type {
+
+        font-size: 11px;
+
+        margin-top: 2px;
+
+    }
+
+
+    .active-question {
+
+        background-color: #0d6efd;
+
+        color: white;
+
+        border-color: #0d6efd;
+
+    }
+
+
+    .answered-question {
+
+        background-color: #d1e7dd;
+
+        color: #0f5132;
+
+        border-color: #a3cfbb;
+
+    }
+
+
+    .unanswered-question {
+
+        background-color: #f8f9fa;
+
+        color: #495057;
+
+    }
+
+
+    .legend-box {
+
+        width: 16px;
+
+        height: 16px;
+
+        border-radius: 4px;
+
+        display: inline-block;
+
+        margin-right: 8px;
+
+        border: 1px solid #dee2e6;
+
+    }
+
+
+    .legend-current {
+
+        background-color: #0d6efd;
+
+        border-color: #0d6efd;
+
+    }
+
+
+    .legend-answered {
+
+        background-color: #d1e7dd;
+
+        border-color: #a3cfbb;
+
+    }
+
+
+    .legend-unanswered {
+
+        background-color: #f8f9fa;
+
+    }
+
+
+    .monaco-editor-container {
+
+        width: 100%;
+
+        height: 450px;
+
+        border: 1px solid #ced4da;
+
+        border-radius: 6px;
+
+        overflow: hidden;
+
+        margin-bottom: 15px;
+
+    }
+
+
+    pre {
+
+        font-family:
+            Consolas,
+            Monaco,
+            "Courier New",
+            monospace;
+
+    }
+
+</style>
+
+
+<!-- ====================================================== -->
+<!-- MONACO -->
+<!-- ====================================================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+
+
+<script>
+
+require.config({
+
+    paths: {
+
+        vs:
+            "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs"
+
+    }
+
+});
+
+
+require(
+
+    ["vs/editor/editor.main"],
+
+    function () {
+
+        const editors = {};
+
+        const containers =
+            document.querySelectorAll(
+                ".monaco-editor-container"
+            );
+
+
+        containers.forEach(
+
+            function (container) {
+
+                const questionId =
+                    container.dataset.questionId;
+
+                const language =
+                    container.dataset.language;
+
+
+                const textarea =
+                    document.getElementById(
+                        "code_" + questionId
+                    );
+
+
+                let editorLanguage =
+                    "plaintext";
+
+
+                if (language === "python") {
+
+                    editorLanguage = "python";
+
+                }
+
+                else if (language === "java") {
+
+                    editorLanguage = "java";
+
+                }
+
+                else if (language === "c") {
+
+                    editorLanguage = "c";
+
+                }
+
+                else if (language === "cpp") {
+
+                    editorLanguage = "cpp";
+
+                }
+
+
+                const editor =
+                    monaco.editor.create(
+
+                        container,
+
+                        {
+
+                            value:
+                                textarea.value || "",
+
+                            language:
+                                editorLanguage,
+
+                            theme:
+                                "vs-dark",
+
+                            automaticLayout:
+                                true,
+
+                            minimap: {
+
+                                enabled:
+                                    false
+
+                            },
+
+                            fontSize:
+                                14,
+
+                            lineNumbers:
+                                "on",
+
+                            wordWrap:
+                                "off",
+
+                            tabSize:
+                                4,
+
+                            insertSpaces:
+                                true,
+
+                            detectIndentation:
+                                false,
+
+                            scrollBeyondLastLine:
+                                false,
+
+                            cursorBlinking:
+                                "smooth",
+
+                            padding: {
+
+                                top:
+                                    10,
+
+                                bottom:
+                                    10
+
+                            }
+
+                        }
+
+                    );
+
+
+                editors[questionId] =
+                    editor;
+
+            }
+
+        );
+
+
+        window.assessmentEditors =
+            editors;
+
+
+        const form =
+            document.getElementById(
+                "assessment-form"
+            );
+
+
+        if (form) {
+
+            form.addEventListener(
+
+                "submit",
+
+                function () {
+
+                    Object.keys(
+                        editors
+                    ).forEach(
+
+                        function (questionId) {
+
+                            const editor =
+                                editors[
+                                    questionId
+                                ];
+
+                            const textarea =
+                                document.getElementById(
+                                    "code_" + questionId
+                                );
+
+
+                            if (
+                                editor &&
+                                textarea
+                            ) {
+
+                                textarea.value =
+                                    editor.getValue();
+
+                            }
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+        }
+
+    }
+
+);
+
+/* ==========================================================
+   INTERACTIVE TERMINAL
+   ========================================================== */
+
+window.interactiveSessions = window.interactiveSessions || {};
+
+
+/*
+ * ----------------------------------------------------------
+ * HANDLE ENTER KEY
+ * ----------------------------------------------------------
+ *
+ * IMPORTANT:
+ * We do NOT use lastIndexOf("\n").
+ *
+ * Instead, inputStart tells us exactly where the student's
+ * current input begins.
+ *
+ * Example:
+ *
+ * Program output:
+ *     Enter first number:
+ *
+ * textarea:
+ *     Enter first number:
+ *
+ * inputStart = length of "Enter first number: "
+ *
+ * Student types:
+ *     55
+ *
+ * We send only:
+ *     55
+ *
+ * NOT:
+ *     Enter first number: 55
+ */
+document.addEventListener("keydown", function(event) {
+
+    const target = event.target;
+
+    if (!target || !target.id) {
+        return;
+    }
+
+    if (!target.id.startsWith("input_")) {
+        return;
+    }
+
+    if (event.key !== "Enter") {
+        return;
+    }
+
+    const questionId =
+        target.id.replace("input_", "");
+
+    const sessionId =
+        window.interactiveSessions &&
+        window.interactiveSessions[questionId];
+
+    if (!sessionId) {
+        return;
+    }
+
+    event.preventDefault();
+
+    /*
+     * Where does the student's current input start?
+     *
+     * This value is updated ONLY after program output
+     * has been received.
+     */
+    let inputStart =
+        parseInt(
+            target.dataset.inputStart || "0",
+            10
+        );
+
+    /*
+     * Safety check.
+     */
+    if (
+        isNaN(inputStart) ||
+        inputStart < 0 ||
+        inputStart > target.value.length
+    ) {
+        inputStart = 0;
+    }
+
+    /*
+     * Take ONLY what the student typed.
+     */
+    const inputData =
+        target.value.substring(inputStart);
+
+    /*
+     * Do not send empty input.
+     */
+    if (!inputData.trim()) {
+        return;
+    }
+
+    /*
+     * Show Enter/new line visually.
+     */
+    target.value += "\n";
+
+    target.scrollTop =
+        target.scrollHeight;
+
+    /*
+     * Remember that we are currently waiting
+     * for the program to respond.
+     */
+    target.dataset.waitingForOutput = "true";
+
+    /*
+     * IMPORTANT:
+     *
+     * Do NOT change inputStart here.
+     *
+     * It must remain at the beginning of the
+     * student's input until the program output
+     * has been received.
+     */
+    delete target.dataset.userTyping;
+
+    sendInteractiveInput(
+        questionId,
+        inputData
+    );
+});
+
+
+/*
+ * ----------------------------------------------------------
+ * OPTIONAL INPUT EVENT
+ * ----------------------------------------------------------
+ */
+document.addEventListener("input", function(event) {
+
+    const target = event.target;
+
+    if (!target || !target.id) {
+        return;
+    }
+
+    if (!target.id.startsWith("input_")) {
+        return;
+    }
+
+    const questionId =
+        target.id.replace("input_", "");
+
+    const sessionId =
+        window.interactiveSessions &&
+        window.interactiveSessions[questionId];
+
+    if (!sessionId) {
+        return;
+    }
+
+    target.dataset.userTyping = "true";
+});
+
+
+/*
+ * ----------------------------------------------------------
+ * GET CSRF TOKEN
+ * ----------------------------------------------------------
+ */
+function getCSRFToken() {
+
+    const cookieValue =
+        document.cookie
+            .split("; ")
+            .find(
+                row =>
+                    row.startsWith("csrftoken=")
+            );
+
+    if (!cookieValue) {
+        return "";
+    }
+
+    return decodeURIComponent(
+        cookieValue.split("=")[1]
+    );
+}
+
+
+/*
+ * ----------------------------------------------------------
+ * RUN CODE
+ * ----------------------------------------------------------
+ */
+async function runCode(
+    questionId,
+    language,
+    button
+) {
+
+    const editor =
+        window.assessmentEditors[questionId];
+
+    if (!editor) {
+        alert(
+            "Code editor is not ready yet."
+        );
+        return;
+    }
+
+    const code =
+        editor.getValue();
+
+    if (!code.trim()) {
+        alert(
+            "Please write some code first."
+        );
+        return;
+    }
+
+    const ioElement =
+        document.getElementById(
+            "input_" + questionId
+        );
+
+    if (!ioElement) {
+        alert(
+            "Custom I/O area not found."
+        );
+        return;
+    }
+
+
+    /*
+     * ------------------------------------------------------
+     * STOP OLD SESSION
+     * ------------------------------------------------------
+     *
+     * This is important when Run Code is clicked again
+     * after the previous program has finished.
+     */
+    const oldSessionId =
+        window.interactiveSessions &&
+        window.interactiveSessions[questionId];
+
+    if (oldSessionId) {
+
+        try {
+
+            await fetch(
+                "{% url 'interactive_code_stop' %}",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        "X-CSRFToken":
+                            getCSRFToken()
+                    },
+
+                    body: JSON.stringify({
+                        session_id:
+                            oldSessionId
+                    })
+                }
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Error stopping previous session:",
+                error
+            );
+        }
+
+        delete window
+            .interactiveSessions[
+                questionId
+            ];
+    }
+
+
+    /*
+     * Make sure session storage exists.
+     */
+    if (!window.interactiveSessions) {
+
+        window.interactiveSessions = {};
+    }
+
+
+    /*
+     * ------------------------------------------------------
+     * RESET TERMINAL COMPLETELY
+     * ------------------------------------------------------
+     */
+    ioElement.value = "";
+
+    /*
+     * At the beginning there is no program output.
+     *
+     * Therefore the student's first input begins
+     * at position 0.
+     */
+    ioElement.dataset.inputStart = "0";
+
+    ioElement.dataset.interactiveReady =
+        "false";
+
+    ioElement.dataset.waitingForOutput =
+        "false";
+
+    delete ioElement.dataset.userTyping;
+
+
+    /*
+     * ------------------------------------------------------
+     * BUTTON STATE
+     * ------------------------------------------------------
+     */
+    button.disabled = true;
+
+    button.innerHTML =
+        "⏳ Starting...";
+
+
+    try {
+
+        /*
+         * --------------------------------------------------
+         * START PROGRAM
+         * --------------------------------------------------
+         */
+        const startResponse =
+            await fetch(
+                "{% url 'interactive_code_start' %}",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        "X-CSRFToken":
+                            getCSRFToken()
+                    },
+
+                    body: JSON.stringify({
+
+                        question_id:
+                            questionId,
+
+                        language:
+                            language,
+
+                        code:
+                            code
+                    })
+                }
+            );
+
+
+        const startData =
+            await startResponse.json();
+
+
+        if (
+            !startResponse.ok ||
+            !startData.success
+        ) {
+
+            throw new Error(
+                startData.error ||
+                "Failed to start program."
+            );
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * SAVE SESSION
+         * --------------------------------------------------
+         */
+        const sessionId =
+            startData.session_id;
+
+        window.interactiveSessions[
+            questionId
+        ] = sessionId;
+
+
+        /*
+         * --------------------------------------------------
+         * BUTTON READY
+         * --------------------------------------------------
+         */
+        button.disabled = false;
+
+        button.innerHTML =
+            "▶ Run Code";
+
+
+        /*
+         * --------------------------------------------------
+         * READ FIRST PROGRAM OUTPUT
+         * --------------------------------------------------
+         *
+         * This gets:
+         *
+         * Enter first number:
+         *
+         * and sets inputStart AFTER that output.
+         */
+        await readInteractiveOutput(
+            questionId,
+            sessionId,
+            true
+        );
+
+
+        /*
+         * Focus terminal.
+         */
+        ioElement.focus();
+
+        ioElement.scrollTop =
+            ioElement.scrollHeight;
+
+
+        ioElement.placeholder =
+            "Program is running. Type input and press Enter...";
+
+
+    } catch (error) {
+
+        console.error(
+            "Run Code error:",
+            error
+        );
+
+        button.disabled = false;
+
+        button.innerHTML =
+            "▶ Run Code";
+
+        ioElement.value +=
+            "\n\n[Error]\n" +
+            error.message;
+
+    }
+}
+
+
+/*
+ * ----------------------------------------------------------
+ * READ INTERACTIVE OUTPUT
+ * ----------------------------------------------------------
+ *
+ * waitForOutput = true:
+ *
+ *     Used after Run Code and after Enter.
+ *
+ *     We briefly check for new program output.
+ *
+ * waitForOutput = false:
+ *
+ *     Normal single read.
+ */
+async function readInteractiveOutput(
+    questionId,
+    sessionId,
+    waitForOutput = false
+) {
+
+    const ioElement =
+        document.getElementById(
+            "input_" + questionId
+        );
+
+    if (!ioElement) {
+        return;
+    }
+
+
+    /*
+     * We don't want an infinite polling loop.
+     *
+     * Maximum waiting time:
+     * 5 seconds.
+     */
+    const MAX_WAIT =
+        waitForOutput
+            ? 5000
+            : 1000;
+
+    const startTime =
+        Date.now();
+
+
+    while (true) {
+
+        try {
+
+            const response =
+                await fetch(
+                    "{% url 'interactive_code_read' %}",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "X-CSRFToken":
+                                getCSRFToken()
+                        },
+
+                        body: JSON.stringify({
+                            session_id:
+                                sessionId
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Failed to read program output."
+                );
+            }
+
+
+            /*
+             * ------------------------------------------------
+             * ADD PROGRAM OUTPUT
+             * ------------------------------------------------
+             */
+            if (data.output) {
+
+                ioElement.value +=
+                    data.output;
+
+                ioElement.scrollTop =
+                    ioElement.scrollHeight;
+
+
+                /*
+                 * VERY IMPORTANT
+                 *
+                 * The program output has now ended.
+                 *
+                 * The next thing typed by the student
+                 * must start AFTER this output.
+                 *
+                 * Example:
+                 *
+                 * Enter first number:
+                 *
+                 * inputStart = length of above
+                 *
+                 * Student types:
+                 * 55
+                 *
+                 * substring(inputStart)
+                 * = "55"
+                 */
+                ioElement.dataset.inputStart =
+                    ioElement.value.length;
+            }
+
+
+            /*
+             * ------------------------------------------------
+             * PROGRAM FINISHED
+             * ------------------------------------------------
+             */
+            if (
+                data.finished ||
+                !data.running
+            ) {
+
+                /*
+                 * Only add this if it hasn't already
+                 * been added.
+                 */
+                if (
+                    !ioElement.value.endsWith(
+                        "[Program finished]"
+                    )
+                ) {
+
+                    ioElement.value +=
+                        "\n[Program finished]";
+                }
+
+
+                ioElement.scrollTop =
+                    ioElement.scrollHeight;
+
+
+                delete window
+                    .interactiveSessions[
+                        questionId
+                    ];
+
+
+                ioElement.dataset.interactiveReady =
+                    "false";
+
+                ioElement.dataset.waitingForOutput =
+                    "false";
+
+                return;
+            }
+
+
+            /*
+             * ------------------------------------------------
+             * PROGRAM STILL RUNNING
+             * ------------------------------------------------
+             */
+            if (waitForOutput) {
+
+                /*
+                 * Continue checking for output
+                 * for a maximum of 5 seconds.
+                 */
+                if (
+                    Date.now() - startTime <
+                    MAX_WAIT
+                ) {
+
+                    await new Promise(
+                        function(resolve) {
+
+                            setTimeout(
+                                resolve,
+                                100
+                            );
+                        }
+                    );
+
+                    continue;
+                }
+            }
+
+
+            /*
+             * Program is still running.
+             *
+             * It is now ready for another input.
+             */
+            ioElement.dataset.interactiveReady =
+                "true";
+
+            ioElement.dataset.waitingForOutput =
+                "false";
+
+            ioElement.focus();
+
+            ioElement.scrollTop =
+                ioElement.scrollHeight;
+
+            return;
+
+
+        } catch (error) {
+
+            console.error(
+                "Interactive output error:",
+                error
+            );
+
+            ioElement.value +=
+                "\n\n[Error]\n" +
+                error.message;
+
+
+            ioElement.dataset.interactiveReady =
+                "false";
+
+            ioElement.dataset.waitingForOutput =
+                "false";
+
+            return;
+        }
+    }
+}
+
+
+/*
+ * ----------------------------------------------------------
+ * SEND INPUT TO RUNNING PROGRAM
+ * ----------------------------------------------------------
+ */
+async function sendInteractiveInput(
+    questionId,
+    inputData
+) {
+
+    const sessionId =
+        window.interactiveSessions &&
+        window.interactiveSessions[questionId];
+
+
+    if (!sessionId) {
+        return;
+    }
+
+
+    if (!inputData.trim()) {
+        return;
+    }
+
+
+    const ioElement =
+        document.getElementById(
+            "input_" + questionId
+        );
+
+
+    try {
+
+        /*
+         * --------------------------------------------------
+         * SEND ONLY STUDENT INPUT
+         * --------------------------------------------------
+         *
+         * Example:
+         *
+         * textarea:
+         *     Enter first number: 55
+         *
+         * inputData:
+         *     55
+         *
+         * Backend receives:
+         *     55
+         */
+        const response =
+            await fetch(
+                "{% url 'interactive_code_input' %}",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        "X-CSRFToken":
+                            getCSRFToken()
+                    },
+
+                    body: JSON.stringify({
+
+                        session_id:
+                            sessionId,
+
+                        input:
+                            inputData
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.error ||
+                "Failed to send input."
+            );
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * WAIT FOR NEXT OUTPUT
+         * --------------------------------------------------
+         *
+         * Example:
+         *
+         * Student sends:
+         *     55
+         *
+         * Program responds:
+         *     Enter second number:
+         *
+         * Then inputStart is automatically moved
+         * to the end of that program output.
+         */
+        await readInteractiveOutput(
+            questionId,
+            sessionId,
+            true
+        );
+
+
+        /*
+         * Focus terminal again.
+         */
+        if (
+            window.interactiveSessions &&
+            window.interactiveSessions[
+                questionId
+            ] &&
+            ioElement
+        ) {
+
+            ioElement.focus();
+
+            ioElement.scrollTop =
+                ioElement.scrollHeight;
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Interactive input error:",
+            error
+        );
+
+
+        if (ioElement) {
+
+            ioElement.value +=
+                "\n[Input Error]\n" +
+                error.message;
+
+            ioElement.scrollTop =
+                ioElement.scrollHeight;
+        }
+    }
+}
+
+
+function escapeHtml(value) {
+    const div = document.createElement("div");
+
+    div.textContent =
+        value === null || value === undefined
+            ? ""
+            : String(value);
+
+    return div.innerHTML;
+}
+
+
+async function checkCode(questionId, language, button) {
+
+    // ==========================================================
+    // 1. GET MONACO EDITOR
+    // ==========================================================
+
+    const editor = window.assessmentEditors[questionId];
+
+    if (!editor) {
+        alert("Code editor is not ready yet.");
+        return;
+    }
+
+    const code = editor.getValue();
+
+    if (!code.trim()) {
+        alert("Please write some code first.");
+        return;
+    }
+
+
+    // ==========================================================
+    // 2. GET UI ELEMENTS
+    // ==========================================================
+
+    const resultElement =
+        document.getElementById("result_" + questionId);
+
+    const statusElement =
+        document.getElementById("status_" + questionId);
+
+    const errorContainer =
+        document.getElementById("error_container_" + questionId);
+
+    const errorElement =
+        document.getElementById("error_" + questionId);
+
+    const timeElement =
+        document.getElementById("time_" + questionId);
+
+
+    // ==========================================================
+    // 3. BUTTON LOADING STATE
+    // ==========================================================
+
+    button.disabled = true;
+    button.innerHTML = "⏳ Checking...";
+
+
+    // ==========================================================
+    // 4. SHOW RESULT BOX
+    // ==========================================================
+
+    if (resultElement) {
+        resultElement.style.display = "block";
+    }
+
+    if (statusElement) {
+        statusElement.innerHTML =
+            "Checking official test cases...";
+    }
+
+    if (errorContainer) {
+        errorContainer.style.display = "none";
+    }
+
+    if (errorElement) {
+        errorElement.textContent = "";
+    }
+
+    if (timeElement) {
+        timeElement.innerHTML = "";
+    }
+
+
+    try {
+
+        // ======================================================
+        // 5. SEND CODE TO DJANGO
+        // ======================================================
+
+        const response = await fetch(
+            "{% url 'check_programming_code' %}",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+
+                body: JSON.stringify({
+                    question_id: questionId,
+                    language: language,
+                    code: code
+                })
+            }
+        );
+
+
+        // ======================================================
+        // 6. READ RESPONSE
+        // ======================================================
+
+        const data = await response.json();
+
+        console.log(
+            "RUN & CHECK RESPONSE:",
+            data
+        );
+
+        console.log(
+            "TEST RESULTS:",
+            data.test_results
+        );
+
+
+        // ======================================================
+        // 7. CHECK RESPONSE
+        // ======================================================
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.error ||
+                data.message ||
+                "Code checking failed."
+            );
+        }
+
+
+        // ======================================================
+        // 8. GET VALUES
+        // ======================================================
+
+        const testResults =
+            Array.isArray(data.test_results)
+                ? data.test_results
+                : [];
+
+        const passed =
+            testResults.filter(function(test) {
+                return test.passed === true;
+            }).length;
+
+        const totalTests =
+            testResults.length;
+
+        const marks =
+            Number(data.marks || 0);
+
+        const maxMarks =
+            Number(data.max_marks || 0);
+
+
+        // ======================================================
+        // 9. UPDATE STATUS
+        // ======================================================
+
+        if (statusElement) {
+            statusElement.innerHTML =
+                data.feedback ||
+                data.status ||
+                "Evaluation completed.";
+        }
+
+
+        // ======================================================
+        // 10. FIND THE CARD BODY
+        // ==========================================================
+
+        /*
+         * IMPORTANT:
+         *
+         * Do NOT replace resultElement.innerHTML.
+         *
+         * resultElement already contains the card.
+         *
+         * We only put our result inside the card-body.
+         */
+
+        let cardBody =
+            resultElement
+                ? resultElement.querySelector(".card-body")
+                : null;
+
+
+        if (!cardBody) {
+
+            console.error(
+                "Could not find .card-body inside result element."
+            );
+
+            throw new Error(
+                "Result display area could not be found."
+            );
+        }
+
+
+        // ======================================================
+        // 11. CREATE RESULT CONTAINER
+        // ======================================================
+
+        /*
+         * Keep the existing:
+         *
+         * status
+         * error
+         * execution time
+         *
+         * and add our test results below them.
+         */
+
+        let checkResultContainer =
+            document.getElementById(
+                "check_result_" + questionId
+            );
+
+
+        if (!checkResultContainer) {
+
+            checkResultContainer =
+                document.createElement("div");
+
+            checkResultContainer.id =
+                "check_result_" + questionId;
+
+            checkResultContainer.className =
+                "mt-3";
+
+            cardBody.appendChild(
+                checkResultContainer
+            );
+        }
+
+
+        // Clear only the previous Run & Check result
+        checkResultContainer.innerHTML = "";
+
+
+        // ======================================================
+        // 12. OVERALL SUMMARY
+        // ======================================================
+
+        let summaryHtml = "";
+
+
+        summaryHtml +=
+            '<div class="mb-3 p-3 border rounded bg-light">';
+
+
+        if (
+            passed === totalTests &&
+            totalTests > 0
+        ) {
+
+            summaryHtml +=
+                '<div class="text-success" ' +
+                'style="font-size:18px;font-weight:600;">' +
+
+                "✓ " +
+                passed +
+                " / " +
+                totalTests +
+                " test cases passed" +
+
+                "</div>";
+
+        } else {
+
+            summaryHtml +=
+                '<div style="font-size:18px;font-weight:600;">' +
+
+                passed +
+                " / " +
+                totalTests +
+                " test cases passed" +
+
+                "</div>";
+        }
+
+
+        summaryHtml +=
+            '<div class="mt-1" ' +
+            'style="font-size:17px;font-weight:600;">' +
+
+            "Marks: " +
+            marks +
+            " / " +
+            maxMarks +
+
+            "</div>";
+
+
+        summaryHtml +=
+            "</div>";
+
+
+        // ======================================================
+        // 13. TEST CASE RESULTS
+        // ======================================================
+
+        let testResultsHtml = "";
+
+
+        testResults.forEach(function(test) {
+
+            testResultsHtml +=
+                '<div class="border rounded p-3 mb-3">';
+
+
+            // --------------------------------------------------
+            // TEST CASE NUMBER
+            // --------------------------------------------------
+
+            testResultsHtml +=
+                '<div style="font-size:16px;font-weight:600;">' +
+
+                "Test Case " +
+                escapeHtml(test.order) +
+
+                "</div>";
+
+
+            // --------------------------------------------------
+            // STATUS
+            // --------------------------------------------------
+
+            if (test.passed) {
+
+                testResultsHtml +=
+                    '<div class="text-success mt-2" ' +
+                    'style="font-weight:600;">' +
+
+                    "✓ Passed" +
+
+                    "</div>";
+
+            } else {
+
+                let displayStatus =
+                    test.status || "Failed";
+
+
+                if (
+                    displayStatus ===
+                    "RUNTIME_ERROR"
+                ) {
+
+                    displayStatus =
+                        "Runtime Error";
+
+                } else if (
+                    displayStatus ===
+                    "COMPILE_ERROR"
+                ) {
+
+                    displayStatus =
+                        "Compile Error";
+
+                } else if (
+                    displayStatus ===
+                    "WRONG_ANSWER"
+                ) {
+
+                    displayStatus =
+                        "Wrong Answer";
+
+                } else if (
+                    displayStatus ===
+                    "TIMEOUT"
+                ) {
+
+                    displayStatus =
+                        "Time Limit Exceeded";
+                }
+
+
+                testResultsHtml +=
+                    '<div class="text-danger mt-2" ' +
+                    'style="font-weight:600;">' +
+
+                    "✗ " +
+                    escapeHtml(displayStatus) +
+
+                    "</div>";
+            }
+
+
+            // --------------------------------------------------
+            // FEEDBACK
+            // --------------------------------------------------
+
+            if (test.feedback) {
+
+                testResultsHtml +=
+                    '<div class="mt-2 text-muted">' +
+
+                    escapeHtml(test.feedback) +
+
+                    "</div>";
+            }
+
+
+            // ==================================================
+            // PUBLIC TEST CASE
+            // ==================================================
+
+            if (!test.is_hidden) {
+
+
+                // ----------------------------------------------
+                // INPUT
+                // ----------------------------------------------
+
+                if (
+                    test.input_data !== undefined &&
+                    test.input_data !== null
+                ) {
+
+                    testResultsHtml +=
+                        '<div class="mt-3">' +
+
+                        "<strong>Input:</strong>" +
+
+                        '<pre class="bg-light border rounded p-2 mt-1" ' +
+                        'style="white-space:pre-wrap;">' +
+
+                        escapeHtml(
+                            test.input_data
+                        ) +
+
+                        "</pre>" +
+
+                        "</div>";
+                }
+
+
+                // ----------------------------------------------
+                // EXPECTED OUTPUT
+                // ----------------------------------------------
+
+                testResultsHtml +=
+                    '<div class="mt-2">' +
+
+                    "<strong>Expected Output:</strong>" +
+
+                    '<pre class="bg-light border rounded p-2 mt-1" ' +
+                    'style="white-space:pre-wrap;">' +
+
+                    escapeHtml(
+                        test.expected_output || ""
+                    ) +
+
+                    "</pre>" +
+
+                    "</div>";
+
+
+                // ----------------------------------------------
+                // ACTUAL OUTPUT
+                // ----------------------------------------------
+
+                testResultsHtml +=
+                    '<div class="mt-2">' +
+
+                    "<strong>Your Output:</strong>" +
+
+                    '<pre class="bg-light border rounded p-2 mt-1" ' +
+                    'style="white-space:pre-wrap;">' +
+
+                    escapeHtml(
+                        test.actual_output || ""
+                    ) +
+
+                    "</pre>" +
+
+                    "</div>";
+            }
+
+
+            // ==================================================
+            // HIDDEN TEST CASE
+            // ==================================================
+
+            else {
+
+                testResultsHtml +=
+                    '<div class="mt-3 text-muted">' +
+
+                    "Hidden test case — " +
+                    "test data and output are not shown." +
+
+                    "</div>";
+            }
+
+
+            // --------------------------------------------------
+            // END TEST CASE
+            // --------------------------------------------------
+
+            testResultsHtml +=
+                "</div>";
+        });
+
+
+        // ======================================================
+        // 14. DISPLAY EVERYTHING
+        // ======================================================
+
+        checkResultContainer.innerHTML =
+            summaryHtml +
+
+            '<div class="mt-3">' +
+
+            testResultsHtml +
+
+            "</div>";
+
+
+        // ======================================================
+        // 15. EXECUTION TIME
+        // ======================================================
+
+        const times =
+            testResults
+                .map(function(test) {
+                    return Number(test.execution_time);
+                })
+                .filter(function(time) {
+                    return !isNaN(time);
+                });
+
+
+        if (
+            timeElement &&
+            times.length > 0
+        ) {
+
+            const totalTime =
+                times.reduce(
+                    function(sum, value) {
+                        return sum + value;
+                    },
+                    0
+                );
+
+
+            timeElement.innerHTML =
+                "Total execution time: " +
+                totalTime.toFixed(3) +
+                " seconds";
+        }
+
+
+    } catch (error) {
+
+        // ======================================================
+        // 16. ERROR
+        // ======================================================
+
+        console.error(
+            "Run & Check error:",
+            error
+        );
+
+
+        if (statusElement) {
+
+            statusElement.innerHTML =
+                "Code checking failed.";
+        }
+
+
+        if (errorContainer) {
+
+            errorContainer.style.display =
+                "block";
+        }
+
+
+        if (errorElement) {
+
+            errorElement.textContent =
+                error.message;
+        }
+
+
+    } finally {
+
+        // ======================================================
+        // 17. RESTORE BUTTON
+        // ======================================================
+
+        button.disabled = false;
+
+        button.innerHTML =
+            "✓ Run & Check";
+    }
+}
+
+document.addEventListener("change", function (event) {
+
+    const input = event.target;
+
+    // Only handle MCQ radio buttons
+    if (!input.matches('input[type="radio"][name^="question_"]')) {
+        return;
+    }
+
+    const questionId = input.name.replace("question_", "");
+    const assessmentId = "{{ assessment.id }}";
+
+    autosaveMCQAnswer(
+        assessmentId,
+        questionId,
+        input.value
+    );
+});
+
+
+async function autosaveMCQAnswer(assessmentId, questionId, answer) {
+
+    try {
+
+        const response = await fetch(
+            "{% url 'autosave_assessment_answer' %}",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+
+                body: JSON.stringify({
+                    assessment_id: assessmentId,
+                    question_id: questionId,
+                    answer: answer
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            console.error(
+                "MCQ auto-save failed:",
+                data.error || "Unknown error"
+            );
+            return;
+        }
+
+        console.log(
+            "MCQ answer auto-saved:",
+            questionId,
+            answer
+        );
+
+    } catch (error) {
+
+        console.error(
+            "MCQ auto-save error:",
+            error
+        );
+    }
+}
+
+
+document.addEventListener("change", function (event) {
+
+    const input = event.target;
+
+    // Only handle Multiple Select checkboxes
+    if (!input.matches('input[type="checkbox"][name^="question_"]')) {
+        return;
+    }
+
+    const questionId = input.name.replace("question_", "");
+    const assessmentId = "{{ assessment.id }}";
+
+    const selectedOptions = Array.from(
+        document.querySelectorAll(
+            'input[type="checkbox"][name="question_' + questionId + '"]:checked'
+        )
+    ).map(function (checkbox) {
+        return checkbox.value;
+    });
+
+    autosaveMultipleSelectAnswer(
+        assessmentId,
+        questionId,
+        selectedOptions
+    );
+});
+
+
+async function autosaveMultipleSelectAnswer(
+    assessmentId,
+    questionId,
+    answer
+) {
+
+    try {
+
+        const response = await fetch(
+            "{% url 'autosave_assessment_answer' %}",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+
+                body: JSON.stringify({
+                    assessment_id: assessmentId,
+                    question_id: questionId,
+                    answer: answer
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            console.error(
+                "Multiple Select auto-save failed:",
+                data.error || "Unknown error"
+            );
+
+            return;
+        }
+
+        console.log(
+            "Multiple Select answer auto-saved:",
+            questionId,
+            answer
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Multiple Select auto-save error:",
+            error
+        );
+    }
+}
+
+const textAutoSaveTimers = {};
+
+
+document.addEventListener("input", function (event) {
+
+    const input = event.target;
+
+    // Handle Fill in the Blank
+    if (
+        input.matches('input[name^="question_"]') &&
+        input.type === "text"
+    ) {
+        autosaveTextAnswerFromInput(input);
+        return;
+    }
+
+    // Handle Theory
+    if (
+        input.matches('textarea[name^="question_"]')
+    ) {
+        autosaveTextAnswerFromInput(input);
+    }
+
+});
+
+
+function autosaveTextAnswerFromInput(input) {
+
+    const questionId = input.name.replace("question_", "");
+    const assessmentId = "{{ assessment.id }}";
+    const answer = input.value;
+
+    // Clear previous timer for this question
+    if (textAutoSaveTimers[questionId]) {
+        clearTimeout(textAutoSaveTimers[questionId]);
+    }
+
+    // Save after the student stops typing
+    textAutoSaveTimers[questionId] = setTimeout(
+        function () {
+
+            autosaveTextAnswer(
+                assessmentId,
+                questionId,
+                answer
+            );
+
+        },
+        500
+    );
+}
+
+
+async function autosaveTextAnswer(
+    assessmentId,
+    questionId,
+    answer
+) {
+
+    try {
+
+        const response = await fetch(
+            "{% url 'autosave_assessment_answer' %}",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+
+                body: JSON.stringify({
+                    assessment_id: assessmentId,
+                    question_id: questionId,
+                    answer: answer
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            console.error(
+                "Text answer auto-save failed:",
+                data.error || "Unknown error"
+            );
+
+            return;
+        }
+
+        console.log(
+            "Text answer auto-saved:",
+            questionId
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Text answer auto-save error:",
+            error
+        );
+    }
+}
+
+
+const programmingAutoSaveTimers = {};
+
+
+// ==========================================================
+// PROGRAMMING CODE AUTO-SAVE
+// ==========================================================
+
+function setupProgrammingAutoSave() {
+
+    if (!window.assessmentEditors) {
+        console.warn("Monaco editors are not ready yet.");
+        return;
+    }
+
+    Object.keys(window.assessmentEditors).forEach(function (questionId) {
+
+        const editor =
+            window.assessmentEditors[questionId];
+
+        if (!editor) {
+            return;
+        }
+
+        editor.onDidChangeModelContent(function () {
+
+            // Clear previous timer
+            if (programmingAutoSaveTimers[questionId]) {
+                clearTimeout(
+                    programmingAutoSaveTimers[questionId]
+                );
+            }
+
+            // Save after student stops typing
+            programmingAutoSaveTimers[questionId] =
+                setTimeout(function () {
+
+                    autosaveProgrammingCode(
+                        questionId,
+                        editor.getValue()
+                    );
+
+                }, 500);
+
+        });
+
+    });
+
+    console.log("Programming auto-save initialized.");
+}
+
+
+// ==========================================================
+// SAVE PROGRAMMING CODE
+// ==========================================================
+
+async function autosaveProgrammingCode(
+    questionId,
+    code
+) {
+
+    const assessmentId = "{{ assessment.id }}";
+
+    try {
+
+        const response = await fetch(
+            "{% url 'autosave_assessment_answer' %}",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+
+                body: JSON.stringify({
+                    assessment_id: assessmentId,
+                    question_id: questionId,
+                    answer: code
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            console.error(
+                "Programming auto-save failed:",
+                data.error || "Unknown error"
+            );
+
+            return;
+        }
+
+        console.log(
+            "Programming code auto-saved:",
+            questionId
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Programming auto-save error:",
+            error
+        );
+    }
+}
+
+
+// ==========================================================
+// START AUTO-SAVE AFTER MONACO IS READY
+// ==========================================================
+
+if (window.assessmentEditors) {
+
+    setupProgrammingAutoSave();
+
+} else {
+
+    window.addEventListener(
+        "load",
+        function () {
+            setupProgrammingAutoSave();
+        }
+    );
+
+}
+
+
+</script>
+
+
+{% endblock %}

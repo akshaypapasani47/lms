@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+```
+<!-- Assessment summary -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body text-center">
+
+        <h2>Assessment Result</h2>
+
+        <h4 class="mt-3">
+            {{ assessment.title }}
+        </h4>
+
+        <hr>
+
+        <h1>
+            {{ submission.total_marks }}
+            /
+            {{ assessment.total_marks }}
+        </h1>
+
+        <p class="text-muted">
+            Attempt {{ submission.attempt_number }}
+        </p>
+
+    </div>
+</div>
+
+
+{% for item in questions %}
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h5>
+                Q{{ item.question.order }}.
+                {{ item.question.question_text }}
+            </h5>
+
+            <p>
+                <strong>Marks:</strong>
+                {{ item.marks_awarded }}
+                /
+                {{ item.question.marks }}
+            </p>
+
+
+            <!-- Status -->
+
+            {% if item.is_correct %}
+
+                <div class="alert alert-success">
+                    Correct
+                </div>
+
+            {% elif item.is_correct == False %}
+
+                <div class="alert alert-danger">
+                    Incorrect
+                </div>
+
+            {% else %}
+
+                <div class="alert alert-warning">
+                    Pending Evaluation
+                </div>
+
+            {% endif %}
+
+
+            <!-- Programming question -->
+
+            {% if item.question.question_type == "PROGRAMMING" %}
+
+                <div class="mt-4">
+
+                    <h6>Submitted Code</h6>
+
+                    {% if item.submitted_code %}
+
+                        <pre class="bg-light border rounded p-3"
+                             style="white-space: pre-wrap;"><code>{{ item.submitted_code }}</code></pre>
+
+                    {% else %}
+
+                        <div class="alert alert-secondary">
+                            No code submitted.
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                {% if item.feedback %}
+
+                    <div class="mt-3">
+
+                        <strong>Evaluation:</strong>
+
+                        <p class="mt-2">
+                            {{ item.feedback }}
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+            <!-- Other question types -->
+
+            {% else %}
+
+                {% if item.feedback %}
+
+                    <p class="mt-3">
+
+                        <strong>Feedback:</strong>
+
+                        {{ item.feedback }}
+
+                    </p>
+
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+    </div>
+
+{% empty %}
+
+    <div class="alert alert-info">
+        No questions were submitted.
+    </div>
+
+{% endfor %}
+
+
+<a href="{% url 'student_assessment_list' %}"
+   class="btn btn-primary">
+
+    Back to Assessments
+
+</a>
+```
+
+</div>
+
+{% endblock %}

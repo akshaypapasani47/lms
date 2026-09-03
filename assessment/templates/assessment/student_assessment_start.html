@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+    <!-- BACK BUTTON -->
+
+    <a
+        href="{% url 'student_assessment_list' %}"
+        class="btn btn-outline-secondary mb-4"
+    >
+        ← Back to Assessments
+    </a>
+
+
+    <!-- ASSESSMENT INFORMATION -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <h2>
+                {{ assessment.title }}
+            </h2>
+
+
+            {% if assessment.description %}
+
+                <p class="text-muted">
+                    {{ assessment.description }}
+                </p>
+
+            {% endif %}
+
+
+            <hr>
+
+
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
+
+                    <strong>
+                        Total Marks
+                    </strong>
+
+                    <br>
+
+                    {{ assessment.total_marks }}
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <strong>
+                        Questions
+                    </strong>
+
+                    <br>
+
+                    {{ assessment.questions.count }}
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <strong>
+                        Duration
+                    </strong>
+
+                    <br>
+
+                    {% if assessment.duration_minutes %}
+
+                        {{ assessment.duration_minutes }}
+                        minutes
+
+                    {% else %}
+
+                        No limit
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="col-md-3 mb-3">
+
+                    <strong>
+                        Maximum Attempts
+                    </strong>
+
+                    <br>
+
+                    {{ assessment.max_attempts }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ATTEMPT INFORMATION -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+
+            <strong>
+                Attempt Information
+            </strong>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <p>
+
+                Attempts Used:
+
+                <strong>
+                    {{ attempt_count }}
+                </strong>
+
+            </p>
+
+
+            <p>
+
+                Attempts Remaining:
+
+                <strong>
+                    {{ attempts_remaining }}
+                </strong>
+
+            </p>
+
+
+            {% if in_progress_attempt %}
+
+                <div class="alert alert-warning">
+
+                    You already have an assessment attempt
+                    in progress.
+
+                    <br>
+
+                    You can continue that attempt.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- INSTRUCTIONS -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+
+            <strong>
+                Instructions
+            </strong>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <ul>
+
+                <li>
+                    Read each question carefully.
+                </li>
+
+                <li>
+                    Make sure you submit the assessment
+                    before the allowed time expires.
+                </li>
+
+                <li>
+                    Your answers will be saved as you proceed.
+                </li>
+
+                <li>
+                    Once the assessment is submitted,
+                    it cannot be modified.
+                </li>
+
+                <li>
+                    You can attempt this assessment only
+                    according to the configured attempt limit.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTION -->
+
+    <div class="d-flex justify-content-between">
+
+        <a
+            href="{% url 'student_assessment_list' %}"
+            class="btn btn-secondary"
+        >
+            ← Back
+        </a>
+
+
+        {% if in_progress_attempt %}
+
+            <a
+                href="{% url 'student_assessment_attempt' assessment.pk %}"
+                class="btn btn-warning"
+            >
+                Continue Assessment
+            </a>
+
+        {% elif attempts_remaining > 0 %}
+
+            <a
+                href="{% url 'student_assessment_attempt' assessment.pk %}"
+                class="btn btn-success"
+            >
+                Start Assessment
+            </a>
+
+        {% else %}
+
+            <button
+                class="btn btn-secondary"
+                disabled
+            >
+                No Attempts Remaining
+            </button>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

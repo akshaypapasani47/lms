@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Edit Question {{ question.question_number }}</h2>
+    <a href="{% url 'assignment_detail' question.assignment.id %}" class="btn btn-outline-secondary">
+      &larr; Back to Assignment
+    </a>
+  </div>
+  <hr>
+  <form method="post" class="card card-body shadow-sm">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="d-flex justify-content-between">
+      <a href="{% url 'assignment_detail' question.assignment.id %}" class="btn btn-secondary">&larr; Back</a>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,904 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+    <!-- BACK BUTTON -->
+    <div class="mb-3">
+        <a href="{% url 'assessment_detail' assessment.pk %}"
+           class="btn btn-secondary">
+            ← Back to Assessment
+        </a>
+    </div>
+
+
+    <div class="mb-4">
+
+        <h2>Add Question</h2>
+
+        <p class="text-muted">
+            {{ assessment.title }}
+        </p>
+
+    </div>
+
+
+    <form method="POST" id="question-form">
+
+        {% csrf_token %}
+
+
+        <!-- ================================================= -->
+        <!-- BASIC QUESTION DETAILS -->
+        <!-- ================================================= -->
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header">
+                <strong>Question Details</strong>
+            </div>
+
+            <div class="card-body">
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Question
+                    </label>
+
+                    {{ form.question_text }}
+
+                    {% for error in form.question_text.errors %}
+                        <div class="text-danger">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Question Type
+                        </label>
+
+                        {{ form.question_type }}
+
+                    </div>
+
+
+                    <div class="col-md-3 mb-3">
+
+                        <label class="form-label">
+                            Marks
+                        </label>
+
+                        {{ form.marks }}
+
+                    </div>
+
+
+                    <div class="col-md-3 mb-3">
+
+                        <label class="form-label">
+                            Question Order
+                        </label>
+
+                        {{ form.order }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- MCQ -->
+        <!-- ================================================= -->
+
+        <div id="mcq-section"
+             class="card shadow-sm mb-4 question-section"
+             style="display:none;">
+
+            <div class="card-header">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <strong>Answer Options</strong>
+
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            id="add-option">
+
+                        + Add Option
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div id="options-container">
+
+                    <div class="option-row mb-3">
+
+                        <div class="row align-items-center">
+
+                            <div class="col-md-8">
+
+                                <input type="text"
+                                       name="option_text[]"
+                                       class="form-control"
+                                       placeholder="Enter option">
+
+                            </div>
+
+
+                            <div class="col-md-2">
+
+                                <div class="form-check">
+
+                                    <input type="radio"
+                                           name="correct_option"
+                                           value="0"
+                                           class="form-check-input">
+
+                                    <label class="form-check-label">
+                                        Correct
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-2">
+
+                                <button type="button"
+                                        class="btn btn-danger btn-sm remove-option">
+
+                                    Remove
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- MULTIPLE SELECT -->
+        <!-- ================================================= -->
+
+        <div id="multiple-select-section"
+             class="card shadow-sm mb-4 question-section"
+             style="display:none;">
+
+            <div class="card-header">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <strong>Answer Options</strong>
+
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            id="add-multiple-option">
+
+                        + Add Option
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div id="multiple-options-container">
+
+                    <div class="multiple-option-row mb-3">
+
+                        <div class="row align-items-center">
+
+                            <div class="col-md-8">
+
+                                <input type="text"
+                                       name="multiple_option_text[]"
+                                       class="form-control"
+                                       placeholder="Enter option">
+
+                            </div>
+
+
+                            <div class="col-md-2">
+
+                                <div class="form-check">
+
+                                    <input type="checkbox"
+                                           name="correct_multiple_options[]"
+                                           value="0"
+                                           class="form-check-input">
+
+                                    <label class="form-check-label">
+                                        Correct
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-2">
+
+                                <button type="button"
+                                        class="btn btn-danger btn-sm remove-multiple-option">
+
+                                    Remove
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- FILL IN THE BLANK -->
+        <!-- ================================================= -->
+
+        <div id="fill-blank-section"
+             class="card shadow-sm mb-4 question-section"
+             style="display:none;">
+
+            <div class="card-header">
+
+                <strong>Accepted Answers</strong>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <p class="text-muted">
+                    Add all answers that should be accepted.
+                </p>
+
+
+                <div id="accepted-answers-container">
+
+                    <input type="text"
+                           name="accepted_answers[]"
+                           class="form-control mb-2"
+                           placeholder="Accepted answer">
+
+                </div>
+
+
+                <button type="button"
+                        class="btn btn-outline-primary btn-sm"
+                        id="add-answer">
+
+                    + Add Accepted Answer
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- THEORY -->
+        <!-- ================================================= -->
+
+        <div id="theory-section"
+             class="card shadow-sm mb-4 question-section"
+             style="display:none;">
+
+            <div class="card-header">
+
+                <strong>AI Evaluation Criteria</strong>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <p class="text-muted">
+                    Define how the student's answer should be evaluated.
+                </p>
+
+
+                <div id="criteria-container">
+
+                    <div class="criterion-row mb-3">
+
+                        <div class="row">
+
+                            <div class="col-md-8">
+
+                                <input type="text"
+                                       name="criteria_name[]"
+                                       class="form-control"
+                                       placeholder="Criterion">
+
+                            </div>
+
+
+                            <div class="col-md-3">
+
+                                <input type="number"
+                                       name="criteria_marks[]"
+                                       class="form-control"
+                                       placeholder="Marks"
+                                       min="0">
+
+                            </div>
+
+
+                            <div class="col-md-1">
+
+                                <button type="button"
+                                        class="btn btn-danger remove-criterion">
+
+                                    ×
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button type="button"
+                        class="btn btn-outline-primary btn-sm"
+                        id="add-criterion">
+
+                    + Add Criterion
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- PROGRAMMING -->
+        <!-- ================================================= -->
+
+        <div id="programming-section"
+             class="question-section"
+             style="display:none;">
+
+
+            <div class="card shadow-sm mb-4">
+
+                <div class="card-header">
+
+                    <strong>Programming Question</strong>
+
+                </div>
+
+
+                <div class="card-body">
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Programming Language
+                        </label>
+
+                        {{ form.language }}
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Input Description
+                        </label>
+
+                        {{ form.input_description }}
+
+                        <small class="text-muted">
+                            Describe all input values. Multiple values,
+                            lists, dictionaries, arrays, etc. can be specified.
+                        </small>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Output Description
+                        </label>
+
+                        {{ form.output_description }}
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Constraints
+                        </label>
+
+                        {{ form.constraints }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- TEST CASE INFORMATION -->
+            <!-- ================================================= -->
+
+            <div class="alert alert-info">
+
+                <strong>Test Cases</strong>
+
+                <br>
+
+                After saving the question, you can add and manage
+                public and hidden test cases separately.
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- BUTTONS -->
+        <!-- ================================================= -->
+
+        <div class="mt-4">
+
+            <button type="submit"
+                    class="btn btn-success">
+
+                Save Question
+
+            </button>
+
+
+            <a href="{% url 'assessment_detail' assessment.pk %}"
+               class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    const questionType =
+        document.getElementById("id_question_type");
+
+
+    const sections = {
+
+        MCQ:
+            document.getElementById("mcq-section"),
+
+        MULTIPLE_SELECT:
+            document.getElementById("multiple-select-section"),
+
+        FILL_BLANK:
+            document.getElementById("fill-blank-section"),
+
+        THEORY:
+            document.getElementById("theory-section"),
+
+        PROGRAMMING:
+            document.getElementById("programming-section")
+
+    };
+
+
+    function updateSections() {
+
+        Object.values(sections).forEach(function(section) {
+
+            if (section) {
+                section.style.display = "none";
+            }
+
+        });
+
+
+        const selected =
+            questionType.value;
+
+
+        if (sections[selected]) {
+
+            sections[selected].style.display = "block";
+
+        }
+
+    }
+
+
+    questionType.addEventListener(
+        "change",
+        updateSections
+    );
+
+
+    updateSections();
+
+
+    // =====================================================
+    // MCQ OPTIONS
+    // =====================================================
+
+    let optionIndex = 1;
+
+
+    document
+        .getElementById("add-option")
+        .addEventListener("click", function () {
+
+
+            const container =
+                document.getElementById(
+                    "options-container"
+                );
+
+
+            const row =
+                document.createElement("div");
+
+
+            row.className =
+                "option-row mb-3";
+
+
+            row.innerHTML = `
+
+                <div class="row align-items-center">
+
+                    <div class="col-md-8">
+
+                        <input type="text"
+                               name="option_text[]"
+                               class="form-control"
+                               placeholder="Enter option">
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <div class="form-check">
+
+                            <input type="radio"
+                                   name="correct_option"
+                                   value="${optionIndex}"
+                                   class="form-check-input">
+
+                            <label class="form-check-label">
+                                Correct
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <button type="button"
+                                class="btn btn-danger btn-sm remove-option">
+
+                            Remove
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(row);
+
+            optionIndex++;
+
+        });
+
+
+    // =====================================================
+    // MULTIPLE SELECT OPTIONS
+    // =====================================================
+
+    let multipleOptionIndex = 1;
+
+
+    document
+        .getElementById("add-multiple-option")
+        .addEventListener("click", function () {
+
+
+            const container =
+                document.getElementById(
+                    "multiple-options-container"
+                );
+
+
+            const row =
+                document.createElement("div");
+
+
+            row.className =
+                "multiple-option-row mb-3";
+
+
+            row.innerHTML = `
+
+                <div class="row align-items-center">
+
+                    <div class="col-md-8">
+
+                        <input type="text"
+                               name="multiple_option_text[]"
+                               class="form-control"
+                               placeholder="Enter option">
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <div class="form-check">
+
+                            <input type="checkbox"
+                                   name="correct_multiple_options[]"
+                                   value="${multipleOptionIndex}"
+                                   class="form-check-input">
+
+                            <label class="form-check-label">
+                                Correct
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <button type="button"
+                                class="btn btn-danger btn-sm remove-multiple-option">
+
+                            Remove
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(row);
+
+            multipleOptionIndex++;
+
+        });
+
+
+    // =====================================================
+    // FILL BLANK
+    // =====================================================
+
+    document
+        .getElementById("add-answer")
+        .addEventListener("click", function () {
+
+
+            const container =
+                document.getElementById(
+                    "accepted-answers-container"
+                );
+
+
+            const input =
+                document.createElement("input");
+
+
+            input.type = "text";
+
+            input.name =
+                "accepted_answers[]";
+
+            input.className =
+                "form-control mb-2";
+
+            input.placeholder =
+                "Accepted answer";
+
+
+            container.appendChild(input);
+
+        });
+
+
+    // =====================================================
+    // THEORY CRITERIA
+    // =====================================================
+
+    document
+        .getElementById("add-criterion")
+        .addEventListener("click", function () {
+
+
+            const container =
+                document.getElementById(
+                    "criteria-container"
+                );
+
+
+            const row =
+                document.createElement("div");
+
+
+            row.className =
+                "criterion-row mb-3";
+
+
+            row.innerHTML = `
+
+                <div class="row">
+
+                    <div class="col-md-8">
+
+                        <input type="text"
+                               name="criteria_name[]"
+                               class="form-control"
+                               placeholder="Criterion">
+
+                    </div>
+
+
+                    <div class="col-md-3">
+
+                        <input type="number"
+                               name="criteria_marks[]"
+                               class="form-control"
+                               placeholder="Marks"
+                               min="0">
+
+                    </div>
+
+
+                    <div class="col-md-1">
+
+                        <button type="button"
+                                class="btn btn-danger remove-criterion">
+
+                            ×
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(row);
+
+        });
+
+
+    // =====================================================
+    // REMOVE ELEMENTS
+    // =====================================================
+
+    document.addEventListener("click", function(event) {
+
+
+        if (
+            event.target.classList.contains(
+                "remove-option"
+            )
+        ) {
+
+            event.target
+                .closest(".option-row")
+                .remove();
+
+        }
+
+
+        if (
+            event.target.classList.contains(
+                "remove-multiple-option"
+            )
+        ) {
+
+            event.target
+                .closest(".multiple-option-row")
+                .remove();
+
+        }
+
+
+        if (
+            event.target.classList.contains(
+                "remove-criterion"
+            )
+        ) {
+
+            event.target
+                .closest(".criterion-row")
+                .remove();
+
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

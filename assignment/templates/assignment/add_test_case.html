@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <!-- Back Button Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Add Test Case for Q{{ question.question_number }}</h2>
+    <a href="{% url 'assignment_detail' question.assignment.id %}" class="btn btn-outline-secondary">
+      &larr; Back to Assignment
+    </a>
+  </div>
+  <p class="text-muted">{{ question.question_text }}</p>
+
+  {% if test_cases %}
+    <h5 class="mt-4">Existing Test Cases</h5>
+    <ul class="list-group mb-4">
+      {% for tc in test_cases %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>Inputs:</strong> 
+            <code>{{ tc.get_input_list|join:" | " }}</code><br>
+            <strong>Expected Output:</strong> <code>{{ tc.expected_output }}</code>
+          </div>
+          <div>
+            <span class="badge bg-primary rounded-pill me-2">{{ tc.marks }} Marks</span>
+            <a href="{% url 'edit_test_case' tc.id %}" class="btn btn-sm btn-outline-warning">Edit</a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <div class="card card-body shadow-sm">
+    <form method="post" id="testCaseForm" onsubmit="prepareSubmission(event)">
+      {% csrf_token %}
+
+      <!-- Order Field -->
+      <input type="hidden" name="order" value="{{ test_cases.count|default:0 }}">
+
+      <!-- Dynamic Inputs Section -->
+      <div class="mb-3">
+        <label class="form-label">
+          <strong>Inputs (Supports Values, Lists like <code>[1,2,3]</code>, or Dicts like <code>{"key": "val"}</code>):</strong>
+        </label>
+        <div id="inputsContainer">
+          <div class="card p-2 mb-2 input-row bg-light">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="fw-bold small text-secondary input-label">Input 1</span>
+              <button type="button" class="btn btn-sm btn-outline-danger remove-btn" onclick="removeInput(this)">Remove</button>
+            </div>
+            <textarea class="form-control input-field" rows="2" placeholder="e.g. 10 OR [1, 2, 3] OR {&quot;a&quot;: 1}"></textarea>
+          </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary mt-1" onclick="addInputField()">
+          + Add Another Input Block
+        </button>
+      </div>
+
+      <!-- Hidden field submitted to Django -->
+      <textarea name="input_data" id="id_input_data" style="display:none;"></textarea>
+
+      <!-- Expected Output -->
+      <div class="mb-3">
+        <label class="form-label"><strong>Expected Output:</strong></label>
+        <textarea name="expected_output" class="form-control" rows="2" placeholder="e.g. 15 or [1, 2, 3]" required></textarea>
+      </div>
+
+      <!-- Marks & Hidden Flag -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Marks</label>
+          <input type="number" name="marks" class="form-control" value="1" required>
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <div class="form-check mb-2">
+            <input type="checkbox" name="is_hidden" class="form-check-input" id="id_is_hidden">
+            <label class="form-check-label" for="id_is_hidden">Hidden Test Case?</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <a href="{% url 'assignment_detail' question.assignment.id %}" class="btn btn-secondary">
+          Cancel & Back
+        </a>
+        <div class="d-flex gap-2">
+          <button type="submit" name="add_another" value="1" class="btn btn-outline-primary">
+            Save & Add Another
+          </button>
+          <button type="submit" class="btn btn-success">
+            Save & Finish
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let inputCount = 1;
+
+  function addInputField() {
+    inputCount++;
+    const container = document.getElementById('inputsContainer');
+    const div = document.createElement('div');
+    div.className = 'card p-2 mb-2 input-row bg-light';
+    div.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <span class="fw-bold small text-secondary input-label">Input ${inputCount}</span>
+        <button type="button" class="btn btn-sm btn-outline-danger remove-btn" onclick="removeInput(this)">Remove</button>
+      </div>
+      <textarea class="form-control input-field" rows="2" placeholder="e.g. value, list, or dict"></textarea>
+    `;
+    container.appendChild(div);
+  }
+
+  function removeInput(btn) {
+    const rows = document.querySelectorAll('.input-row');
+    if (rows.length > 1) {
+      btn.closest('.input-row').remove();
+      reindexInputs();
+    }
+  }
+
+  function reindexInputs() {
+    const rows = document.querySelectorAll('.input-row');
+    inputCount = rows.length;
+    rows.forEach((row, idx) => {
+      row.querySelector('.input-label').innerText = `Input ${idx + 1}`;
+    });
+  }
+
+  function prepareSubmission(event) {
+    const fields = document.querySelectorAll('.input-field');
+    const values = [];
+    fields.forEach(f => {
+      const val = f.value.trim();
+      if (val !== '') {
+        values.push(val);
+      }
+    });
+    document.getElementById('id_input_data').value = values.join('\n');
+  }
+</script>
+{% endblock %}

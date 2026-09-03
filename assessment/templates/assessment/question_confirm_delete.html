@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <a
+        href="{% url 'assessment_detail' assessment.pk %}"
+        class="btn btn-outline-secondary mb-4"
+    >
+        ← Back to Assessment
+    </a>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-body text-center">
+
+            <h3>
+                Delete Question?
+            </h3>
+
+            <p>
+                Q{{ question.order }}.
+                {{ question.question_text }}
+            </p>
+
+            <p class="text-danger">
+                All options and test cases belonging to this
+                question will also be deleted.
+            </p>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-danger"
+                >
+                    Yes, Delete
+                </button>
+
+                <a
+                    href="{% url 'assessment_detail' assessment.pk %}"
+                    class="btn btn-secondary"
+                >
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

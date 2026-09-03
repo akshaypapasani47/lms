@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <a
+        href="{% url 'test_case_create' question.pk %}"
+        class="btn btn-outline-secondary mb-4"
+    >
+        ← Back to Test Cases
+    </a>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h3>
+                Delete Test Case?
+            </h3>
+
+            <p>
+                Test Case {{ test_case.order }}
+            </p>
+
+
+            <hr>
+
+
+            <p>
+                <strong>Input:</strong>
+            </p>
+
+            <pre>{{ test_case.input_data }}</pre>
+
+
+            <p>
+                <strong>Expected Output:</strong>
+            </p>
+
+            <pre>{{ test_case.expected_output }}</pre>
+
+
+            <form method="POST" class="mt-4">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-danger"
+                >
+                    Yes, Delete
+                </button>
+
+                <a
+                    href="{% url 'test_case_create' question.pk %}"
+                    class="btn btn-secondary"
+                >
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

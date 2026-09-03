@@ -17,6 +17,11 @@ urlpatterns = [
         "programming-lab/",
         include("programming_lab.urls")
     ),
+    path('assignments/', include('assignment.urls')),
+    path(
+        "assessments/",
+        include("assessment.urls")
+    ),
     
     #path('virtual-lab/', include('virtual_lab.urls')),
 ]

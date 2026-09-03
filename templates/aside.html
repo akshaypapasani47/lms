@@ -86,6 +86,22 @@
 					Virtual Lab
 				</a>
 			</li>
+
+			{% if request.user.is_student %}
+
+				<li>
+					<a href="{% url 'student_assessment_list' %}">
+						<i class="fas fa-clipboard-list"></i>
+						Assessments
+					</a>
+				</li>
+			{% endif %}
+
+			<li class="nav-item">
+				<a class="nav-link" href="{% url 'assignment_list' %}">
+					<i class="fas fa-tasks"></i> Assignments
+				</a>
+			</li>
 			{% if request.user.is_lecturer or request.user.is_superuser %}
 			<li>
 				<a href="{% url 'faculty_dashboard' %}">
@@ -93,7 +109,17 @@
 					Virtual Lab Monitor
 				</a>
 			</li>
+
+			<li>
+				<a href="{% url 'assessment_list' %}">
+					<i class="fas fa-laptop-code"></i>
+					Assessment
+				</a>
+			</li>
 			{% endif %}
+
+
+
 			{% if request.user.is_superuser or request.user.is_lecturer %}
 			<li class="{% if request.path == pro %}active{% endif %}">
 				<a href="{% url 'programs' %}"><i class="fas fa-book-open"></i>{% trans 'Programs & Courses' %}</a>

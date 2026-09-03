@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+
+<div class="container mt-4 mb-5">
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="card-title mb-0">{{ assignment.title }}</h2>
+        <span class="badge {% if assignment.status == 'PUBLISHED' %}bg-success{% else %}bg-warning text-dark{% endif %} fs-6">
+          {{ assignment.get_status_display }}
+        </span>
+      </div>
+      <p class="card-text text-muted">{{ assignment.description }}</p>
+      
+      <div class="d-flex gap-4 text-secondary small">
+        <div><strong>Total Marks:</strong> {{ assignment.total_marks }}</div>
+        <div><strong>Due Date:</strong> {{ assignment.due_date|date:"M d, Y H:i"|default:"No deadline" }}</div>
+      </div>
+
+      {% if previous_submission %}
+        <div class="alert alert-info mt-3 mb-0 d-flex justify-content-between align-items-center">
+          <div>
+            <strong>Status:</strong> Submitted (Score: <strong>{{ previous_submission.obtained_marks }} / {{ assignment.total_marks }}</strong>)
+          </div>
+          <a href="{% url 'submission_result' previous_submission.id %}" class="btn btn-sm btn-outline-info">View Grade</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Questions</h4>
+    {% if user.is_lecturer or user.is_superuser or user.is_staff or user.is_dep_head %}
+      <a href="{% url 'add_question' assignment.id %}" class="btn btn-primary">+ Add Question</a>
+    {% endif %}
+  </div>
+
+  {% if questions %}
+    <form method="post" action="{% url 'submit_assignment' assignment.id %}">
+      {% csrf_token %}
+
+      {% for q in questions %}
+        <div class="card shadow-sm mb-4 border">
+          <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Q{{ q.question_number }}: {{ q.programming_language|default:"PYTHON" }}</h5>
+            <div>
+              <span class="badge bg-primary fs-6 me-2">{{ q.marks }} Marks</span>
+              {% if user.is_lecturer or user.is_superuser or user.is_staff or user.is_dep_head %}
+                <a href="{% url 'edit_question' q.id %}" class="btn btn-sm btn-outline-secondary me-1">Edit Question</a>
+                <a href="{% url 'add_test_case' q.id %}" class="btn btn-sm btn-outline-success">+ Test Cases</a>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="card-body">
+            <p><strong>Problem Description:</strong></p>
+            <div class="bg-light p-3 rounded mb-3 border">
+              <code>{{ q.question_text|linebreaks }}</code>
+            </div>
+
+            <!-- Test Cases Display Logic -->
+            {% if q.test_cases.all %}
+              <h6>Test Cases:</h6>
+              <div class="table-responsive mb-3">
+                <table class="table table-sm table-bordered">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Input</th>
+                      <th>Expected Output</th>
+                      <th>Visibility</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for tc in q.test_cases.all %}
+                      <tr>
+                        {% if not tc.is_hidden %}
+                          <!-- Public Test Case -->
+                          <td><code>{{ tc.input_data|default:"(None)" }}</code></td>
+                          <td><code>{{ tc.expected_output }}</code></td>
+                          <td><span class="badge bg-success">Public</span></td>
+                        {% elif user.is_lecturer or user.is_superuser or user.is_staff or user.is_dep_head %}
+                          <!-- Hidden Test Case (Visible to Lecturers Only) -->
+                          <td><code>{{ tc.input_data|default:"(None)" }}</code></td>
+                          <td><code>{{ tc.expected_output }}</code></td>
+                          <td><span class="badge bg-warning text-dark">Hidden (Lecturer Preview)</span></td>
+                        {% else %}
+                          <!-- Hidden Test Case (Hidden from Students) -->
+                          <td colspan="2"><em class="text-muted">Hidden test case used during automated grading.</em></td>
+                          <td><span class="badge bg-secondary">Hidden</span></td>
+                        {% endif %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% endif %}
+
+            <label class="form-label font-weight-bold"><strong>Your Solution Code:</strong></label>
+            <textarea id="code_q_{{ q.id }}" name="code_q_{{ q.id }}" class="form-control code-editor" rows="8"></textarea>
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="card card-body bg-light border shadow-sm text-end">
+        <div>
+          <a href="{% url 'assignment_list' %}" class="btn btn-secondary me-2">Back to List</a>
+          <button type="submit" class="btn btn-success btn-lg">Submit Assignment</button>
+        </div>
+      </div>
+    </form>
+  {% else %}
+    <div class="alert alert-warning">No questions have been added yet.</div>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.code-editor').forEach(textarea => {
+      CodeMirror.fromTextArea(textarea, {
+        lineNumbers: true,
+        mode: "python",
+        theme: "dracula",
+        viewportMargin: Infinity
+      });
+    });
+  });
+</script>
+{% endblock %}
