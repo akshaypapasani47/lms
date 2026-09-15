@@ -92,11 +92,14 @@ class AssessmentQuestionForm(forms.ModelForm):
             "question_text",
             "question_type",
             "marks",
+            "ai_evaluation_marks",
             "order",
             "language",
             "input_description",
             "output_description",
             "constraints",
+            "example_input",
+            "example_output",
             "reference_answer",
             "evaluation_criteria",
         ]
@@ -162,6 +165,32 @@ class AssessmentQuestionForm(forms.ModelForm):
                 }
             ),
 
+            "example_input": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 5,
+                    "placeholder": (
+                        "Enter example input exactly as "
+                        "the program should receive it.\n\n"
+                        "Example:\n"
+                        "10 20"
+                    ),
+                }
+            ),
+
+            "example_output": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 4,
+                    "placeholder": (
+                        "Enter the expected output for the "
+                        "example input.\n\n"
+                        "Example:\n"
+                        "30"
+                    ),
+                }
+            ),
+
             "reference_answer": forms.Textarea(
                 attrs={
                     "class": "form-control",
@@ -191,6 +220,8 @@ class AssessmentQuestionForm(forms.ModelForm):
         self.fields["input_description"].required = False
         self.fields["output_description"].required = False
         self.fields["constraints"].required = False
+        self.fields["example_input"].required = False
+        self.fields["example_output"].required = False
         self.fields["reference_answer"].required = False
         self.fields["evaluation_criteria"].required = False
 
@@ -330,7 +361,6 @@ class TestCaseForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-
         super().__init__(*args, **kwargs)
 
         self.fields["comparison_type"].label = (
@@ -352,6 +382,16 @@ class TestCaseForm(forms.ModelForm):
         )
 
         self.fields["tolerance"].required = False
+        self.fields["tolerance"].initial = 0.000001
+
+
+    def clean_tolerance(self):
+        tolerance = self.cleaned_data.get("tolerance")
+
+        if tolerance is None:
+            return 0.000001
+
+        return tolerance
 
 
 # ==========================================================

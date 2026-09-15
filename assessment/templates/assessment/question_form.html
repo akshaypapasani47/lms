@@ -432,6 +432,20 @@
 
                     </div>
 
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            AI Evaluation Marks
+                        </label>
+
+                        {{ form.ai_evaluation_marks }}
+
+                        <small class="text-muted">
+                            Marks reserved for AI-based code quality evaluation.
+                        </small>
+
+                    </div>
+
 
                     <div class="mb-3">
 
@@ -467,6 +481,35 @@
                         </label>
 
                         {{ form.constraints }}
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Example Input
+                        </label>
+
+                        {{ form.example_input }}
+
+                        <small class="text-muted">
+                            Provide a sample input that demonstrates how the program should be used.
+                        </small>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Example Output
+                        </label>
+
+                        {{ form.example_output }}
+
+                        <small class="text-muted">
+                            Provide the expected output for the example input.
+                        </small>
 
                     </div>
 

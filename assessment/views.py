@@ -33,13 +33,16 @@ from django.utils import timezone
 from .evaluator.programming_evaluator import (
     evaluate_programming_question,
 )
+from .evaluator.theory_evaluator import evaluate_theory_answer
+
 from .evaluator.comparator import compare_output
 
 from django.http import JsonResponse
 
 from .evaluator import get_runner
 from django.urls import reverse
-
+from django.db import models
+from .evaluator.code_quality_evaluator import evaluate_code_quality
 
 # ==========================================================
 # INTERACTIVE CODE SESSIONS
@@ -50,6 +53,15 @@ interactive_sessions = {}
 interactive_sessions_lock = threading.Lock()
 
 interactive_runner = InteractiveRunner()
+
+
+def update_assessment_total_marks(assessment):
+    assessment.total_marks = (
+        assessment.questions.aggregate(
+            total=models.Sum("marks")
+        )["total"] or 0
+    )
+    assessment.save(update_fields=["total_marks"])
 
 
 def cleanup_expired_interactive_sessions():
@@ -196,6 +208,8 @@ def assessment_edit(request, pk):
 
             form.save()
 
+            update_assessment_total_marks(assessment)
+
             messages.success(
                 request,
                 "Assessment updated successfully."
@@ -286,7 +300,6 @@ def assessment_detail(request, pk):
 # ==========================================================
 # CREATE QUESTION
 # ==========================================================
-
 @login_required
 def question_create(request, assessment_id):
 
@@ -309,7 +322,6 @@ def question_create(request, assessment_id):
             )
 
             question.assessment = assessment
-
             question.save()
 
             # ------------------------------------------------
@@ -450,12 +462,82 @@ def question_create(request, assessment_id):
                     "test_hidden[]"
                 )
 
+                total_test_case_marks = 0
+
+                # ------------------------------------------------
+                # CALCULATE TOTAL TEST CASE MARKS
+                # ------------------------------------------------
+
                 for index, input_data in enumerate(inputs):
 
                     if index >= len(outputs):
                         continue
 
-                    if not input_data.strip() and not outputs[index].strip():
+                    if (
+                        not input_data.strip()
+                        and not outputs[index].strip()
+                    ):
+                        continue
+
+                    test_case_marks = (
+                        int(marks[index])
+                        if index < len(marks)
+                        and marks[index]
+                        else 0
+                    )
+
+                    total_test_case_marks += test_case_marks
+
+                # ------------------------------------------------
+                # VALIDATE PROGRAMMING MARK ALLOCATION
+                # ------------------------------------------------
+
+                total_allocated_marks = (
+                    question.ai_evaluation_marks
+                    + total_test_case_marks
+                )
+
+                if total_allocated_marks > question.marks:
+
+                    question.delete()
+
+                    messages.error(
+                        request,
+                        (
+                            f"Cannot save programming question. "
+                            f"AI evaluation marks "
+                            f"({question.ai_evaluation_marks}) + "
+                            f"test case marks "
+                            f"({total_test_case_marks}) = "
+                            f"{total_allocated_marks} marks, "
+                            f"which exceeds the question's assigned "
+                            f"{question.marks} marks."
+                        )
+                    )
+
+                    return render(
+                        request,
+                        "assessment/question_form.html",
+                        {
+                            "form": form,
+                            "assessment": assessment,
+                            "is_edit": False,
+                        }
+                    )
+
+                # ------------------------------------------------
+                # CREATE TEST CASES
+                # ------------------------------------------------
+
+                for index, input_data in enumerate(inputs):
+
+                    if index >= len(outputs):
+                        continue
+
+                    if (
+                        not input_data.strip()
+                        and not outputs[index].strip()
+                    ):
                         continue
 
                     TestCase.objects.create(
@@ -476,14 +558,22 @@ def question_create(request, assessment_id):
                         order=index + 1
                     )
 
+            # ------------------------------------------------
+            # UPDATE ASSESSMENT TOTAL MARKS
+            # ------------------------------------------------
+
+            update_assessment_total_marks(
+                assessment
+            )
+
             messages.success(
                 request,
                 "Question saved successfully."
             )
 
             return redirect(
-                "assessment_detail",
-                pk=assessment.pk
+                "assessment_edit",
+                pk=assessment.id
             )
 
     else:
@@ -503,7 +593,6 @@ def question_create(request, assessment_id):
             "is_edit": False,
         }
     )
-
 
 # ==========================================================
 # EDIT QUESTION
@@ -529,7 +618,69 @@ def question_edit(request, question_id):
 
         if form.is_valid():
 
-            question = form.save()
+            updated_question = form.save(commit=False)
+
+            # ------------------------------------------------
+            # PROGRAMMING QUESTION MARK VALIDATION
+            # ------------------------------------------------
+            if updated_question.question_type == "PROGRAMMING":
+
+                existing_test_case_marks = (
+                    question.test_cases.aggregate(
+                        total=models.Sum("marks")
+                    )["total"] or 0
+                )
+
+                total_allocated_marks = (
+                    updated_question.ai_evaluation_marks
+                    + existing_test_case_marks
+                )
+
+                if total_allocated_marks > updated_question.marks:
+
+                    available_test_case_marks = (
+                        updated_question.marks
+                        - updated_question.ai_evaluation_marks
+                    )
+
+                    messages.error(
+                        request,
+                        (
+                            f"Cannot update question. "
+                            f"AI evaluation marks "
+                            f"({updated_question.ai_evaluation_marks}) "
+                            f"+ existing test case marks "
+                            f"({existing_test_case_marks}) "
+                            f"= {total_allocated_marks} marks, "
+                            f"which exceeds the question's assigned "
+                            f"{updated_question.marks} marks. "
+                            f"Only {max(available_test_case_marks, 0)} "
+                            f"marks are available for test cases."
+                        )
+                    )
+
+                    return render(
+                        request,
+                        "assessment/question_form.html",
+                        {
+                            "form": form,
+                            "assessment": assessment,
+                            "question": question,
+                            "is_edit": True,
+                        }
+                    )
+
+            # ------------------------------------------------
+            # SAVE QUESTION
+            # ------------------------------------------------
+
+            updated_question.save()
+
+            # ------------------------------------------------
+            # UPDATE ASSESSMENT TOTAL
+            # ------------------------------------------------
+
+            update_assessment_total_marks(assessment)
 
             messages.success(
                 request,
@@ -577,6 +728,8 @@ def question_delete(request, question_id):
     if request.method == "POST":
 
         question.delete()
+
+        update_assessment_total_marks(assessment)
 
         messages.success(
             request,
@@ -630,28 +783,48 @@ def test_case_create(request, question_id):
         )
 
         if form.is_valid():
+            test_case_marks = form.cleaned_data.get("marks") or 0
 
-            test_case = form.save(
-                commit=False
+            existing_test_case_marks = (
+                question.test_cases.aggregate(
+                    total=models.Sum("marks")
+                )["total"] or 0
             )
 
-            test_case.question = question
-
-            test_case.order = (
-                question.test_cases.count() + 1
+            available_test_case_marks = (
+                question.marks
+                - question.ai_evaluation_marks
+                - existing_test_case_marks
             )
 
-            test_case.save()
+            if test_case_marks > available_test_case_marks:
+                messages.error(
+                    request,
+                    (
+                        f"Cannot add this test case. You are assigning "
+                        f"{test_case_marks} marks, but only "
+                        f"{max(available_test_case_marks, 0)} marks are available "
+                        f"for test cases in this question. "
+                        f"Question marks: {question.marks}, "
+                        f"AI evaluation marks: {question.ai_evaluation_marks}, "
+                        f"Existing test case marks: {existing_test_case_marks}."
+                    )
+                )
+            else:
+                test_case = form.save(commit=False)
+                test_case.question = question
+                test_case.order = question.test_cases.count() + 1
+                test_case.save()
 
-            messages.success(
-                request,
-                f"Test Case {test_case.order} saved successfully."
-            )
+                messages.success(
+                    request,
+                    f"Test Case {test_case.order} saved successfully."
+                )
 
-            return redirect(
-                "test_case_create",
-                question_id=question.pk
-            )
+                return redirect(
+                    "test_case_create",
+                    question_id=question.pk
+                )
 
     else:
 
@@ -677,7 +850,6 @@ def test_case_create(request, question_id):
         }
     )
 
-
 # ==========================================================
 # EDIT TEST CASE
 # ==========================================================
@@ -693,44 +865,85 @@ def test_case_edit(request, test_case_id):
 
     question = test_case.question
 
-    if request.method == "POST":
-
-        form = TestCaseForm(
-            request.POST,
-            instance=test_case
+    if question.question_type != "PROGRAMMING":
+        messages.error(
+            request,
+            "Test cases can only be edited for programming questions."
         )
+        return redirect(
+            "assessment_detail",
+            pk=question.assessment.pk
+        )
+
+    if request.method == "POST":
+        form = TestCaseForm(request.POST, instance=test_case)
 
         if form.is_valid():
 
-            form.save()
+            new_test_case_marks = form.cleaned_data.get("marks") or 0
 
-            messages.success(
-                request,
-                "Test case updated successfully."
+            # Calculate marks of all OTHER test cases.
+            # The current test case is excluded because its old marks
+            # should not be counted while validating the new marks.
+            other_test_case_marks = (
+                question.test_cases
+                .exclude(pk=test_case.pk)
+                .aggregate(
+                    total=models.Sum("marks")
+                )["total"] or 0
             )
 
-            return redirect(
-                "test_case_create",
-                question_id=question.pk
+            available_marks = (
+                question.marks
+                - question.ai_evaluation_marks
+                - other_test_case_marks
             )
+
+            if new_test_case_marks > available_marks:
+                messages.error(
+                    request,
+                    (
+                        f"Cannot update Test Case {test_case.order}. "
+                        f"You are assigning {new_test_case_marks} marks, "
+                        f"but only {max(available_marks, 0)} marks are available "
+                        f"for this test case. "
+                        f"Question marks: {question.marks}, "
+                        f"AI evaluation marks: {question.ai_evaluation_marks}, "
+                        f"Other test case marks: {other_test_case_marks}."
+                    )
+                )
+
+            else:
+                test_case = form.save()
+
+                messages.success(
+                    request,
+                    f"Test Case {test_case.order} updated successfully."
+                )
+
+                return redirect(
+                    "test_case_create",
+                    question_id=question.pk
+                )
 
     else:
-
-        form = TestCaseForm(
-            instance=test_case
-        )
+        form = TestCaseForm(instance=test_case)
 
     return render(
         request,
-        "assessment/test_case_edit.html",
+        "assessment/test_case_form.html",
         {
             "form": form,
-            "test_case": test_case,
             "question": question,
             "assessment": question.assessment,
+            "public_test_cases": question.test_cases.filter(
+                is_hidden=False
+            ),
+            "hidden_test_cases": question.test_cases.filter(
+                is_hidden=True
+            ),
         }
     )
-
 
 # ==========================================================
 # DELETE TEST CASE
@@ -1885,23 +2098,21 @@ def evaluate_submission(submission):
 
         elif question.question_type == "THEORY":
 
-            if question_submission.answer_text:
+            theory_result = evaluate_theory_answer(
+                question_text=question.question_text,
+                student_answer=(
+                    question_submission.answer_text or ""
+                ),
+                max_marks=question.marks,
+                reference_answer=question.reference_answer,
+                evaluation_criteria=question.evaluation_criteria,
+            )
 
-                feedback = (
-                    "Answer submitted. "
-                    "Detailed evaluation pending."
-                )
+            awarded_marks = theory_result["marks"]
 
-                # Keep pending evaluation state.
-                is_correct = None
+            is_correct = theory_result["is_correct"]
 
-            else:
-
-                feedback = (
-                    "No answer submitted."
-                )
-
-                is_correct = False
+            feedback = theory_result["feedback"]
 
         # ==================================================
         # PROGRAMMING
@@ -1910,6 +2121,10 @@ def evaluate_submission(submission):
         elif question.question_type == "PROGRAMMING":
 
             if question_submission.submitted_code:
+
+                # --------------------------------------------------
+                # FUNCTIONAL / TEST CASE EVALUATION
+                # --------------------------------------------------
 
                 evaluation = (
                     evaluate_programming_question(
@@ -1920,16 +2135,70 @@ def evaluate_submission(submission):
                     )
                 )
 
-                awarded_marks = evaluation["marks"]
+                test_case_marks = evaluation["marks"]
 
                 is_correct = (
                     evaluation["status"]
                     == "PASSED"
                 )
 
-                feedback = evaluation["feedback"]
+                functional_feedback = (
+                    evaluation["feedback"]
+                )
+
+                # --------------------------------------------------
+                # AI CODE QUALITY EVALUATION
+                # --------------------------------------------------
+
+                code_quality_result = (
+                    evaluate_code_quality(
+                        question_text=question.question_text,
+                        submitted_code=(
+                            question_submission.submitted_code
+                        ),
+                        language=question.language,
+                        max_marks=question.ai_evaluation_marks,
+                        reference_answer=question.reference_answer,
+                    )
+                )
+
+                ai_quality_marks = (
+                    code_quality_result["marks"]
+                )
+
+                code_quality_feedback = (
+                    code_quality_result["feedback"]
+                )
+
+                # --------------------------------------------------
+                # FINAL PROGRAMMING MARKS
+                # --------------------------------------------------
+
+                awarded_marks = (
+                    test_case_marks
+                    + ai_quality_marks
+                )
+
+                # Safety limit
+                awarded_marks = min(
+                    awarded_marks,
+                    question.marks
+                )
+
+                # --------------------------------------------------
+                # COMBINED FEEDBACK
+                # --------------------------------------------------
+
+                feedback = (
+                    f"Test Case Evaluation: "
+                    f"{functional_feedback}\n\n"
+                    f"Code Quality Evaluation: "
+                    f"{code_quality_feedback}"
+                )
 
             else:
+
+                awarded_marks = 0
 
                 feedback = (
                     "No code submitted."

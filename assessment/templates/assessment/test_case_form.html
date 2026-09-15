@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 <div class="container mt-4 mb-5">
 
     <!-- BACK BUTTON -->
@@ -78,7 +84,7 @@
                         </div>
                     {% endif %}
 
-                    <small class="text-muted d-block mt-2">
+                    <!-- <small class="text-muted d-block mt-2">
 
                         Enter the complete input exactly as the
                         program will receive it.
@@ -93,7 +99,7 @@
                         The input format depends on the programming
                         question.
 
-                    </small>
+                    </small> -->
 
                 </div>
 

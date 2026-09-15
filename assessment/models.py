@@ -106,6 +106,11 @@ class AssessmentQuestion(models.Model):
         default=1
     )
 
+    ai_evaluation_marks = models.PositiveIntegerField(
+        default=1,
+        help_text="Marks reserved for AI-based evaluation of programming code quality."
+    )
+
     order = models.PositiveIntegerField(
         default=1
     )
@@ -131,6 +136,16 @@ class AssessmentQuestion(models.Model):
 
     constraints = models.TextField(
         blank=True,
+        null=True
+    )
+
+    example_input = models.TextField(
+        blank=True, 
+        null=True
+    )
+
+    example_output = models.TextField(
+        blank=True, 
         null=True
     )
 

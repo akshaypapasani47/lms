@@ -234,6 +234,8 @@ REST_FRAMEWORK = {
 # Strip payment config
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default="")
 STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY", default="")
+# OpenAI configuration
+OPENAI_API_KEY = config("OPENAI_API_KEY", default="")
 
 # LOGGING
 # ------------------------------------------------------------------------------
