@@ -71,6 +71,7 @@ PROJECT_APPS = [
     'programming_lab',
     "assignment",
     "assessment",
+    'virtuallab',
 ]
 
 # Combine all apps

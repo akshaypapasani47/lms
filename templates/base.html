@@ -20,8 +20,21 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.min.css' %}">
 
+    <!-- LMS Theme CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme.css' %}">
+
+    <!-- Apply saved theme before page renders -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("lms-theme") || "light";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
+
     <!-- <script src="https://js.stripe.com/v3/"></script> -->
     {% block header %}{% endblock %}
+
+    {% block extra_css %}{% endblock extra_css %}
 </head>
 
 
@@ -33,8 +46,9 @@
     {% endblock %}
 
     <!-- Space below the fixed header -->
-    <div style="height: 60px;"></div>
+    <div style="height: 30px;"></div>
 
+    <!-- <div class="hpc-header-spacer"></div> -->
     <!-- Sidebar -->
     {% block sidebar %}
         {% include 'aside.html' %}
@@ -53,6 +67,11 @@
     <script src="{% url 'javascript-catalog' %}"></script>
     <script src="{% static 'vendor/jquery-3.7.1/jquery-3.7.1.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap-5.3.2/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- LMS Theme -->
+    <script src="{% static 'js/theme.js' %}"></script>
+
+    <!-- Existing LMS JavaScript -->
     <script src="{% static 'js/main.js' %}"></script>
     {% block js %}{% endblock %}
 
@@ -238,8 +257,5 @@ closeChatbot();
 </script>
 
 {% endif %}
-<!-- Bootstrap 5 JS Bundle (Includes Popper.js required for tabs) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

@@ -1,0 +1,1042 @@
+/* =========================================================
+   HPC LMS LANDING PAGE
+   Modern animated UI
+   ========================================================= */
+
+.landing-page {
+    --landing-primary: #0d6efd;
+    --landing-secondary: #6610f2;
+    --landing-accent: #00c6ff;
+    --landing-card: #ffffff;
+    --landing-text: #212529;
+    --landing-muted: #6c757d;
+    --landing-border: rgba(13, 110, 253, 0.12);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   GLOBAL LANDING SECTIONS
+   ========================================================= */
+
+.landing-section {
+    position: relative;
+    padding: 90px 0;
+}
+
+.landing-section-title {
+    margin-bottom: 55px;
+}
+
+.landing-section-title h2 {
+    position: relative;
+    display: inline-block;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.landing-section-title h2::after {
+    content: "";
+    display: block;
+    width: 55px;
+    height: 4px;
+    margin: 12px auto 0;
+    border-radius: 10px;
+    background: linear-gradient(90deg,
+            var(--landing-primary),
+            var(--landing-accent));
+}
+
+.landing-section-title p {
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--landing-muted);
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+#lmsSlider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #07111f;
+}
+
+#lmsSlider .carousel-inner {
+    position: relative;
+}
+
+#lmsSlider .carousel-item {
+    position: relative;
+    overflow: hidden;
+}
+
+#lmsSlider .slider-img {
+    width: 100%;
+    height: 570px;
+    display: block;
+    object-fit: cover;
+    object-position: 50% 30%;
+
+    transform: scale(1.02);
+    transition: transform 7s ease;
+}
+
+/* Slow zoom while slide is active */
+#lmsSlider .carousel-item.active .slider-img {
+    transform: scale(1.10);
+}
+
+
+/* Dark gradient */
+
+#lmsSlider .carousel-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    background:
+        linear-gradient(90deg,
+            rgba(3, 12, 28, 0.88) 0%,
+            rgba(3, 12, 28, 0.58) 40%,
+            rgba(3, 12, 28, 0.25) 75%,
+            rgba(3, 12, 28, 0.38) 100%);
+}
+
+
+/* =========================================================
+   HERO DECORATIVE ORBITS
+   ========================================================= */
+
+.hero-orbit {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+}
+
+.hero-orbit-1 {
+    width: 420px;
+    height: 420px;
+    right: -120px;
+    top: -130px;
+
+    animation: heroRotate 18s linear infinite;
+}
+
+.hero-orbit-2 {
+    width: 300px;
+    height: 300px;
+    right: -70px;
+    bottom: -130px;
+
+    animation: heroRotateReverse 14s linear infinite;
+}
+
+.hero-orbit-3 {
+    width: 180px;
+    height: 180px;
+    left: -80px;
+    bottom: -60px;
+
+    border-color: rgba(0, 198, 255, 0.25);
+
+    animation: heroRotate 12s linear infinite;
+}
+
+.hero-orbit::before,
+.hero-orbit::after {
+    content: "";
+    position: absolute;
+
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+    background: #00c6ff;
+
+    box-shadow:
+        0 0 10px #00c6ff,
+        0 0 25px rgba(0, 198, 255, 0.7);
+}
+
+.hero-orbit::before {
+    top: 15%;
+    left: 8%;
+}
+
+.hero-orbit::after {
+    bottom: 12%;
+    right: 10%;
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   HERO CONTENT
+   ========================================================= */
+
+#lmsSlider .carousel-caption {
+    position: absolute;
+    inset: 0;
+
+    z-index: 4;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 50px 10%;
+
+    text-align: left;
+}
+
+.hero-content {
+    max-width: 850px;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 16px;
+
+    margin-bottom: 20px;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50px;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(10px);
+
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+
+    animation: heroBadgeIn 0.8s ease forwards;
+}
+
+.hero-badge i {
+    color: #00c6ff;
+}
+
+#lmsSlider .carousel-caption h1 {
+    margin: 0 0 20px;
+
+    color: #fff;
+
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1.05;
+    font-weight: 800;
+
+    text-shadow:
+        0 5px 25px rgba(0, 0, 0, 0.35);
+
+    animation: heroTextIn 0.9s ease forwards;
+}
+
+.hero-title-highlight {
+    display: block;
+
+    background: linear-gradient(90deg,
+            #ffffff,
+            #72d7ff,
+            #ffffff);
+
+    background-size: 200% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation:
+        heroGradient 4s linear infinite,
+        heroTextIn 0.9s ease forwards;
+}
+
+#lmsSlider .carousel-caption p {
+    max-width: 780px;
+
+    margin: 0 0 28px;
+
+    color: rgba(255, 255, 255, 0.9);
+
+    font-size: 1.2rem;
+    line-height: 1.7;
+
+    animation: heroTextIn 1.1s ease forwards;
+}
+
+
+/* =========================================================
+   HERO BUTTON
+   ========================================================= */
+
+.hero-start-btn {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    width: 190px;
+    min-height: 52px;
+
+    overflow: hidden;
+
+    border: none;
+    border-radius: 50px;
+
+    background: linear-gradient(135deg,
+            #ffc107,
+            #ff9800);
+
+    color: #171717;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 10px 30px rgba(255, 193, 7, 0.25);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.hero-start-btn::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: -120%;
+
+    width: 80%;
+    height: 100%;
+
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.65),
+            transparent);
+
+    transform: skewX(-20deg);
+
+    animation: buttonShine 3s infinite;
+}
+
+.hero-start-btn span,
+.hero-start-btn i {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-start-btn:hover {
+    transform: translateY(-4px) scale(1.03);
+
+    color: #171717;
+
+    box-shadow:
+        0 15px 40px rgba(255, 193, 7, 0.4);
+}
+
+.hero-start-btn i {
+    transition: transform 0.3s ease;
+}
+
+.hero-start-btn:hover i {
+    transform: translateX(5px);
+}
+
+
+/* =========================================================
+   CAROUSEL CONTROLS
+   ========================================================= */
+
+#lmsSlider .carousel-control-prev,
+#lmsSlider .carousel-control-next {
+    z-index: 6;
+
+    width: 70px;
+
+    opacity: 0;
+
+    transition: opacity 0.3s ease;
+}
+
+#lmsSlider:hover .carousel-control-prev,
+#lmsSlider:hover .carousel-control-next {
+    opacity: 1;
+}
+
+#lmsSlider .carousel-control-prev-icon,
+#lmsSlider .carousel-control-next-icon {
+    width: 45px;
+    height: 45px;
+
+    padding: 12px;
+
+    border-radius: 50%;
+
+    background-color: rgba(0, 0, 0, 0.35);
+
+    background-size: 45%;
+    backdrop-filter: blur(8px);
+
+    transition: transform 0.3s ease;
+}
+
+#lmsSlider .carousel-control-prev:hover .carousel-control-prev-icon {
+    transform: translateX(-4px);
+}
+
+#lmsSlider .carousel-control-next:hover .carousel-control-next-icon {
+    transform: translateX(4px);
+}
+
+
+/* =========================================================
+   ABOUT CARDS
+   ========================================================= */
+
+.about-card {
+    position: relative;
+
+    height: 100%;
+
+    padding: 35px;
+
+    border: 1px solid var(--landing-border);
+    border-radius: 22px;
+
+    background: var(--landing-card);
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.07);
+
+    overflow: hidden;
+
+    transform-style: preserve-3d;
+
+    transition:
+        transform 0.45s ease,
+        box-shadow 0.45s ease,
+        border-color 0.3s ease;
+}
+
+.about-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 150px;
+    height: 150px;
+
+    top: -70px;
+    right: -70px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg,
+            rgba(13, 110, 253, 0.15),
+            rgba(0, 198, 255, 0.03));
+
+    transition: transform 0.5s ease;
+}
+
+.about-card:hover {
+    transform:
+        translateY(-12px) rotateX(2deg) rotateY(-2deg);
+
+    box-shadow:
+        0 25px 60px rgba(13, 110, 253, 0.15);
+
+    border-color: rgba(13, 110, 253, 0.25);
+}
+
+.about-card:hover::before {
+    transform: scale(1.5);
+}
+
+.about-icon {
+    position: relative;
+
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 22px;
+
+    border-radius: 18px;
+
+    font-size: 28px;
+
+    color: #fff;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.15);
+
+    transform: translateZ(30px);
+
+    transition:
+        transform 0.4s ease,
+        border-radius 0.4s ease;
+}
+
+.about-card:hover .about-icon {
+    transform:
+        translateZ(35px) rotateY(180deg);
+
+    border-radius: 50%;
+}
+
+.about-card h4 {
+    position: relative;
+
+    margin-bottom: 15px;
+
+    font-weight: 750;
+
+    transform: translateZ(20px);
+}
+
+.about-card p {
+    position: relative;
+
+    color: var(--landing-muted);
+
+    line-height: 1.75;
+
+    transform: translateZ(10px);
+}
+
+.about-c-huk .about-icon {
+    background: linear-gradient(135deg,
+            #0d6efd,
+            #00a8ff);
+}
+
+.about-cdac .about-icon {
+    background: linear-gradient(135deg,
+            #198754,
+            #20c997);
+}
+
+.about-nsm .about-icon {
+    background: linear-gradient(135deg,
+            #ff9800,
+            #ffc107);
+}
+
+
+/* =========================================================
+   PROGRAM CARDS
+   ========================================================= */
+
+.program-card {
+    position: relative;
+
+    height: 100%;
+    min-height: 210px;
+
+    padding: 35px 25px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    border: 1px solid var(--landing-border);
+    border-radius: 24px;
+
+    background: var(--landing-card);
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.06);
+
+    overflow: hidden;
+
+    transform-style: preserve-3d;
+
+    transition:
+        transform 0.45s cubic-bezier(.2, .8, .2, 1),
+        box-shadow 0.45s ease,
+        border-color 0.3s ease;
+}
+
+.program-card::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(circle at 50% 0%,
+            rgba(13, 110, 253, 0.13),
+            transparent 55%);
+
+    opacity: 0;
+
+    transition: opacity 0.4s ease;
+}
+
+.program-card:hover {
+    transform:
+        translateY(-12px) rotateX(4deg) rotateY(-4deg);
+
+    box-shadow:
+        0 25px 55px rgba(13, 110, 253, 0.16);
+
+    border-color:
+        rgba(13, 110, 253, 0.3);
+}
+
+.program-card:hover::before {
+    opacity: 1;
+}
+
+.program-card i {
+    position: relative;
+    z-index: 2;
+
+    width: 75px;
+    height: 75px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    border-radius: 22px;
+
+    background: rgba(13, 110, 253, 0.08);
+
+    font-size: 32px;
+
+    transform: translateZ(35px);
+
+    transition:
+        transform 0.5s ease,
+        border-radius 0.4s ease,
+        background 0.3s ease;
+}
+
+.program-card:hover i {
+    transform:
+        translateZ(45px) rotateY(360deg) scale(1.08);
+
+    border-radius: 50%;
+
+    background: rgba(13, 110, 253, 0.14);
+}
+
+.program-card h4 {
+    position: relative;
+    z-index: 2;
+
+    margin: 0;
+
+    font-size: 1.15rem;
+    font-weight: 700;
+
+    line-height: 1.4;
+
+    transform: translateZ(20px);
+}
+
+
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
+
+.reveal {
+    opacity: 0;
+
+    transform:
+        translateY(45px) scale(0.97);
+
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s cubic-bezier(.2, .8, .2, 1);
+}
+
+.reveal.reveal-left {
+    transform: translateX(-60px);
+}
+
+.reveal.reveal-right {
+    transform: translateX(60px);
+}
+
+.reveal.reveal-scale {
+    transform: scale(0.85);
+}
+
+.reveal.show {
+    opacity: 1;
+    transform: translate(0) scale(1);
+}
+
+
+/* =========================================================
+   STAGGER ANIMATION
+   ========================================================= */
+
+.program-card.reveal:nth-child(1) {
+    transition-delay: 0.05s;
+}
+
+.program-card.reveal:nth-child(2) {
+    transition-delay: 0.10s;
+}
+
+.program-card.reveal:nth-child(3) {
+    transition-delay: 0.15s;
+}
+
+.program-card.reveal:nth-child(4) {
+    transition-delay: 0.20s;
+}
+
+.program-card.reveal:nth-child(5) {
+    transition-delay: 0.25s;
+}
+
+.program-card.reveal:nth-child(6) {
+    transition-delay: 0.30s;
+}
+
+.program-card.reveal:nth-child(7) {
+    transition-delay: 0.35s;
+}
+
+.program-card.reveal:nth-child(8) {
+    transition-delay: 0.40s;
+}
+
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+html[data-theme="dark"] .landing-page {
+    --landing-card: #151c27;
+    --landing-text: #f1f5f9;
+    --landing-muted: #aab4c2;
+    --landing-border: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .landing-section-title h2,
+html[data-theme="dark"] .about-card h4,
+html[data-theme="dark"] .program-card h4 {
+    color: var(--landing-text);
+}
+
+html[data-theme="dark"] .about-card,
+html[data-theme="dark"] .program-card {
+    background:
+        linear-gradient(145deg,
+            #151c27,
+            #101620);
+
+    box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.25);
+}
+
+html[data-theme="dark"] .about-card:hover,
+html[data-theme="dark"] .program-card:hover {
+    box-shadow:
+        0 25px 60px rgba(0, 150, 255, 0.14);
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .landing-page *,
+    .landing-page *::before,
+    .landing-page *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes heroRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes heroRotateReverse {
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes heroTextIn {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes heroBadgeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes heroGradient {
+    from {
+        background-position: 0% center;
+    }
+
+    to {
+        background-position: 200% center;
+    }
+}
+
+@keyframes buttonShine {
+    0% {
+        left: -120%;
+    }
+
+    45%,
+    100% {
+        left: 140%;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (min-width: 1600px) {
+
+    #lmsSlider .slider-img {
+        height: 620px;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding-left: 12%;
+        padding-right: 12%;
+    }
+}
+
+@media (max-width: 991.98px) {
+
+    .landing-section {
+        padding: 70px 0;
+    }
+
+    #lmsSlider .slider-img {
+        height: 470px;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding: 40px 8%;
+    }
+
+    .hero-orbit-1 {
+        width: 320px;
+        height: 320px;
+        right: -140px;
+    }
+
+    .hero-orbit-2 {
+        width: 230px;
+        height: 230px;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    .landing-section {
+        padding: 60px 0;
+    }
+
+    .landing-section-title {
+        margin-bottom: 40px;
+    }
+
+    #lmsSlider .slider-img {
+        height: 390px;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding:
+            30px 55px 30px 45px;
+    }
+
+    .hero-badge {
+        font-size: 0.7rem;
+        padding: 6px 12px;
+        margin-bottom: 12px;
+    }
+
+    #lmsSlider .carousel-caption p {
+        font-size: 0.9rem;
+        line-height: 1.45;
+        margin-bottom: 18px;
+    }
+
+    .hero-start-btn {
+        width: 155px;
+        min-height: 45px;
+        font-size: 0.85rem;
+    }
+
+    .hero-orbit-1 {
+        width: 250px;
+        height: 250px;
+        right: -130px;
+        top: -100px;
+    }
+
+    .hero-orbit-2 {
+        width: 180px;
+        height: 180px;
+        right: -80px;
+        bottom: -90px;
+    }
+
+    .hero-orbit-3 {
+        width: 120px;
+        height: 120px;
+        left: -60px;
+    }
+
+    .about-card {
+        padding: 28px;
+    }
+
+    .program-card {
+        min-height: 190px;
+        padding: 28px 20px;
+    }
+}
+
+@media (max-width: 575.98px) {
+
+    #lmsSlider .slider-img {
+        height: 320px;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding: 25px 40px;
+    }
+
+    #lmsSlider .carousel-caption h1 {
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+    }
+
+    #lmsSlider .carousel-caption p {
+        font-size: 0.78rem;
+    }
+
+    .hero-badge {
+        font-size: 0.62rem;
+        letter-spacing: 0.5px;
+    }
+
+    .hero-start-btn {
+        width: 140px;
+        min-height: 40px;
+        font-size: 0.75rem;
+    }
+
+    #lmsSlider .carousel-control-prev,
+    #lmsSlider .carousel-control-next {
+        width: 12%;
+    }
+
+    #lmsSlider .carousel-control-prev-icon,
+    #lmsSlider .carousel-control-next-icon {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (max-width: 400px) {
+
+    #lmsSlider .slider-img {
+        height: 285px;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding: 20px 35px;
+    }
+
+    #lmsSlider .carousel-caption h1 {
+        font-size: 1.45rem;
+    }
+
+    #lmsSlider .carousel-caption p {
+        font-size: 0.68rem;
+        line-height: 1.3;
+    }
+
+    .hero-badge {
+        display: none;
+    }
+
+    .hero-start-btn {
+        width: 125px;
+        min-height: 36px;
+        font-size: 0.7rem;
+    }
+}

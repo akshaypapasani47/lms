@@ -59,11 +59,48 @@ context = {
 def home_view(request):
 
     if request.user.is_authenticated:
-        return render(request, "core/index.html")
 
-    return render(request, "core/landing_page.html")
+        total_courses = Course.objects.count()
 
+        return render(
+            request,
+            "core/index.html",
+            {
+                "total_courses": total_courses,
+            }
+        )
 
+    return render(
+        request,
+        "core/landing_new.html"
+    )
+
+@login_required
+def live_classroom_view(request):
+    if request.user.is_superuser or request.user.is_lecturer:
+        live_role = "teacher"
+    else:
+        live_role = "student"
+
+    full_name = getattr(request.user, "get_full_name", None)
+
+    if callable(full_name):
+        live_user = full_name()
+    elif full_name:
+        live_user = full_name
+    else:
+        live_user = request.user.username
+
+    context = {
+        "live_role": live_role,
+        "live_user": live_user,
+    }
+
+    return render(
+        request,
+        "core/live_classroom.html",
+        context
+    )
 
 @login_required
 @admin_required

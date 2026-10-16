@@ -18,12 +18,37 @@
 
         </div>
 
+
+
+
+        {% if user.is_superuser %}
+
+            <a
+                href="{% url 'assessment_access_requests' %}"
+                class="btn btn-outline-primary me-2"
+            >
+                Assessment Access Requests
+            </a>
+
+        {% elif user.is_lecturer %}
+
+            <a
+                href="{% url 'lecturer_assessment_access_list' %}"
+                class="btn btn-outline-primary me-2"
+            >
+                Request Assessment Access
+            </a>
+
+        {% endif %}
+
         <a
             href="{% url 'assessment_create' %}"
             class="btn btn-primary"
         >
             + Create Assessment
         </a>
+
+
 
     </div>
 
@@ -86,18 +111,24 @@
                             </a>
 
                             <a
+                                href="{% url 'assessment_results' assessment.pk %}"
+                                class="btn btn-outline-secondary btn-sm"
+                            >
+                                View Results
+                            </a>
+
+                            <a
                                 href="{% url 'assessment_edit' assessment.pk %}"
                                 class="btn btn-warning btn-sm"
                             >
                                 Edit
                             </a>
 
-                            <a
-                                href="{% url 'assessment_delete' assessment.pk %}"
-                                class="btn btn-danger btn-sm"
-                            >
-                                Delete
-                            </a>
+                            {% if request.user.is_superuser or assessment.created_by == request.user %}
+                                <a href="{% url 'assessment_delete' assessment.pk %}" class="btn btn-danger btn-sm">
+                                    Delete
+                                </a>
+                            {% endif %}
 
                         </div>
 

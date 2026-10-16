@@ -1,0 +1,1121 @@
+/* =========================================================
+   HPC LOGIN PAGE
+   Futuristic C-DAC / HPC / AI Theme
+   Step 1 - Base Dark Layout
+   ========================================================= */
+
+.hpc-login-page {
+    --login-bg: #030914;
+    --login-bg-2: #071426;
+    --login-panel: rgba(7, 20, 38, 0.78);
+    --login-panel-strong: rgba(5, 16, 31, 0.92);
+
+    --login-cyan: #00d9ff;
+    --login-blue: #147aff;
+    --login-purple: #7b4dff;
+
+    --login-white: #f4f8ff;
+    --login-text: #d7e2f0;
+    --login-muted: #8294aa;
+
+    --login-border: rgba(0, 217, 255, 0.18);
+    --login-border-soft: rgba(255, 255, 255, 0.08);
+
+    position: relative;
+    min-height: calc(100vh - 40px);
+    width: 100%;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 70px 20px 50px;
+
+    background:
+        radial-gradient(circle at 18% 25%,
+            rgba(0, 217, 255, 0.08),
+            transparent 28%),
+        radial-gradient(circle at 82% 72%,
+            rgba(123, 77, 255, 0.09),
+            transparent 30%),
+        linear-gradient(135deg,
+            var(--login-bg),
+            var(--login-bg-2));
+
+    color: var(--login-white);
+}
+
+
+/* =========================================================
+   BACKGROUND GRID
+   ========================================================= */
+
+.hpc-login-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(rgba(0, 217, 255, 0.035) 1px,
+            transparent 1px),
+        linear-gradient(90deg,
+            rgba(0, 217, 255, 0.035) 1px,
+            transparent 1px);
+
+    background-size: 55px 55px;
+
+    mask-image: linear-gradient(to bottom,
+            transparent,
+            black 20%,
+            black 80%,
+            transparent);
+
+    -webkit-mask-image: linear-gradient(to bottom,
+            transparent,
+            black 20%,
+            black 80%,
+            transparent);
+}
+
+
+/* =========================================================
+   BACKGROUND GLOWS
+   ========================================================= */
+
+.hpc-login-glow {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(70px);
+}
+
+.hpc-login-glow-one {
+    width: 420px;
+    height: 420px;
+
+    top: -170px;
+    left: -140px;
+
+    background: rgba(0, 217, 255, 0.09);
+}
+
+.hpc-login-glow-two {
+    width: 480px;
+    height: 480px;
+
+    right: -180px;
+    bottom: -220px;
+
+    background: rgba(123, 77, 255, 0.10);
+}
+
+
+/* =========================================================
+   BACKGROUND COMPUTE NODES
+   ========================================================= */
+
+.hpc-login-nodes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.login-node {
+    position: absolute;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: var(--login-cyan);
+
+    box-shadow:
+        0 0 8px rgba(0, 217, 255, 0.8),
+        0 0 18px rgba(0, 217, 255, 0.35);
+}
+
+.node-one {
+    top: 18%;
+    left: 12%;
+}
+
+.node-two {
+    top: 31%;
+    right: 13%;
+}
+
+.node-three {
+    top: 72%;
+    left: 8%;
+}
+
+.node-four {
+    bottom: 18%;
+    right: 17%;
+}
+
+.node-five {
+    top: 12%;
+    right: 35%;
+    opacity: 0.55;
+}
+
+.node-six {
+    bottom: 12%;
+    left: 37%;
+    opacity: 0.45;
+}
+
+
+/* =========================================================
+   MAIN LOGIN CONTAINER
+   ========================================================= */
+
+.hpc-login-container {
+    position: relative;
+    z-index: 5;
+
+    width: min(520px, 100%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.hpc-login-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-bottom: 22px;
+}
+
+.hpc-login-brand-mark {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(0, 217, 255, 0.45);
+
+    background:
+        linear-gradient(135deg,
+            rgba(0, 217, 255, 0.12),
+            rgba(123, 77, 255, 0.08));
+
+    box-shadow:
+        0 0 25px rgba(0, 217, 255, 0.08),
+        inset 0 0 18px rgba(0, 217, 255, 0.04);
+}
+
+.hpc-login-brand-mark span {
+    color: var(--login-cyan);
+
+    font-size: 10px;
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+.hpc-login-brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.hpc-login-brand-title {
+    color: var(--login-white);
+
+    font-size: 15px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+.hpc-login-brand-subtitle {
+    margin-top: 3px;
+
+    color: var(--login-muted);
+
+    font-size: 7px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   LOGIN CARD
+   ========================================================= */
+
+.hpc-login-card {
+    position: relative;
+
+    padding: 34px 36px 28px;
+
+    border: 1px solid var(--login-border);
+
+    background:
+        linear-gradient(145deg,
+            rgba(8, 25, 45, 0.88),
+            rgba(4, 14, 28, 0.94));
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.42),
+        0 0 45px rgba(0, 217, 255, 0.035);
+
+    overflow: hidden;
+}
+
+
+/* top cyan line */
+
+.hpc-login-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            var(--login-cyan),
+            var(--login-purple),
+            transparent);
+
+    opacity: 0.75;
+}
+
+
+/* corner detail */
+
+.hpc-login-card::after {
+    content: "";
+
+    position: absolute;
+
+    right: 0;
+    bottom: 0;
+
+    width: 80px;
+    height: 80px;
+
+    border-right: 1px solid rgba(0, 217, 255, 0.22);
+    border-bottom: 1px solid rgba(0, 217, 255, 0.22);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CARD TOP
+   ========================================================= */
+
+.hpc-login-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 26px;
+}
+
+.hpc-login-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: var(--login-cyan);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+.hpc-login-status-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--login-cyan);
+
+    box-shadow:
+        0 0 7px rgba(0, 217, 255, 0.8);
+}
+
+.hpc-login-system-code {
+    color: #53677f;
+
+    font-family: monospace;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   HEADING
+   ========================================================= */
+
+.hpc-login-heading {
+    margin-bottom: 30px;
+}
+
+.hpc-login-heading h1 {
+    margin: 0;
+
+    color: var(--login-white);
+
+    font-size: clamp(2.1rem, 5vw, 3rem);
+    line-height: 1;
+
+    font-weight: 800;
+
+    letter-spacing: -1.5px;
+}
+
+.hpc-login-heading h1 span {
+    color: var(--login-cyan);
+}
+
+.hpc-login-heading p {
+    max-width: 410px;
+
+    margin: 12px 0 0;
+
+    color: var(--login-muted);
+
+    font-size: 11px;
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   FORM FIELD
+   ========================================================= */
+
+.hpc-login-field {
+    margin-bottom: 20px;
+}
+
+.hpc-login-field label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 8px;
+
+    color: #b9c9dc;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+
+    text-transform: uppercase;
+}
+
+.hpc-field-icon {
+    display: inline-flex;
+
+    color: var(--login-cyan);
+
+    font-size: 10px;
+}
+
+.hpc-input-wrapper {
+    position: relative;
+}
+
+.hpc-login-input {
+    width: 100%;
+
+    height: 48px;
+
+    padding: 0 13px;
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+
+    outline: none;
+
+    border-radius: 0;
+
+    background: rgba(2, 10, 21, 0.72);
+
+    color: var(--login-white);
+
+    font-size: 12px;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.hpc-login-input::placeholder {
+    color: #52657b;
+}
+
+.hpc-login-input:focus {
+    border-color: rgba(0, 217, 255, 0.45);
+
+    background: rgba(3, 15, 29, 0.9);
+
+    box-shadow:
+        0 0 0 1px rgba(0, 217, 255, 0.08),
+        0 0 22px rgba(0, 217, 255, 0.05);
+}
+
+.hpc-input-line {
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 0;
+    height: 1px;
+
+    background:
+        linear-gradient(90deg,
+            var(--login-cyan),
+            var(--login-blue));
+
+    transition: width 0.3s ease;
+
+    pointer-events: none;
+}
+
+.hpc-login-input:focus+.hpc-input-line {
+    width: 100%;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.hpc-login-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin: -5px 0 18px;
+
+    padding: 9px 11px;
+
+    border-left: 2px solid #ff4d6d;
+
+    background: rgba(255, 77, 109, 0.055);
+
+    color: #ff8298;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+   ========================================================= */
+
+.hpc-login-button {
+    position: relative;
+
+    width: 100%;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 16px;
+
+    border: 1px solid rgba(0, 217, 255, 0.45);
+
+    border-radius: 0;
+
+    background:
+        linear-gradient(100deg,
+            rgba(0, 217, 255, 0.12),
+            rgba(20, 122, 255, 0.10));
+
+    color: var(--login-white);
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.hpc-login-button::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    transform: translateX(-105%);
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            rgba(0, 217, 255, 0.13),
+            transparent);
+
+    transition: transform 0.55s ease;
+}
+
+.hpc-login-button:hover::before {
+    transform: translateX(105%);
+}
+
+.hpc-login-button:hover {
+    border-color: var(--login-cyan);
+
+    background:
+        linear-gradient(100deg,
+            rgba(0, 217, 255, 0.17),
+            rgba(20, 122, 255, 0.14));
+
+    box-shadow:
+        0 0 25px rgba(0, 217, 255, 0.08);
+
+    transform: translateY(-1px);
+}
+
+.hpc-login-button-content {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1.4px;
+}
+
+.hpc-login-button-content i {
+    color: var(--login-cyan);
+}
+
+.hpc-login-button-arrow {
+    position: relative;
+    z-index: 2;
+
+    color: var(--login-cyan);
+
+    font-size: 18px;
+
+    transition: transform 0.25s ease;
+}
+
+.hpc-login-button:hover .hpc-login-button-arrow {
+    transform: translateX(4px);
+}
+
+
+/* =========================================================
+   FORGOT PASSWORD
+   ========================================================= */
+
+.hpc-login-bottom {
+    margin-top: 18px;
+
+    text-align: center;
+}
+
+.hpc-forgot-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #71849b !important;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.6px;
+
+    text-decoration: none !important;
+
+    transition: color 0.2s ease;
+}
+
+.hpc-forgot-link i {
+    color: var(--login-cyan);
+    font-size: 8px;
+}
+
+.hpc-forgot-link span {
+    color: var(--login-cyan);
+
+    margin-left: 2px;
+
+    transition: transform 0.2s ease;
+}
+
+.hpc-forgot-link:hover {
+    color: var(--login-white) !important;
+}
+
+.hpc-forgot-link:hover span {
+    transform: translateX(3px);
+}
+
+
+/* =========================================================
+   SYSTEM STATUS
+   ========================================================= */
+
+.hpc-login-system-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-top: 24px;
+    padding-top: 16px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.hpc-login-status-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    color: #53677f;
+
+    font-size: 7px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.status-indicator {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow:
+        0 0 6px rgba(34, 197, 94, 0.55);
+}
+
+.hpc-login-status-divider {
+    width: 1px;
+    height: 12px;
+
+    background: rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.hpc-login-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin-top: 18px;
+
+    color: #53677f;
+
+    font-size: 7px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+.hpc-login-footer i {
+    width: 3px;
+    height: 3px;
+
+    border-radius: 50%;
+
+    background: var(--login-cyan);
+
+    box-shadow:
+        0 0 5px rgba(0, 217, 255, 0.5);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    .hpc-login-page {
+        padding: 50px 15px 35px;
+    }
+
+    .hpc-login-card {
+        padding: 28px 24px 24px;
+    }
+
+    .hpc-login-card-top {
+        margin-bottom: 22px;
+    }
+
+    .hpc-login-heading {
+        margin-bottom: 25px;
+    }
+
+    .hpc-login-system-code {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .hpc-login-page {
+        min-height: calc(100vh - 40px);
+        padding: 35px 12px 25px;
+    }
+
+    .hpc-login-brand {
+        margin-bottom: 18px;
+    }
+
+    .hpc-login-card {
+        padding: 24px 18px 21px;
+    }
+
+    .hpc-login-heading h1 {
+        font-size: 2.2rem;
+    }
+
+    .hpc-login-heading p {
+        font-size: 10px;
+    }
+
+    .hpc-login-input {
+        height: 46px;
+    }
+
+    .hpc-login-button {
+        height: 48px;
+    }
+
+    .hpc-login-footer {
+        flex-wrap: wrap;
+        gap: 6px;
+        text-align: center;
+        line-height: 1.7;
+    }
+
+    .hpc-login-system-status {
+        gap: 8px;
+    }
+
+    .hpc-login-status-item {
+        font-size: 6px;
+    }
+}
+
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+html[data-theme="light"] .hpc-login-page {
+    --login-bg: #f3f8fd;
+    --login-bg-2: #e8f1fa;
+
+    --login-panel: rgba(255, 255, 255, 0.82);
+    --login-panel-strong: rgba(255, 255, 255, 0.95);
+
+    --login-cyan: #008fc4;
+    --login-blue: #1469d8;
+    --login-purple: #6941d9;
+
+    --login-white: #102033;
+    --login-text: #27394d;
+    --login-muted: #65778b;
+
+    --login-border: rgba(0, 143, 196, 0.20);
+    --login-border-soft: rgba(15, 40, 65, 0.08);
+
+    background:
+        radial-gradient(
+            circle at 18% 25%,
+            rgba(0, 143, 196, 0.09),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 82% 72%,
+            rgba(105, 65, 217, 0.08),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            var(--login-bg),
+            var(--login-bg-2)
+        );
+
+    color: var(--login-white);
+}
+
+
+/* =========================================================
+   LIGHT GRID
+   ========================================================= */
+
+html[data-theme="light"] .hpc-login-grid {
+    background-image:
+        linear-gradient(
+            rgba(0, 143, 196, 0.045) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0, 143, 196, 0.045) 1px,
+            transparent 1px
+        );
+}
+
+
+/* =========================================================
+   LIGHT GLOWS
+   ========================================================= */
+
+html[data-theme="light"] .hpc-login-glow-one {
+    background: rgba(0, 143, 196, 0.10);
+}
+
+html[data-theme="light"] .hpc-login-glow-two {
+    background: rgba(105, 65, 217, 0.09);
+}
+
+
+/* =========================================================
+   LIGHT NODES
+   ========================================================= */
+
+html[data-theme="light"] .login-node {
+    background: var(--login-cyan);
+
+    box-shadow:
+        0 0 8px rgba(0, 143, 196, 0.55),
+        0 0 16px rgba(0, 143, 196, 0.20);
+}
+
+
+/* =========================================================
+   LIGHT BRAND
+   ========================================================= */
+
+html[data-theme="light"] .hpc-login-brand-mark {
+    border-color: rgba(0, 143, 196, 0.35);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 143, 196, 0.08),
+            rgba(105, 65, 217, 0.06)
+        );
+
+    box-shadow:
+        0 0 22px rgba(0, 143, 196, 0.06),
+        inset 0 0 15px rgba(0, 143, 196, 0.03);
+}
+
+html[data-theme="light"] .hpc-login-brand-subtitle {
+    color: #718399;
+}
+
+
+/* =========================================================
+   LIGHT LOGIN CARD
+   ========================================================= */
+
+html[data-theme="light"] .hpc-login-card {
+    border-color: rgba(0, 143, 196, 0.18);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.94),
+            rgba(246, 251, 255, 0.96)
+        );
+
+    box-shadow:
+        0 25px 65px rgba(36, 73, 110, 0.12),
+        0 0 40px rgba(0, 143, 196, 0.035);
+}
+
+html[data-theme="light"] .hpc-login-card::before {
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--login-cyan),
+            var(--login-purple),
+            transparent
+        );
+}
+
+html[data-theme="light"] .hpc-login-card::after {
+    border-right-color: rgba(0, 143, 196, 0.18);
+    border-bottom-color: rgba(0, 143, 196, 0.18);
+}
+
+
+/* =========================================================
+   LIGHT CARD CONTENT
+   ========================================================= */
+
+html[data-theme="light"] .hpc-login-system-code {
+    color: #7b8da1;
+}
+
+html[data-theme="light"] .hpc-login-heading h1 {
+    color: #102033;
+}
+
+html[data-theme="light"] .hpc-login-heading p {
+    color: #65778b;
+}
+
+html[data-theme="light"] .hpc-login-field label {
+    color: #40546a;
+}
+
+
+/* =========================================================
+   LIGHT INPUTS
+   ========================================================= */
+
+html[data-theme="light"] .hpc-login-input {
+    border-color: rgba(24, 58, 90, 0.12);
+
+    background: rgba(242, 248, 253, 0.90);
+
+    color: #15283d;
+}
+
+html[data-theme="light"] .hpc-login-input::placeholder {
+    color: #8a9bae;
+}
+
+html[data-theme="light"] .hpc-login-input:focus {
+    border-color: rgba(0, 143, 196, 0.42);
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 1px rgba(0, 143, 196, 0.07),
+        0 0 20px rgba(0, 143, 196, 0.06);
+}
+
+
+/* =========================================================
+   LIGHT LOGIN BUTTON
+   ========================================================= */
+
+html[data-theme="light"] .hpc-login-button {
+    border-color: rgba(0, 143, 196, 0.35);
+
+    background:
+        linear-gradient(
+            100deg,
+            rgba(0, 143, 196, 0.08),
+            rgba(20, 105, 216, 0.07)
+        );
+
+    color: #13263a;
+}
+
+html[data-theme="light"] .hpc-login-button:hover {
+    border-color: var(--login-cyan);
+
+    background:
+        linear-gradient(
+            100deg,
+            rgba(0, 143, 196, 0.13),
+            rgba(20, 105, 216, 0.10)
+        );
+
+    box-shadow:
+        0 0 25px rgba(0, 143, 196, 0.09);
+}
+
+
+/* =========================================================
+   LIGHT FORGOT PASSWORD
+   ========================================================= */
+
+html[data-theme="light"] .hpc-forgot-link {
+    color: #718399 !important;
+}
+
+html[data-theme="light"] .hpc-forgot-link:hover {
+    color: #1b3047 !important;
+}
+
+
+/* =========================================================
+   LIGHT SYSTEM STATUS
+   ========================================================= */
+
+html[data-theme="light"] .hpc-login-system-status {
+    border-top-color: rgba(20, 55, 85, 0.08);
+}
+
+html[data-theme="light"] .hpc-login-status-item {
+    color: #718399;
+}
+
+html[data-theme="light"] .hpc-login-status-divider {
+    background: rgba(20, 55, 85, 0.10);
+}
+
+
+/* =========================================================
+   LIGHT FOOTER
+   ========================================================= */
+
+html[data-theme="light"] .hpc-login-footer {
+    color: #718399;
+}

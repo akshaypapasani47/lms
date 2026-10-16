@@ -1,0 +1,1004 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Create Virtual Lab
+{% endblock title %}
+
+{% block extra_css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="{% static 'css/virtual_lab.css' %}">
+
+    <style>
+        /* =========================================================
+           CREATE VIRTUAL LAB
+           ========================================================= */
+
+        .vl-create-page {
+            width: auto;
+            max-width: none;
+            margin-left: 0;
+            margin-right: 0;
+
+            /* Keep page content below the global header */
+            margin-top: 30px;
+
+            padding: 38px 42px 70px;
+            min-height: calc(100vh - 150px);
+
+            transition:
+                margin-left 0.3s ease,
+                width 0.3s ease;
+        }
+
+        body:has(#side-nav.active) .vl-create-page {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+        }
+
+        /* ---------- HEADER ---------- */
+
+        .vl-create-header {
+            margin-bottom: 30px;
+        }
+
+        .vl-create-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 12px;
+
+            font-size: 10px;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: 2px;
+
+            color: #00d9ff;
+        }
+
+        .vl-create-eyebrow span {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+
+            background: #00d9ff;
+            box-shadow: 0 0 12px rgba(0, 217, 255, 0.8);
+        }
+
+        .vl-create-title {
+            margin: 0;
+
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            font-size: 38px;
+            line-height: 1.15;
+            font-weight: 900;
+            letter-spacing: -0.8px;
+
+            color: var(--text-primary, #f4f7fb);
+        }
+
+        .vl-create-title i {
+            color: #00d9ff;
+            font-size: 31px;
+        }
+
+        .vl-create-subtitle {
+            margin-top: 10px;
+            max-width: 850px;
+
+            font-size: 14px;
+            line-height: 1.7;
+
+            color: var(--text-secondary, #9aa7b5);
+        }
+
+        /* ---------- FORM SHELL ---------- */
+
+        .vl-create-shell {
+            max-width: 1150px;
+
+            border: 1px solid rgba(0, 217, 255, 0.18);
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(0, 217, 255, 0.045),
+                    rgba(255, 255, 255, 0.015)
+                ),
+                rgba(12, 18, 27, 0.92);
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.28),
+                inset 0 1px 0 rgba(255, 255, 255, 0.035);
+
+            overflow: hidden;
+        }
+
+        .vl-create-topline {
+            height: 3px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #00d9ff,
+                    rgba(0, 217, 255, 0.15),
+                    transparent
+                );
+
+            box-shadow: 0 0 18px rgba(0, 217, 255, 0.35);
+        }
+
+        .vl-create-form {
+            padding: 32px;
+        }
+
+        /* ---------- SECTION ---------- */
+
+        .vl-form-section {
+            margin-bottom: 34px;
+        }
+
+        .vl-form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .vl-form-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            margin-bottom: 20px;
+
+            font-size: 16px;
+            font-weight: 850;
+            letter-spacing: 0.3px;
+
+            color: var(--text-primary, #f4f7fb);
+        }
+
+        .vl-form-section-title i {
+            color: #00d9ff;
+            font-size: 14px;
+        }
+
+        .vl-form-section-title::after {
+            content: "";
+
+            height: 1px;
+            flex: 1;
+
+            margin-left: 8px;
+
+            background: linear-gradient(
+                90deg,
+                rgba(0, 217, 255, 0.18),
+                transparent
+            );
+        }
+
+        /* ---------- GRID ---------- */
+
+        .vl-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .vl-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .vl-form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .vl-form-label {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+
+            color: #8f9baa;
+        }
+
+        .vl-form-required {
+            color: #00d9ff;
+        }
+
+        .vl-form-control {
+            width: 100%;
+            min-height: 48px;
+
+            padding: 12px 14px;
+
+            border: 1px solid rgba(140, 160, 180, 0.18);
+            border-radius: 9px;
+
+            outline: none;
+
+            background: rgba(255, 255, 255, 0.035);
+            color: #eef4f8;
+
+            font-family: inherit;
+            font-size: 13px;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        textarea.vl-form-control {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        select.vl-form-control {
+            cursor: pointer;
+        }
+
+        .vl-form-control::placeholder {
+            color: #667382;
+        }
+
+        .vl-form-control:focus {
+            border-color: rgba(0, 217, 255, 0.65);
+
+            background: rgba(0, 217, 255, 0.035);
+
+            box-shadow:
+                0 0 0 3px rgba(0, 217, 255, 0.08),
+                0 0 20px rgba(0, 217, 255, 0.06);
+        }
+
+        .vl-form-help {
+            font-size: 10px;
+            line-height: 1.5;
+            color: #687686;
+        }
+
+        /* ---------- RESOURCE / ENVIRONMENT INFO ---------- */
+
+        .vl-create-info {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+
+            margin-top: 22px;
+        }
+
+        .vl-create-info-card {
+            padding: 15px;
+
+            border: 1px solid rgba(0, 217, 255, 0.10);
+            border-radius: 10px;
+
+            background: rgba(0, 217, 255, 0.025);
+        }
+
+        .vl-create-info-card span {
+            display: block;
+
+            margin-bottom: 6px;
+
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+
+            color: #6f7d8b;
+        }
+
+        .vl-create-info-card strong {
+            font-size: 13px;
+            font-weight: 750;
+
+            color: #dce8ef;
+        }
+
+        /* ---------- ACTIONS ---------- */
+
+        .vl-create-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+
+            margin-top: 34px;
+            padding-top: 24px;
+
+            border-top: 1px solid rgba(140, 160, 180, 0.10);
+        }
+
+        .vl-create-btn {
+            min-height: 44px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+
+            padding: 0 20px;
+
+            border-radius: 8px;
+
+            font-size: 10px;
+            font-weight: 850;
+            letter-spacing: 1px;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .vl-create-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .vl-create-btn.cancel {
+            border: 1px solid rgba(140, 160, 180, 0.18);
+
+            background: rgba(255, 255, 255, 0.025);
+            color: #9ba8b5;
+        }
+
+        .vl-create-btn.cancel:hover {
+            border-color: rgba(140, 160, 180, 0.35);
+            color: #e5edf2;
+        }
+
+        .vl-create-btn.submit {
+            border: 1px solid rgba(0, 217, 255, 0.55);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0, 217, 255, 0.16),
+                    rgba(0, 217, 255, 0.06)
+                );
+
+            color: #00d9ff;
+
+            box-shadow:
+                0 0 20px rgba(0, 217, 255, 0.08);
+        }
+
+        .vl-create-btn.submit:hover {
+            border-color: #00d9ff;
+
+            box-shadow:
+                0 0 25px rgba(0, 217, 255, 0.18);
+        }
+
+        /* ---------- LIGHT THEME ---------- */
+
+        html[data-theme="light"] .vl-create-shell {
+            border-color: rgba(0, 120, 150, 0.18);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(0, 180, 220, 0.035),
+                    rgba(255, 255, 255, 0.9)
+                ),
+                #ffffff;
+
+            box-shadow:
+                0 20px 55px rgba(30, 55, 80, 0.10),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        html[data-theme="light"] .vl-create-title {
+            color: #16212b;
+        }
+
+        html[data-theme="light"] .vl-create-subtitle {
+            color: #667584;
+        }
+
+        html[data-theme="light"] .vl-form-section-title {
+            color: #182630;
+        }
+
+        html[data-theme="light"] .vl-form-label {
+            color: #647381;
+        }
+
+        html[data-theme="light"] .vl-form-control {
+            border-color: rgba(40, 70, 90, 0.16);
+
+            background: #f8fafc;
+            color: #182630;
+        }
+
+        html[data-theme="light"] .vl-form-control::placeholder {
+            color: #9aa7b2;
+        }
+
+        html[data-theme="light"] .vl-form-control:focus {
+            background: #ffffff;
+        }
+
+        html[data-theme="light"] .vl-form-help {
+            color: #87939d;
+        }
+
+        html[data-theme="light"] .vl-create-info-card {
+            border-color: rgba(0, 120, 150, 0.10);
+            background: rgba(0, 180, 220, 0.025);
+        }
+
+        html[data-theme="light"] .vl-create-info-card span {
+            color: #788793;
+        }
+
+        html[data-theme="light"] .vl-create-info-card strong {
+            color: #253642;
+        }
+
+        html[data-theme="light"] .vl-create-actions {
+            border-color: rgba(40, 70, 90, 0.10);
+        }
+
+        html[data-theme="light"] .vl-create-btn.cancel {
+            border-color: rgba(40, 70, 90, 0.16);
+            background: #f8fafc;
+            color: #647381;
+        }
+
+        html[data-theme="light"] .vl-create-btn.cancel:hover {
+            color: #1d2c36;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+
+        @media (max-width: 1100px) {
+
+        .vl-create-page {
+            margin-top: 25px;
+            padding: 30px 28px 60px;
+        }
+
+            body:has(#side-nav.active) .vl-create-page {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .vl-create-title {
+                font-size: 32px;
+            }
+
+            .vl-create-shell {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 750px) {
+
+            .vl-create-page {
+                padding: 25px 18px 50px;
+            }
+
+            .vl-create-title {
+                font-size: 28px;
+            }
+
+            .vl-create-title i {
+                font-size: 24px;
+            }
+
+            .vl-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .vl-form-group.full {
+                grid-column: auto;
+            }
+
+            .vl-create-info {
+                grid-template-columns: 1fr;
+            }
+
+            .vl-create-form {
+                padding: 22px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .vl-create-page {
+                margin-top: 20px;
+                padding: 20px 12px 40px;
+            }
+
+            .vl-create-title {
+                font-size: 24px;
+            }
+
+            .vl-create-subtitle {
+                font-size: 12px;
+            }
+
+            .vl-create-form {
+                padding: 18px;
+            }
+
+            .vl-create-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .vl-create-btn {
+                width: 100%;
+            }
+        }
+
+        .vl-create-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .vl-create-navigation-left,
+        .vl-create-navigation-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vl-create-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            min-height: 38px;
+            padding: 0 13px;
+
+            border: 1px solid rgba(0, 217, 255, 0.18);
+            border-radius: 9px;
+
+            background: rgba(0, 217, 255, 0.035);
+            color: #9ba8b5;
+
+            text-decoration: none;
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: 1px;
+
+            transition:
+                color .25s ease,
+                border-color .25s ease,
+                background .25s ease,
+                transform .25s ease;
+        }
+
+        .vl-create-nav-btn i {
+            color: #00d9ff;
+        }
+
+        .vl-create-nav-btn:hover {
+            color: #e5edf2;
+            border-color: rgba(0, 217, 255, 0.45);
+            background: rgba(0, 217, 255, 0.07);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        html[data-theme="light"] .vl-create-back,
+        html[data-theme="light"] .vl-create-nav-btn {
+            border-color: rgba(40, 70, 90, .16);
+            background: rgba(255, 255, 255, .82);
+            color: #647381;
+        }
+
+        html[data-theme="light"] .vl-create-back:hover,
+        html[data-theme="light"] .vl-create-nav-btn:hover {
+            border-color: rgba(0, 132, 173, .3);
+            background: rgba(0, 132, 173, .045);
+            color: #1d2c36;
+        }
+
+        @media (max-width: 500px) {
+
+            .vl-create-navigation {
+                flex-direction: column;
+                align-items: stretch;
+                margin-bottom: 18px;
+            }
+
+            .vl-create-navigation-left,
+            .vl-create-navigation-right {
+                width: 100%;
+            }
+
+            .vl-create-back,
+            .vl-create-nav-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+
+                min-height: 38px;
+                padding: 0 13px;
+
+                border: 1px solid rgba(0, 217, 255, 0.18);
+                border-radius: 9px;
+
+                background: rgba(0, 217, 255, 0.035);
+                color: #9ba8b5;
+
+                text-decoration: none;
+                font-size: 8px;
+                font-weight: 900;
+                letter-spacing: 1px;
+
+                transition:
+                    color .25s ease,
+                    border-color .25s ease,
+                    background .25s ease,
+                    transform .25s ease;
+            }
+
+            .vl-create-back i,
+            .vl-create-nav-btn i {
+                color: #00d9ff;
+                transition: transform .25s ease;
+            }
+
+            .vl-create-back:hover,
+            .vl-create-nav-btn:hover {
+                color: #e5edf2;
+                border-color: rgba(0, 217, 255, 0.45);
+                background: rgba(0, 217, 255, 0.07);
+                transform: translateY(-2px);
+                text-decoration: none;
+            }
+
+            .vl-create-back:hover i {
+                transform: translateX(-3px);
+            }
+        }
+        </style>
+{% endblock extra_css %}
+
+
+{% block maincontent %}
+
+<div class="vl-create-page">
+
+    <!-- PAGE NAVIGATION -->
+    <div class="vl-create-navigation">
+
+        <div class="vl-create-navigation-left">
+            <a
+                href="{% url 'virtuallab:lab_management' %}"
+                class="vl-create-back"
+            >
+                <i class="fas fa-arrow-left"></i>
+                LAB MANAGEMENT
+            </a>
+        </div>
+
+        <div class="vl-create-navigation-right">
+
+            <a
+                href="{% url 'virtuallab:docker_environment_management' %}"
+                class="vl-create-nav-btn"
+            >
+                <i class="fas fa-cubes"></i>
+                DOCKER ENVIRONMENTS
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- HEADER -->
+    <div class="vl-create-header">
+
+        <div class="vl-create-eyebrow">
+            <span></span>
+            HPC / VIRTUAL LAB / CREATE
+        </div>
+
+        <h1 class="vl-create-title">
+            <i class="fas fa-plus-circle"></i>
+            Create New Virtual Lab
+        </h1>
+
+        <div class="vl-create-subtitle">
+            Configure a new virtual laboratory environment, runtime
+            technology and resource allocation.
+        </div>
+
+    </div>
+
+
+    <!-- FORM -->
+    <div class="vl-create-shell">
+
+        <div class="vl-create-topline"></div>
+
+        <form
+            method="POST"
+            class="vl-create-form"
+        >
+
+            {% csrf_token %}
+
+
+            <!-- BASIC INFORMATION -->
+            <div class="vl-form-section">
+
+                <div class="vl-form-section-title">
+                    <i class="fas fa-layer-group"></i>
+                    Basic Information
+                </div>
+
+
+                <div class="vl-form-grid">
+
+                    <div class="vl-form-group full">
+
+                        <label class="vl-form-label">
+                            Lab Name
+                            <span class="vl-form-required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            class="vl-form-control"
+                            placeholder="Example: Python Programming Virtual Lab"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="vl-form-group full">
+
+                        <label class="vl-form-label">
+                            Description
+                            <span class="vl-form-required">*</span>
+                        </label>
+
+                        <textarea
+                            name="description"
+                            class="vl-form-control"
+                            placeholder="Describe the purpose, learning objectives and capabilities of this laboratory..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="vl-form-group">
+                        <label for="lab_type">
+                            LAB TYPE
+                            <span>*</span>
+                        </label>
+
+                        <select name="lab_type" id="lab_type" required>
+                            <option value="">SELECT LAB TYPE</option>
+
+                            {% for value, label in lab_type_choices %}
+                                <option value="{{ value }}">
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+
+                    <div class="vl-form-group">
+
+                        <label class="vl-form-label">
+                            Technology
+                        </label>
+
+                        <input
+                            type="text"
+                            name="technology"
+                            class="vl-form-control"
+                            placeholder="Example: Python / Java / C++"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ENVIRONMENT -->
+            <div class="vl-form-section">
+
+                <div class="vl-form-section-title">
+                    <i class="fas fa-cubes"></i>
+                    Runtime Environment
+                </div>
+
+
+                <div class="vl-form-grid">
+
+                    <div class="vl-form-group full">
+
+                        <label class="vl-form-label">
+                            Docker Environment
+                            <span class="vl-form-required">*</span>
+                        </label>
+
+                        <select
+                            name="docker_environment"
+                            class="vl-form-control"
+                            required
+                        >
+                            <option value="">
+                                Select Docker Environment
+                            </option>
+
+                            {% for environment in environments %}
+                                <option value="{{ environment.id }}">
+                                    {{ environment.name }}
+                                    — {{ environment.docker_image }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <div class="vl-form-help">
+                            Select the Docker environment used to provision student containers.
+                        </div>
+
+                    </div>
+
+
+                    <div class="vl-form-group">
+
+                        <label class="vl-form-label">
+                            RAM Allocation (MB)
+                        </label>
+
+                        <input
+                            type="number"
+                            name="allocated_ram"
+                            class="vl-form-control"
+                            value="512"
+                            min="128"
+                            step="128"
+                        >
+
+                    </div>
+
+
+                    <div class="vl-form-group">
+
+                        <label class="vl-form-label">
+                            Storage Allocation (MB)
+                        </label>
+
+                        <input
+                            type="number"
+                            name="allocated_storage"
+                            class="vl-form-control"
+                            value="1024"
+                            min="128"
+                            step="128"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="vl-create-info">
+
+                    <div class="vl-create-info-card">
+                        <span>Runtime</span>
+                        <strong>Docker Container</strong>
+                    </div>
+
+                    <div class="vl-create-info-card">
+                        <span>Workspace</span>
+                        <strong>Persistent Student Storage</strong>
+                    </div>
+
+                    <div class="vl-create-info-card">
+                        <span>Terminal</span>
+                        <strong>Linux Shell</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATUS -->
+            <div class="vl-form-section">
+
+                <div class="vl-form-section-title">
+                    <i class="fas fa-toggle-on"></i>
+                    Lab Status
+                </div>
+
+
+                <div class="vl-form-grid">
+
+                    <div class="vl-form-group">
+
+                        <label class="vl-form-label">
+                            Initial Status
+                        </label>
+
+                        <select
+                            name="status"
+                            class="vl-form-control"
+                        >
+
+                            <option value="ACTIVE">
+                                Active
+                            </option>
+
+                            <option value="INACTIVE">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                        <div class="vl-form-help">
+                            Inactive labs will not be available to students.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+            <div class="vl-create-actions">
+
+                <a
+                    href="{% url 'virtuallab:lab_management' %}"
+                    class="vl-create-btn cancel"
+                >
+                    <i class="fas fa-arrow-left"></i>
+                    CANCEL
+                </a>
+
+                <button
+                    type="submit"
+                    class="vl-create-btn submit"
+                >
+                    <i class="fas fa-plus"></i>
+                    CREATE LAB
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock maincontent %}

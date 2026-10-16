@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+
+<!-- HEADER -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="mb-1">
+            Student Attempts
+        </h2>
+
+        <p class="text-muted mb-0">
+            {{ assessment.title }}
+        </p>
+
+    </div>
+
+
+    <a
+        href="{% url 'assessment_results' assessment.pk %}"
+        class="btn btn-outline-secondary"
+    >
+        ← Back to Results
+    </a>
+
+</div>
+
+
+<!-- STUDENT INFORMATION -->
+
+<div class="card shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-6">
+
+                <div class="text-muted small">
+                    STUDENT
+                </div>
+
+                <h5 class="mb-0 mt-1">
+                    {{ student.get_full_name|default:student.username }}
+                </h5>
+
+            </div>
+
+
+            <div class="col-md-6 mt-3 mt-md-0">
+
+                <div class="text-muted small">
+                    ASSESSMENT
+                </div>
+
+                <div class="fw-semibold mt-1">
+                    {{ assessment.title }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ATTEMPTS -->
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-white py-3">
+
+        <strong>
+            All Attempts
+        </strong>
+
+        <div class="text-muted small mt-1">
+            Complete attempt history for this student.
+        </div>
+
+    </div>
+
+
+    <div class="card-body p-0">
+
+        {% if attempts %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th class="px-4">
+                                Attempt
+                            </th>
+
+                            <th>
+                                Score
+                            </th>
+
+                            <th>
+                                Percentage
+                            </th>
+
+                            <th>
+                                Submitted On
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for item in attempts %}
+
+                            <tr>
+
+                                <td class="px-4">
+
+                                    <strong>
+                                        Attempt {{ item.submission.attempt_number }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+
+                                    <strong>
+                                        {{ item.submission.total_marks }}
+                                    </strong>
+
+                                    <span class="text-muted">
+                                        / {{ assessment.total_marks }}
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ item.percentage }}%
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if item.submission.submitted_at %}
+
+                                        {{ item.submission.submitted_at|date:"d M Y, h:i A" }}
+
+                                    {% else %}
+
+                                        -
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ item.submission.get_status_display }}
+
+                                </td>
+
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'assessment_student_result' item.submission.pk %}"
+                                    >
+                                        View Result
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="text-center py-5 px-3">
+
+                <h5 class="mb-2">
+                    No completed attempts found.
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Attempt details will appear here after the student submits the assessment.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endblock %}

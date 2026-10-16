@@ -1,0 +1,1078 @@
+/* =========================================================
+   HPC REGISTRATION PAGE
+   Futuristic C-DAC / HPC Theme
+   ========================================================= */
+
+.hpc-register-page {
+    --register-bg: #030914;
+    --register-bg-2: #071426;
+
+    --register-panel: rgba(7, 20, 38, 0.82);
+    --register-panel-strong: rgba(5, 16, 31, 0.94);
+
+    --register-cyan: #00d9ff;
+    --register-blue: #147aff;
+    --register-purple: #7b4dff;
+
+    --register-white: #f4f8ff;
+    --register-text: #d7e2f0;
+    --register-muted: #8294aa;
+
+    --register-border: rgba(0, 217, 255, 0.17);
+
+    position: relative;
+
+    min-height: calc(100vh - 40px);
+    width: 100%;
+
+    padding: 65px 20px 45px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(circle at 12% 18%,
+            rgba(0, 217, 255, 0.08),
+            transparent 28%),
+        radial-gradient(circle at 88% 78%,
+            rgba(123, 77, 255, 0.09),
+            transparent 30%),
+        linear-gradient(135deg,
+            var(--register-bg),
+            var(--register-bg-2));
+
+    color: var(--register-white);
+}
+
+
+/* =========================================================
+   COMPUTATIONAL GRID
+   ========================================================= */
+
+.hpc-register-page::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(rgba(0, 217, 255, 0.032) 1px,
+            transparent 1px),
+        linear-gradient(90deg,
+            rgba(0, 217, 255, 0.032) 1px,
+            transparent 1px);
+
+    background-size: 55px 55px;
+
+    mask-image: linear-gradient(to bottom,
+            transparent,
+            black 15%,
+            black 85%,
+            transparent);
+
+    -webkit-mask-image: linear-gradient(to bottom,
+            transparent,
+            black 15%,
+            black 85%,
+            transparent);
+}
+
+
+/* =========================================================
+   AMBIENT GLOWS
+   ========================================================= */
+
+.hpc-register-page::after {
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    right: -250px;
+    bottom: -280px;
+
+    border-radius: 50%;
+
+    background: rgba(123, 77, 255, 0.09);
+
+    filter: blur(90px);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+   ========================================================= */
+
+.hpc-register-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hpc-register-page>* {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.hpc-register-page::marker {
+    display: none;
+}
+
+.hpc-register-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-bottom: 22px;
+}
+
+.hpc-register-brand-mark {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(0, 217, 255, 0.42);
+
+    background:
+        linear-gradient(135deg,
+            rgba(0, 217, 255, 0.12),
+            rgba(123, 77, 255, 0.08));
+
+    box-shadow:
+        0 0 25px rgba(0, 217, 255, 0.07),
+        inset 0 0 18px rgba(0, 217, 255, 0.04);
+}
+
+.hpc-register-brand-mark span {
+    color: var(--register-cyan);
+
+    font-size: 10px;
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+.hpc-register-brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.hpc-register-brand-title {
+    color: var(--register-white);
+
+    font-size: 15px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+.hpc-register-brand-subtitle {
+    margin-top: 3px;
+
+    color: var(--register-muted);
+
+    font-size: 7px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   REGISTRATION CARD
+   ========================================================= */
+
+.hpc-register-card {
+    width: min(980px, 100%);
+
+    padding: 34px 38px 30px;
+
+    border: 1px solid var(--register-border);
+
+    background:
+        linear-gradient(145deg,
+            rgba(8, 25, 45, 0.88),
+            rgba(4, 14, 28, 0.95));
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.42),
+        0 0 45px rgba(0, 217, 255, 0.035);
+
+    position: relative;
+    overflow: hidden;
+}
+
+.hpc-register-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            var(--register-cyan),
+            var(--register-purple),
+            transparent);
+
+    opacity: 0.75;
+}
+
+.hpc-register-card::after {
+    content: "";
+
+    position: absolute;
+
+    right: 0;
+    bottom: 0;
+
+    width: 100px;
+    height: 100px;
+
+    border-right: 1px solid rgba(0, 217, 255, 0.20);
+    border-bottom: 1px solid rgba(0, 217, 255, 0.20);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.hpc-register-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    margin-bottom: 30px;
+
+    padding-bottom: 22px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.hpc-register-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: var(--register-cyan);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+.hpc-register-status-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--register-cyan);
+
+    box-shadow:
+        0 0 7px rgba(0, 217, 255, 0.8);
+}
+
+.hpc-register-header h1 {
+    margin: 10px 0 0;
+
+    color: var(--register-white);
+
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+
+    font-weight: 800;
+
+    letter-spacing: -1.5px;
+}
+
+.hpc-register-header h1 span {
+    color: var(--register-cyan);
+}
+
+.hpc-register-header p {
+    max-width: 520px;
+
+    margin: 11px 0 0;
+
+    color: var(--register-muted);
+
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.hpc-register-code {
+    color: #53677f;
+
+    font-family: monospace;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.hpc-register-section {
+    margin-bottom: 26px;
+}
+
+.hpc-register-section:last-of-type {
+    margin-bottom: 22px;
+}
+
+.hpc-register-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 18px;
+
+    color: #b9c9dc;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+}
+
+.hpc-register-section-number {
+    color: var(--register-cyan);
+
+    font-family: monospace;
+
+    font-size: 8px;
+}
+
+.hpc-register-section-line {
+    flex: 1;
+
+    height: 1px;
+
+    background:
+        linear-gradient(90deg,
+            rgba(0, 217, 255, 0.18),
+            transparent);
+}
+
+
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+
+.hpc-register-fields {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 18px 22px;
+}
+
+.hpc-register-field {
+    min-width: 0;
+}
+
+.hpc-register-field.full-width {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.hpc-register-field label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #9fb1c6;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   DJANGO FORM CONTROLS
+   ========================================================= */
+
+.hpc-register-field input,
+.hpc-register-field select,
+.hpc-register-field textarea {
+    width: 100%;
+
+    min-height: 45px;
+
+    padding: 10px 12px;
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+
+    border-radius: 0;
+
+    outline: none;
+
+    background: rgba(2, 10, 21, 0.72);
+
+    color: var(--register-white);
+
+    font-size: 11px;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.hpc-register-field textarea {
+    min-height: 85px;
+    resize: vertical;
+}
+
+.hpc-register-field select {
+    cursor: pointer;
+}
+
+.hpc-register-field input:focus,
+.hpc-register-field select:focus,
+.hpc-register-field textarea:focus {
+    border-color: rgba(0, 217, 255, 0.45);
+
+    background: rgba(3, 15, 29, 0.9);
+
+    box-shadow:
+        0 0 0 1px rgba(0, 217, 255, 0.07),
+        0 0 20px rgba(0, 217, 255, 0.045);
+}
+
+
+/* Django help/error text */
+
+.hpc-register-field .helptext,
+.hpc-register-field .form-text {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #53677f;
+
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+.hpc-register-field .errorlist {
+    margin: 5px 0 0;
+    padding: 0;
+
+    list-style: none;
+
+    color: #ff8298;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   USERNAME VALIDATION
+   ========================================================= */
+
+#message-wrapper {
+    margin-top: 7px;
+}
+
+#message-wrapper p {
+    margin: 0 !important;
+
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+#message-wrapper .bg-error {
+    padding: 0 !important;
+
+    background: transparent !important;
+
+    color: #ff8298;
+}
+
+#message-wrapper .bg-correct {
+    padding: 0 !important;
+
+    background: transparent !important;
+
+    color: #53d7a5;
+}
+
+
+/* =========================================================
+   FORM ERRORS
+   ========================================================= */
+
+.hpc-register-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin: 5px 0 18px;
+
+    padding: 10px 12px;
+
+    border-left: 2px solid #ff4d6d;
+
+    background: rgba(255, 77, 109, 0.055);
+
+    color: #ff8298;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   CREATE ACCOUNT BUTTON
+   ========================================================= */
+
+.hpc-register-submit {
+    position: relative;
+
+    width: 100%;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 17px;
+
+    border: 1px solid rgba(0, 217, 255, 0.45);
+
+    border-radius: 0;
+
+    background:
+        linear-gradient(100deg,
+            rgba(0, 217, 255, 0.12),
+            rgba(20, 122, 255, 0.10));
+
+    color: var(--register-white);
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+.hpc-register-submit::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    transform: translateX(-105%);
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            rgba(0, 217, 255, 0.13),
+            transparent);
+
+    transition: transform 0.55s ease;
+}
+
+.hpc-register-submit:hover::before {
+    transform: translateX(105%);
+}
+
+.hpc-register-submit:hover {
+    border-color: var(--register-cyan);
+
+    background:
+        linear-gradient(100deg,
+            rgba(0, 217, 255, 0.17),
+            rgba(20, 122, 255, 0.14));
+
+    box-shadow:
+        0 0 25px rgba(0, 217, 255, 0.08);
+
+    transform: translateY(-1px);
+}
+
+.hpc-register-submit-content {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1.4px;
+}
+
+.hpc-register-submit-content i {
+    color: var(--register-cyan);
+}
+
+.hpc-register-submit-arrow {
+    position: relative;
+    z-index: 2;
+
+    color: var(--register-cyan);
+
+    font-size: 18px;
+
+    transition: transform 0.25s ease;
+}
+
+.hpc-register-submit:hover .hpc-register-submit-arrow {
+    transform: translateX(4px);
+}
+
+
+/* =========================================================
+   LOGIN LINK
+   ========================================================= */
+
+.hpc-register-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    margin-top: 20px;
+
+    color: #71849b;
+
+    font-size: 9px;
+}
+
+.hpc-register-login a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    color: var(--register-cyan) !important;
+
+    font-weight: 800;
+
+    text-decoration: none !important;
+
+    transition: color 0.2s ease;
+}
+
+.hpc-register-login a span {
+    transition: transform 0.2s ease;
+}
+
+.hpc-register-login a:hover {
+    color: var(--register-white) !important;
+}
+
+.hpc-register-login a:hover span {
+    transform: translateX(3px);
+}
+
+
+/* =========================================================
+   SYSTEM FOOTER
+   ========================================================= */
+
+.hpc-register-system {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-top: 18px;
+
+    color: #53677f;
+
+    font-size: 7px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+}
+
+.hpc-register-system i {
+    width: 3px;
+    height: 3px;
+
+    border-radius: 50%;
+
+    background: var(--register-cyan);
+
+    box-shadow:
+        0 0 5px rgba(0, 217, 255, 0.5);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .hpc-register-page {
+        padding: 50px 15px 35px;
+    }
+
+    .hpc-register-card {
+        padding: 28px 25px 25px;
+    }
+
+    .hpc-register-fields {
+        grid-template-columns: 1fr;
+
+        gap: 17px;
+    }
+
+    .hpc-register-field.full-width {
+        grid-column: auto;
+    }
+}
+
+
+@media (max-width: 550px) {
+
+    .hpc-register-page {
+        padding: 35px 10px 25px;
+    }
+
+    .hpc-register-brand {
+        margin-bottom: 18px;
+    }
+
+    .hpc-register-card {
+        padding: 24px 17px 22px;
+    }
+
+    .hpc-register-header {
+        margin-bottom: 24px;
+        padding-bottom: 18px;
+    }
+
+    .hpc-register-header h1 {
+        font-size: 2.15rem;
+    }
+
+    .hpc-register-header p {
+        font-size: 9px;
+    }
+
+    .hpc-register-code {
+        display: none;
+    }
+
+    .hpc-register-section {
+        margin-bottom: 22px;
+    }
+
+    .hpc-register-field input,
+    .hpc-register-field select,
+    .hpc-register-field textarea {
+        min-height: 44px;
+    }
+
+    .hpc-register-submit {
+        height: 48px;
+    }
+
+    .hpc-register-system {
+        flex-wrap: wrap;
+        line-height: 1.7;
+    }
+}
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-page {
+    --register-bg: #f3f8fd;
+    --register-bg-2: #e8f1fa;
+
+    --register-panel: rgba(255, 255, 255, 0.84);
+    --register-panel-strong: rgba(255, 255, 255, 0.96);
+
+    --register-cyan: #008fc4;
+    --register-blue: #1469d8;
+    --register-purple: #6941d9;
+
+    --register-white: #102033;
+    --register-text: #27394d;
+    --register-muted: #65778b;
+
+    --register-border: rgba(0, 143, 196, 0.20);
+
+    background:
+        radial-gradient(circle at 12% 18%,
+            rgba(0, 143, 196, 0.08),
+            transparent 28%),
+        radial-gradient(circle at 88% 78%,
+            rgba(105, 65, 217, 0.07),
+            transparent 30%),
+        linear-gradient(135deg,
+            var(--register-bg),
+            var(--register-bg-2));
+
+    color: var(--register-white);
+}
+
+
+/* =========================================================
+   LIGHT GRID
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-page::before {
+    background-image:
+        linear-gradient(rgba(0, 143, 196, 0.045) 1px,
+            transparent 1px),
+        linear-gradient(90deg,
+            rgba(0, 143, 196, 0.045) 1px,
+            transparent 1px);
+}
+
+
+/* =========================================================
+   LIGHT AMBIENT GLOW
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-page::after {
+    background: rgba(105, 65, 217, 0.08);
+}
+
+
+/* =========================================================
+   LIGHT BRAND
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-brand-mark {
+    border-color: rgba(0, 143, 196, 0.35);
+
+    background:
+        linear-gradient(135deg,
+            rgba(0, 143, 196, 0.08),
+            rgba(105, 65, 217, 0.06));
+
+    box-shadow:
+        0 0 22px rgba(0, 143, 196, 0.06),
+        inset 0 0 15px rgba(0, 143, 196, 0.03);
+}
+
+html[data-theme="light"] .hpc-register-brand-subtitle {
+    color: #718399;
+}
+
+
+/* =========================================================
+   LIGHT CARD
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-card {
+    border-color: rgba(0, 143, 196, 0.18);
+
+    background:
+        linear-gradient(145deg,
+            rgba(255, 255, 255, 0.95),
+            rgba(246, 251, 255, 0.97));
+
+    box-shadow:
+        0 25px 65px rgba(36, 73, 110, 0.12),
+        0 0 40px rgba(0, 143, 196, 0.035);
+}
+
+html[data-theme="light"] .hpc-register-card::after {
+    border-right-color: rgba(0, 143, 196, 0.18);
+    border-bottom-color: rgba(0, 143, 196, 0.18);
+}
+
+
+/* =========================================================
+   LIGHT HEADER
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-header h1 {
+    color: #102033;
+}
+
+html[data-theme="light"] .hpc-register-header p {
+    color: #65778b;
+}
+
+html[data-theme="light"] .hpc-register-code {
+    color: #7b8da1;
+}
+
+
+/* =========================================================
+   LIGHT SECTION HEADERS
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-section-title {
+    color: #40546a;
+}
+
+html[data-theme="light"] .hpc-register-section-line {
+    background:
+        linear-gradient(90deg,
+            rgba(0, 143, 196, 0.18),
+            transparent);
+}
+
+
+/* =========================================================
+   LIGHT FORM LABELS
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-field label {
+    color: #40546a;
+}
+
+
+/* =========================================================
+   LIGHT INPUTS
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-field input,
+html[data-theme="light"] .hpc-register-field select,
+html[data-theme="light"] .hpc-register-field textarea {
+    border-color: rgba(24, 58, 90, 0.12);
+
+    background: rgba(242, 248, 253, 0.90);
+
+    color: #15283d;
+}
+
+html[data-theme="light"] .hpc-register-field input:focus,
+html[data-theme="light"] .hpc-register-field select:focus,
+html[data-theme="light"] .hpc-register-field textarea:focus {
+    border-color: rgba(0, 143, 196, 0.42);
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 1px rgba(0, 143, 196, 0.07),
+        0 0 20px rgba(0, 143, 196, 0.06);
+}
+
+html[data-theme="light"] .hpc-register-field .helptext,
+html[data-theme="light"] .hpc-register-field .form-text {
+    color: #7b8da1;
+}
+
+
+/* =========================================================
+   LIGHT USERNAME VALIDATION
+   ========================================================= */
+
+html[data-theme="light"] #message-wrapper .bg-error {
+    color: #d94b65;
+}
+
+html[data-theme="light"] #message-wrapper .bg-correct {
+    color: #198754;
+}
+
+
+/* =========================================================
+   LIGHT ERROR
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-error {
+    background: rgba(220, 53, 69, 0.045);
+    color: #d94b65;
+}
+
+
+/* =========================================================
+   LIGHT SUBMIT BUTTON
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-submit {
+    border-color: rgba(0, 143, 196, 0.35);
+
+    background:
+        linear-gradient(100deg,
+            rgba(0, 143, 196, 0.08),
+            rgba(20, 105, 216, 0.07));
+
+    color: #13263a;
+}
+
+html[data-theme="light"] .hpc-register-submit:hover {
+    border-color: var(--register-cyan);
+
+    background:
+        linear-gradient(100deg,
+            rgba(0, 143, 196, 0.13),
+            rgba(20, 105, 216, 0.10));
+
+    box-shadow:
+        0 0 25px rgba(0, 143, 196, 0.09);
+}
+
+
+/* =========================================================
+   LIGHT LOGIN LINK
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-login {
+    color: #718399;
+}
+
+html[data-theme="light"] .hpc-register-login a:hover {
+    color: #1b3047 !important;
+}
+
+
+/* =========================================================
+   LIGHT SYSTEM FOOTER
+   ========================================================= */
+
+html[data-theme="light"] .hpc-register-system {
+    color: #718399;
+}

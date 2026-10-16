@@ -1,0 +1,1062 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   ASSESSMENT PLACEMENT
+   LMS FUTURISTIC UI
+   ========================================================= */
+
+.placement-page {
+    --placement-bg: #f5f7fb;
+    --placement-card: rgba(255, 255, 255, 0.92);
+    --placement-card-border: rgba(15, 23, 42, 0.08);
+    --placement-text: #172033;
+    --placement-muted: #667085;
+    --placement-input: #ffffff;
+    --placement-input-border: #d7dce5;
+    --placement-accent: #2563eb;
+    --placement-accent-2: #06b6d4;
+    --placement-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    --placement-soft: rgba(37, 99, 235, 0.08);
+
+    min-height: calc(100vh - 80px);
+    padding: 32px 20px 60px;
+    color: var(--placement-text);
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(37, 99, 235, 0.08),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(6, 182, 212, 0.07),
+            transparent 28%
+        ),
+        var(--placement-bg);
+
+    transition:
+        background 0.3s ease,
+        color 0.3s ease;
+}
+
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+[data-theme="dark"] .placement-page,
+body.dark-mode .placement-page {
+    --placement-bg: #07111f;
+    --placement-card: rgba(13, 25, 42, 0.92);
+    --placement-card-border: rgba(148, 163, 184, 0.13);
+    --placement-text: #e8eef8;
+    --placement-muted: #94a3b8;
+    --placement-input: #0b1728;
+    --placement-input-border: rgba(148, 163, 184, 0.20);
+    --placement-accent: #3b82f6;
+    --placement-accent-2: #22d3ee;
+    --placement-shadow: 0 20px 55px rgba(0, 0, 0, 0.30);
+    --placement-soft: rgba(59, 130, 246, 0.10);
+}
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.placement-container {
+    width: min(920px, 100%);
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.placement-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 24px;
+    padding: 9px 15px;
+
+    border: 1px solid var(--placement-card-border);
+    border-radius: 10px;
+
+    color: var(--placement-muted);
+    background: var(--placement-card);
+
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+
+    box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.placement-back:hover {
+    color: var(--placement-accent);
+    border-color: rgba(37, 99, 235, 0.35);
+    transform: translateX(-3px);
+    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.10);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.placement-header {
+    margin-bottom: 26px;
+}
+
+.placement-header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 7px 12px;
+    margin-bottom: 12px;
+
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    border-radius: 999px;
+
+    background: var(--placement-soft);
+    color: var(--placement-accent);
+
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.placement-header-badge i {
+    font-size: 11px;
+}
+
+.placement-header h1 {
+    margin: 0;
+
+    font-size: clamp(26px, 4vw, 36px);
+    line-height: 1.15;
+    font-weight: 750;
+    letter-spacing: -0.025em;
+
+    color: var(--placement-text);
+}
+
+.placement-header p {
+    margin: 10px 0 0;
+
+    max-width: 680px;
+
+    color: var(--placement-muted);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.placement-assessment {
+    margin-top: 14px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 9px 13px;
+
+    border-radius: 9px;
+    background: var(--placement-soft);
+
+    color: var(--placement-text);
+    font-size: 14px;
+}
+
+.placement-assessment i {
+    color: var(--placement-accent);
+}
+
+
+/* =========================================================
+   MAIN CARD
+   ========================================================= */
+
+.placement-card {
+    position: relative;
+    overflow: hidden;
+
+    border: 1px solid var(--placement-card-border);
+    border-radius: 18px;
+
+    background: var(--placement-card);
+    box-shadow: var(--placement-shadow);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    animation: placementFadeIn 0.45s ease both;
+}
+
+.placement-card::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 3px;
+
+    background: linear-gradient(
+        90deg,
+        var(--placement-accent),
+        var(--placement-accent-2)
+    );
+}
+
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.placement-card-header {
+    padding: 22px 26px;
+
+    border-bottom: 1px solid var(--placement-card-border);
+}
+
+.placement-card-header h2 {
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    color: var(--placement-text);
+}
+
+.placement-card-header p {
+    margin: 5px 0 0;
+
+    color: var(--placement-muted);
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   FORM BODY
+   ========================================================= */
+
+.placement-form-body {
+    padding: 28px 26px 30px;
+}
+
+
+/* =========================================================
+   FORM GROUP
+   ========================================================= */
+
+.placement-field {
+    margin-bottom: 22px;
+}
+
+.placement-field:last-of-type {
+    margin-bottom: 0;
+}
+
+.placement-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    margin-bottom: 8px;
+
+    color: var(--placement-text);
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.placement-label i {
+    width: 18px;
+
+    color: var(--placement-accent);
+    text-align: center;
+}
+
+
+/* =========================================================
+   DJANGO FORM CONTROLS
+   ========================================================= */
+
+.placement-field select,
+.placement-field input,
+.placement-field textarea {
+    width: 100%;
+
+    min-height: 46px;
+
+    padding: 11px 13px;
+
+    border: 1px solid var(--placement-input-border);
+    border-radius: 10px;
+
+    background: var(--placement-input);
+    color: var(--placement-text);
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.placement-field select {
+    cursor: pointer;
+}
+
+.placement-field textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.placement-field select:focus,
+.placement-field input:focus,
+.placement-field textarea:focus {
+    border-color: var(--placement-accent);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.11),
+        0 5px 15px rgba(37, 99, 235, 0.06);
+
+    background: var(--placement-input);
+}
+
+
+/* =========================================================
+   VIRTUAL LAB SPECIAL FIELD
+   ========================================================= */
+
+.virtual-lab-field {
+    position: relative;
+
+    margin-top: 28px;
+    padding: 20px;
+
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--placement-soft),
+            transparent
+        );
+}
+
+.virtual-lab-field::before {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    top: 16px;
+    bottom: 16px;
+
+    width: 3px;
+
+    border-radius: 0 4px 4px 0;
+
+    background: linear-gradient(
+        180deg,
+        var(--placement-accent),
+        var(--placement-accent-2)
+    );
+}
+
+.virtual-lab-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-bottom: 6px;
+
+    color: var(--placement-text);
+
+    font-size: 15px;
+    font-weight: 750;
+}
+
+.virtual-lab-title i {
+    color: var(--placement-accent);
+}
+
+.virtual-lab-description {
+    margin-bottom: 13px;
+
+    color: var(--placement-muted);
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   HELP TEXT
+   ========================================================= */
+
+.placement-help {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--placement-muted);
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ERRORS
+   ========================================================= */
+
+.placement-error {
+    margin-top: 7px;
+
+    color: #ef4444;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.placement-form-errors {
+    margin-bottom: 22px;
+    padding: 13px 15px;
+
+    border: 1px solid rgba(239, 68, 68, 0.20);
+    border-radius: 10px;
+
+    background: rgba(239, 68, 68, 0.07);
+    color: #ef4444;
+
+    font-size: 13px;
+}
+/* =========================================================
+   DJANGO MESSAGES
+   ========================================================= */
+
+.placement-messages {
+    margin-bottom: 22px;
+}
+
+.placement-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 13px 15px;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    animation: placementMessageIn 0.3s ease;
+}
+
+.placement-message i {
+    flex-shrink: 0;
+    font-size: 15px;
+}
+
+.placement-message-warning {
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    background: rgba(245, 158, 11, 0.09);
+    color: #d97706;
+}
+
+[data-theme="dark"] .placement-message-warning,
+body.dark-mode .placement-message-warning {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+}
+
+.placement-message-success {
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    background: rgba(34, 197, 94, 0.09);
+    color: #16a34a;
+}
+
+[data-theme="dark"] .placement-message-success,
+body.dark-mode .placement-message-success {
+    background: rgba(34, 197, 94, 0.12);
+    color: #4ade80;
+}
+
+.placement-message-error {
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    background: rgba(239, 68, 68, 0.09);
+    color: #dc2626;
+}
+
+[data-theme="dark"] .placement-message-error,
+body.dark-mode .placement-message-error {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+}
+
+@keyframes placementMessageIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.placement-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+
+    margin-top: 30px;
+    padding-top: 22px;
+
+    border-top: 1px solid var(--placement-card-border);
+}
+
+.placement-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 43px;
+    padding: 10px 17px;
+
+    border-radius: 9px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.placement-btn:hover {
+    transform: translateY(-2px);
+}
+
+.placement-btn-primary {
+    border: 1px solid transparent;
+
+    background: linear-gradient(
+        135deg,
+        var(--placement-accent),
+        #1d4ed8
+    );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 20px rgba(37, 99, 235, 0.20);
+}
+
+.placement-btn-primary:hover {
+    color: #ffffff;
+
+    box-shadow:
+        0 12px 26px rgba(37, 99, 235, 0.30);
+}
+
+.placement-btn-secondary {
+    border: 1px solid var(--placement-card-border);
+
+    background: transparent;
+    color: var(--placement-muted);
+}
+
+.placement-btn-secondary:hover {
+    color: var(--placement-text);
+    border-color: rgba(37, 99, 235, 0.30);
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes placementFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .placement-page {
+        padding: 22px 14px 45px;
+    }
+
+    .placement-card {
+        border-radius: 14px;
+    }
+
+    .placement-card-header,
+    .placement-form-body {
+        padding: 20px;
+    }
+
+    .placement-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .placement-btn {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .placement-header h1 {
+        font-size: 25px;
+    }
+
+    .placement-header p {
+        font-size: 13px;
+    }
+
+    .placement-card-header h2 {
+        font-size: 16px;
+    }
+
+    .placement-form-body {
+        padding: 17px;
+    }
+
+    .virtual-lab-field {
+        padding: 16px;
+    }
+}
+</style>
+
+
+<div class="placement-page">
+
+    <div class="placement-container">
+
+
+        <!-- BACK -->
+
+        <a
+            href="{% url 'assessment_detail' assessment.pk %}"
+            class="placement-back"
+        >
+            <i class="fas fa-arrow-left"></i>
+            Back to Assessment
+        </a>
+
+
+        <!-- HEADER -->
+
+        <div class="placement-header">
+
+            <div class="placement-header-badge">
+
+                <i class="fas fa-layer-group"></i>
+
+                Assessment Configuration
+
+            </div>
+
+
+            <h1>
+
+                {% if is_edit %}
+                    Edit Assessment Placement
+                {% else %}
+                    Add Assessment Placement
+                {% endif %}
+
+            </h1>
+
+
+            <p>
+                Configure where this assessment should be available
+                within the LMS learning environment.
+            </p>
+
+
+            <div class="placement-assessment">
+
+                <i class="fas fa-clipboard-check"></i>
+
+                <span>
+                    {{ assessment.title }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- FORM CARD -->
+
+        <div class="placement-card">
+
+
+            <div class="placement-card-header">
+
+                <h2>
+                    Placement Details
+                </h2>
+
+                <p>
+                    Select the learning location or Virtual Lab
+                    associated with this assessment.
+                </p>
+
+            </div>
+
+
+            <div class="placement-form-body">
+
+
+                {% if form.non_field_errors %}
+
+                    <div class="placement-form-errors">
+
+                        {{ form.non_field_errors }}
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if messages %}
+
+                    <div class="placement-messages">
+
+                        {% for message in messages %}
+
+                            <div
+                                class="placement-message placement-message-{{ message.tags }}"
+                            >
+
+                                {% if message.tags == "warning" %}
+
+                                    <i class="fas fa-exclamation-triangle"></i>
+
+                                {% elif message.tags == "success" %}
+
+                                    <i class="fas fa-check-circle"></i>
+
+                                {% elif message.tags == "error" %}
+
+                                    <i class="fas fa-times-circle"></i>
+
+                                {% else %}
+
+                                    <i class="fas fa-info-circle"></i>
+
+                                {% endif %}
+
+                                <span>
+                                    {{ message }}
+                                </span>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <!-- COURSE -->
+
+                    <div class="placement-field">
+
+                        <label
+                            for="{{ form.course.id_for_label }}"
+                            class="placement-label"
+                        >
+
+                            <i class="fas fa-book"></i>
+
+                            {{ form.course.label }}
+
+                        </label>
+
+
+                        {{ form.course }}
+
+
+                        {% if form.course.help_text %}
+
+                            <span class="placement-help">
+                                {{ form.course.help_text }}
+                            </span>
+
+                        {% endif %}
+
+
+                        {% for error in form.course.errors %}
+
+                            <div class="placement-error">
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- MODULE -->
+
+                    <div class="placement-field">
+
+                        <label
+                            for="{{ form.module.id_for_label }}"
+                            class="placement-label"
+                        >
+
+                            <i class="fas fa-cubes"></i>
+
+                            {{ form.module.label }}
+
+                        </label>
+
+
+                        {{ form.module }}
+
+
+                        {% if form.module.help_text %}
+
+                            <span class="placement-help">
+                                {{ form.module.help_text }}
+                            </span>
+
+                        {% endif %}
+
+
+                        {% for error in form.module.errors %}
+
+                            <div class="placement-error">
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- CHAPTER -->
+
+                    <div class="placement-field">
+
+                        <label
+                            for="{{ form.chapter.id_for_label }}"
+                            class="placement-label"
+                        >
+
+                            <i class="fas fa-folder-open"></i>
+
+                            {{ form.chapter.label }}
+
+                        </label>
+
+
+                        {{ form.chapter }}
+
+
+                        {% if form.chapter.help_text %}
+
+                            <span class="placement-help">
+                                {{ form.chapter.help_text }}
+                            </span>
+
+                        {% endif %}
+
+
+                        {% for error in form.chapter.errors %}
+
+                            <div class="placement-error">
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- LESSON -->
+
+                    <div class="placement-field">
+
+                        <label
+                            for="{{ form.lesson.id_for_label }}"
+                            class="placement-label"
+                        >
+
+                            <i class="fas fa-play-circle"></i>
+
+                            {{ form.lesson.label }}
+
+                        </label>
+
+
+                        {{ form.lesson }}
+
+
+                        {% if form.lesson.help_text %}
+
+                            <span class="placement-help">
+                                {{ form.lesson.help_text }}
+                            </span>
+
+                        {% endif %}
+
+
+                        {% for error in form.lesson.errors %}
+
+                            <div class="placement-error">
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- VIRTUAL LAB -->
+
+                    <div class="virtual-lab-field">
+
+                        <div class="virtual-lab-title">
+
+                            <i class="fas fa-terminal"></i>
+
+                            Virtual Lab
+
+                        </div>
+
+
+                        <div class="virtual-lab-description">
+
+                            Select the Virtual Lab where students
+                            should access this assessment.
+
+                        </div>
+
+
+                        {{ form.virtual_lab }}
+
+
+                        {% if form.virtual_lab.help_text %}
+
+                            <span class="placement-help">
+                                {{ form.virtual_lab.help_text }}
+                            </span>
+
+                        {% endif %}
+
+
+                        {% for error in form.virtual_lab.errors %}
+
+                            <div class="placement-error">
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="placement-actions">
+
+                        <a
+                            href="{% url 'assessment_detail' assessment.pk %}"
+                            class="placement-btn placement-btn-secondary"
+                        >
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="placement-btn placement-btn-primary"
+                        >
+
+                            <i class="fas fa-save"></i>
+
+                            {% if is_edit %}
+                                Save Changes
+                            {% else %}
+                                Save Placement
+                            {% endif %}
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

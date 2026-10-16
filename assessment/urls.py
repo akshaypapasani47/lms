@@ -28,6 +28,24 @@ urlpatterns = [
     ),
 
     path(
+        "results/<int:pk>/",
+        views.assessment_results,
+        name="assessment_results"
+    ),
+
+    path(
+        "results/student/<int:pk>/",
+        views.assessment_student_attempts,
+        name="assessment_student_attempts"
+    ),
+
+    path(
+        "results/submission/<int:pk>/",
+        views.assessment_student_result,
+        name="assessment_student_result"
+    ),
+
+    path(
         "<int:pk>/edit/",
         views.assessment_edit,
         name="assessment_edit"
@@ -38,6 +56,44 @@ urlpatterns = [
         views.assessment_delete,
         name="assessment_delete"
     ),
+
+
+
+    # ======================================================
+    # ASSESSMENT ACCESS
+    # ======================================================
+
+    path(
+        "access/available/",
+        views.lecturer_assessment_access_list,
+        name="lecturer_assessment_access_list"
+    ),
+
+    path(
+        "access/request/<int:pk>/",
+        views.assessment_request_access,
+        name="assessment_request_access"
+    ),
+
+    path(
+        "access/requests/",
+        views.assessment_access_requests,
+        name="assessment_access_requests"
+    ),
+
+    path(
+        "access/request/<int:request_id>/approve/",
+        views.approve_assessment_access,
+        name="approve_assessment_access"
+    ),
+
+    path(
+        "access/request/<int:request_id>/reject/",
+        views.reject_assessment_access,
+        name="reject_assessment_access"
+    ),
+
+    
 
     # ======================================================
     # QUESTIONS
@@ -161,6 +217,12 @@ urlpatterns = [
         "student/result/<int:pk>/",
         views.student_assessment_result,
         name="student_assessment_result"
+    ),
+
+    path(
+        "student/attempts/<int:pk>/",
+        views.student_assessment_attempts,
+        name="student_assessment_attempts",
     ),
 
     # path(

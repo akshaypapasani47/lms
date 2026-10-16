@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+
+<!-- HEADER -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="mb-1">
+            Available Assessments
+        </h2>
+
+        <p class="text-muted mb-0">
+            Request access to assessments created by other lecturers.
+        </p>
+
+    </div>
+
+    <a
+        href="{% url 'assessment_list' %}"
+        class="btn btn-outline-secondary"
+    >
+        ← Back to My Assessments
+    </a>
+
+</div>
+
+
+<!-- ASSESSMENTS -->
+
+{% if assessments %}
+
+    <div class="row">
+
+        {% for assessment in assessments %}
+
+            <div class="col-md-6 col-lg-4 mb-4">
+
+                <div class="card h-100 shadow-sm">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            {{ assessment.title }}
+                        </h5>
+
+
+                        <p class="text-muted">
+                            {{ assessment.description|truncatewords:20 }}
+                        </p>
+
+
+                        <hr>
+
+
+                        <p class="mb-2">
+
+                            <strong>
+                                Created By:
+                            </strong>
+
+                            {{ assessment.created_by.get_full_name|default:assessment.created_by.username }}
+
+                        </p>
+
+
+                        <p class="mb-2">
+
+                            <strong>
+                                Total Marks:
+                            </strong>
+
+                            {{ assessment.total_marks }}
+
+                        </p>
+
+
+                        <p class="mb-2">
+
+                            <strong>
+                                Questions:
+                            </strong>
+
+                            {{ assessment.questions.count }}
+
+                        </p>
+
+
+                        <p class="mb-0">
+
+                            <strong>
+                                Status:
+                            </strong>
+
+                            {{ assessment.get_status_display }}
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="card-footer bg-white">
+
+                        {% if assessment.access_request %}
+
+                            {% if assessment.access_request.status == "PENDING" %}
+
+                                <span class="text-muted">
+                                    Access Request Pending
+                                </span>
+
+                            {% elif assessment.access_request.status == "APPROVED" %}
+
+                                <span class="text-success">
+                                    Access Approved
+                                </span>
+
+                            {% elif assessment.access_request.status == "REJECTED" %}
+
+                                <a
+                                    href="{% url 'assessment_request_access' assessment.pk %}"
+                                >
+                                    Request Access Again
+                                </a>
+
+                            {% endif %}
+
+                        {% else %}
+
+                            <a
+                                href="{% url 'assessment_request_access' assessment.pk %}"
+                            >
+                                Request Access
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% else %}
+
+    <div class="text-center py-5">
+
+        <h4>
+            No other assessments available.
+        </h4>
+
+        <p class="text-muted">
+            There are currently no assessments created by other lecturers.
+        </p>
+
+    </div>
+
+{% endif %}
+
+
+</div>
+
+{% endblock %}

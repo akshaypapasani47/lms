@@ -1,0 +1,3344 @@
+/* =========================================================
+   C-DAC LMS — LESSON PLAYER / LEARNING STUDIO
+   LARGE / READABLE TYPOGRAPHY EDITION
+   ========================================================= */
+
+.lesson-studio {
+    --ls-cyan: #00d9ff;
+    --ls-blue: #3b82f6;
+    --ls-purple: #8b5cf6;
+    --ls-green: #22c55e;
+    --ls-orange: #f59e0b;
+
+    --ls-bg: #050a10;
+    --ls-surface: rgba(10, 20, 31, .86);
+    --ls-surface-2: rgba(14, 27, 42, .78);
+    --ls-border: rgba(0, 217, 255, .14);
+    --ls-border-soft: rgba(148, 163, 184, .12);
+
+    --ls-text: #eaf8ff;
+    --ls-muted: #8ea5b2;
+    --ls-soft: #b9cbd5;
+
+    position: relative;
+    min-height: calc(100vh - 72px);
+    padding: 28px 30px 50px;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 8% 10%,
+            rgba(0, 217, 255, .07),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 92% 50%,
+            rgba(139, 92, 246, .065),
+            transparent 30%
+        ),
+        var(--ls-bg);
+
+    color: var(--ls-text);
+}
+
+.lesson-studio::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .35;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 217, 255, .025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0, 217, 255, .025) 1px,
+            transparent 1px
+        );
+
+    background-size: 36px 36px;
+}
+
+.lesson-studio::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -10%;
+    width: 120%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 217, 255, .35),
+            transparent
+        );
+
+    animation: lessonScan 7s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes lessonScan {
+    0% {
+        transform: translateY(0);
+        opacity: 0;
+    }
+
+    12% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .45;
+    }
+
+    100% {
+        transform: translateY(1000px);
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+
+.lesson-topbar {
+    position: relative;
+    z-index: 2;
+
+    display: grid;
+
+    grid-template-columns:
+        auto
+        minmax(0, 1fr)
+        240px;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 20px;
+}
+
+.lesson-back {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 11px 15px;
+
+    border: 1px solid var(--ls-border);
+    border-radius: 9px;
+
+    background: rgba(0, 217, 255, .04);
+
+    color: var(--ls-soft);
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .7px;
+
+    transition:
+        color .25s ease,
+        border-color .25s ease,
+        background .25s ease,
+        transform .25s ease;
+}
+
+.lesson-back:hover {
+    color: var(--ls-cyan);
+
+    border-color:
+        rgba(0, 217, 255, .34);
+
+    background:
+        rgba(0, 217, 255, .08);
+
+    transform:
+        translateX(-2px);
+}
+
+.lesson-context {
+    min-width: 0;
+}
+
+.lesson-context-label {
+    margin-bottom: 5px;
+
+    color: var(--ls-cyan);
+
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.7px;
+}
+
+.lesson-context-title {
+    overflow: hidden;
+
+    color: var(--ls-text);
+
+    font-size: 17px;
+    font-weight: 800;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.lesson-course-progress {
+    min-width: 0;
+
+    padding: 12px 14px;
+
+    border:
+        1px solid
+        var(--ls-border);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,.025);
+}
+
+.lesson-course-progress-head {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 8px;
+
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .8px;
+}
+
+.lesson-course-progress-head span:first-child {
+    color: var(--ls-muted);
+}
+
+.lesson-course-progress-head span:last-child {
+    color: var(--ls-cyan);
+}
+
+.lesson-course-progress-bar {
+    height: 5px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background:
+        rgba(148, 163, 184, .12);
+}
+
+.lesson-course-progress-bar span {
+    display: block;
+
+    width: 0;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--ls-blue),
+            var(--ls-cyan),
+            var(--ls-purple)
+        );
+
+    box-shadow:
+        0 0 14px
+        rgba(0,217,255,.28);
+}
+
+
+/* =========================================================
+   MAIN LAYOUT
+   VIDEO LEFT / CURRICULUM RIGHT
+   ========================================================= */
+
+.lesson-workspace {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    max-width: 1520px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        390px;
+
+    gap: 22px;
+
+    align-items: start;
+}
+
+.lesson-main {
+    min-width: 0;
+}
+
+.course-sidebar {
+    min-width: 0;
+
+    width: 100% !important;
+
+    height:
+        calc(100vh - 145px);
+
+    overflow: hidden;
+
+    position: sticky;
+
+    top: 88px;
+
+    padding: 18px;
+
+    border:
+        1px solid
+        var(--ls-border);
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.025),
+            rgba(255,255,255,.008)
+        ),
+        var(--ls-surface);
+
+    box-shadow:
+        0 20px 55px rgba(0,0,0,.24);
+
+    backdrop-filter:
+        blur(18px);
+}
+
+
+/* =========================================================
+   PLAYER
+   ========================================================= */
+
+.lesson-player-card {
+    overflow: hidden;
+
+    border:
+        1px solid
+        var(--ls-border);
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.025),
+            rgba(255,255,255,.008)
+        ),
+        var(--ls-surface);
+
+    box-shadow:
+        0 22px 65px
+        rgba(0,0,0,.24);
+
+    backdrop-filter:
+        blur(18px);
+}
+
+.lesson-player-header,
+.course-sidebar .lesson-player-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    min-height: 54px;
+
+    padding: 0 16px;
+
+    border-bottom:
+        1px solid
+        var(--ls-border-soft);
+}
+
+.lesson-player-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    color:
+        var(--ls-green);
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+.lesson-player-status span {
+    width: 8px;
+    height: 8px;
+
+    flex: 0 0 auto;
+
+    border-radius: 50%;
+
+    background:
+        var(--ls-green);
+
+    box-shadow:
+        0 0 12px
+        rgba(34,197,94,.7);
+
+    animation:
+        lessonPulse
+        1.7s ease-in-out infinite;
+}
+
+@keyframes lessonPulse {
+
+    0%,
+    100% {
+        opacity: .55;
+        transform: scale(.9);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.lesson-player-node {
+    color: var(--ls-muted);
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+}
+
+.lesson-video-stage {
+    position: relative;
+
+    padding: 16px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0,217,255,.04),
+            transparent 62%
+        );
+}
+
+.video-container {
+    min-width: 0;
+}
+
+.lesson-controls {
+    display: flex;
+
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 2px;
+}
+
+.lesson-language-wrap {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.lesson-control-label {
+    color:
+        var(--ls-muted);
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+.language-select {
+    min-width: 170px;
+
+    padding:
+        10px 34px 10px 11px;
+
+    border:
+        1px solid
+        var(--ls-border);
+
+    border-radius: 8px;
+
+    outline: none;
+
+    background:
+        rgba(0,217,255,.04);
+
+    color: var(--ls-text);
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease;
+}
+
+.language-select:hover,
+.language-select:focus {
+    border-color:
+        rgba(0,217,255,.36);
+
+    background:
+        rgba(0,217,255,.08);
+}
+
+.lesson-video-shell {
+    position: relative;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(0,217,255,.12);
+
+    border-radius: 13px;
+
+    background: #000;
+
+    aspect-ratio:
+        16 / 9;
+
+    box-shadow:
+        inset 0 0 60px rgba(0,0,0,.5),
+        0 0 40px rgba(0,217,255,.03);
+}
+
+.lesson-video-shell::before {
+    content:
+        "HPC LEARNING STREAM";
+
+    position: absolute;
+
+    top: 12px;
+    left: 12px;
+
+    z-index: 2;
+
+    padding: 6px 9px;
+
+    border:
+        1px solid
+        rgba(0,217,255,.18);
+
+    border-radius: 5px;
+
+    background:
+        rgba(3,10,16,.72);
+
+    color:
+        rgba(0,217,255,.82);
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.2px;
+
+    pointer-events: none;
+}
+
+.video-player {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    max-width: none;
+
+    border-radius: 0;
+
+    background: #000;
+
+    object-fit: contain;
+}
+
+.dub-audio {
+    display: none;
+}
+
+
+/* =========================================================
+   LESSON INFO
+   ========================================================= */
+
+.lesson-info {
+    margin-top: 16px;
+
+    padding: 22px;
+
+    border:
+        1px solid
+        var(--ls-border);
+
+    border-radius: 14px;
+
+    background:
+        var(--ls-surface-2);
+
+    backdrop-filter:
+        blur(15px);
+}
+
+.lesson-eyebrow {
+    margin-bottom: 8px;
+
+    color:
+        var(--ls-cyan);
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.6px;
+}
+
+.lesson-title {
+    margin: 0;
+
+    color:
+        var(--ls-text);
+
+    font-size:
+        clamp(
+            25px,
+            2.3vw,
+            34px
+        );
+
+    font-weight: 800;
+
+    line-height: 1.12;
+}
+
+.lesson-progress-head {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.lesson-progress-head span:first-child {
+    color:
+        var(--ls-muted);
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+.lesson-progress-head span:last-child {
+    color:
+        var(--ls-cyan);
+
+    font-size: 13px;
+
+    font-weight: 900;
+}
+
+.lesson-progress-track {
+    height: 7px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background:
+        rgba(148,163,184,.10);
+}
+
+.lesson-progress-track .progressBar {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--ls-blue),
+            var(--ls-cyan)
+        );
+
+    transition:
+        width .35s ease;
+}
+
+
+/* =========================================================
+   PREVIOUS / NEXT
+   ========================================================= */
+
+.lesson-navigation {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 16px;
+}
+
+.lesson-nav-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    min-height: 44px;
+
+    padding:
+        0 15px;
+
+    border:
+        1px solid
+        var(--ls-border);
+
+    border-radius: 9px;
+
+    background:
+        rgba(255,255,255,.02);
+
+    color:
+        var(--ls-soft);
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: .8px;
+
+    text-decoration: none;
+
+    transition: .2s ease;
+}
+
+.lesson-nav-btn:hover {
+    color:
+        var(--ls-cyan);
+
+    border-color:
+        rgba(0,217,255,.30);
+
+    background:
+        rgba(0,217,255,.05);
+
+    transform:
+        translateY(-1px);
+}
+
+.lesson-nav-btn.next {
+    margin-left: auto;
+
+    color: #fff;
+
+    border-color:
+        transparent;
+
+    background:
+        linear-gradient(
+            100deg,
+            var(--ls-blue),
+            var(--ls-purple)
+        );
+}
+
+.lesson-nav-btn.next:hover {
+    color: #fff;
+
+    border-color:
+        transparent;
+
+    box-shadow:
+        0 8px 25px
+        rgba(59,130,246,.22);
+}
+
+
+/* =========================================================
+   ASSESSMENT / RESOURCE PANELS
+   ========================================================= */
+
+.lesson-bottom-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0,1fr)
+        );
+
+    gap: 14px;
+
+    margin-top: 16px;
+}
+
+.lesson-panel {
+    overflow: hidden;
+
+    border:
+        1px solid
+        var(--ls-border);
+
+    border-radius: 13px;
+
+    background:
+        var(--ls-surface);
+}
+
+.lesson-panel-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    min-height: 50px;
+
+    padding: 0 15px;
+
+    border-bottom:
+        1px solid
+        var(--ls-border-soft);
+
+    color:
+        var(--ls-text);
+
+    font-size: 12px;
+
+    font-weight: 900;
+
+    letter-spacing: .9px;
+}
+
+.lesson-panel-header i {
+    color:
+        var(--ls-cyan);
+}
+
+.lesson-panel-body {
+    padding: 14px;
+}
+
+.lesson-resource {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px;
+
+    border:
+        1px solid
+        transparent;
+
+    border-radius: 8px;
+
+    color:
+        var(--ls-soft);
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    transition: .2s ease;
+}
+
+.lesson-resource:hover {
+    color:
+        var(--ls-cyan);
+
+    border-color:
+        rgba(0,217,255,.12);
+
+    background:
+        rgba(0,217,255,.035);
+}
+
+.lesson-assessment-btn {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+
+    margin-bottom: 8px;
+
+    padding:
+        11px 12px;
+
+    border:
+        1px solid
+        var(--ls-border-soft);
+
+    border-radius: 8px;
+
+    background:
+        rgba(255,255,255,.015);
+
+    color:
+        var(--ls-soft);
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    transition: .2s ease;
+}
+
+.lesson-assessment-btn:hover {
+    color:
+        var(--ls-cyan);
+
+    border-color:
+        rgba(0,217,255,.24);
+
+    transform:
+        translateX(2px);
+}
+
+
+/* =========================================================
+   COURSE SIDEBAR / CURRICULUM
+   ========================================================= */
+
+.course-sidebar .lesson-sidebar-head {
+    padding:
+        0 0 16px;
+
+    margin-bottom:
+        12px;
+
+    border-bottom:
+        1px solid
+        var(--ls-border-soft);
+}
+
+.course-sidebar .lesson-sidebar-eyebrow {
+    color:
+        var(--ls-cyan);
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+}
+
+.course-sidebar .lesson-sidebar-title {
+    margin-top: 5px;
+
+    color:
+        var(--ls-text);
+
+    font-size: 20px;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+.course-sidebar .lesson-sidebar-meta {
+    margin-top: 6px;
+
+    color:
+        var(--ls-muted);
+
+    font-size: 12px;
+}
+
+.course-sidebar .curriculum-progress {
+    margin:
+        14px 0 16px;
+}
+
+.course-sidebar .curriculum-progress-head {
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    margin-bottom:
+        7px;
+}
+
+.course-sidebar .curriculum-progress-head span:first-child {
+    color:
+        var(--ls-muted);
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing:
+        1px;
+}
+
+.course-sidebar .curriculum-progress-head span:last-child {
+    color:
+        var(--ls-cyan);
+
+    font-size: 12px;
+
+    font-weight: 900;
+}
+
+.course-sidebar .curriculum-progress-track {
+    height:
+        6px;
+
+    border-radius:
+        20px;
+
+    overflow:
+        hidden;
+
+    background:
+        rgba(148,163,184,.10);
+}
+
+.course-sidebar .curriculum-progress-track span {
+    display:
+        block;
+
+    height:
+        100%;
+
+    border-radius:
+        inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--ls-blue),
+            var(--ls-cyan),
+            var(--ls-purple)
+        );
+}
+
+.course-sidebar .curriculum-scroll {
+    height:
+        calc(100% - 190px);
+
+    overflow-y:
+        auto;
+
+    padding-right:
+        5px;
+
+    scrollbar-width:
+        thin;
+
+    scrollbar-color:
+        rgba(0,217,255,.18)
+        transparent;
+}
+
+.course-sidebar .curriculum-scroll::-webkit-scrollbar {
+    width:
+        6px;
+}
+
+.course-sidebar .curriculum-scroll::-webkit-scrollbar-thumb {
+    border-radius:
+        20px;
+
+    background:
+        rgba(0,217,255,.16);
+}
+
+.course-sidebar .module-item {
+    margin-bottom:
+        10px;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid
+        var(--ls-border-soft);
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(255,255,255,.012);
+}
+
+.course-sidebar .module-btn {
+    width:
+        100%;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    padding:
+        13px;
+
+    border:
+        0;
+
+    background:
+        transparent;
+
+    color:
+        var(--ls-soft);
+
+    text-align:
+        left;
+
+    font-size:
+        14px;
+
+    font-weight:
+        900;
+
+    cursor:
+        pointer;
+
+    transition:
+        color .2s ease,
+        background .2s ease;
+}
+
+.course-sidebar .module-btn:hover {
+    color:
+        var(--ls-cyan);
+
+    background:
+        rgba(0,217,255,.025);
+}
+
+.course-sidebar .module-icon {
+    width:
+        30px;
+
+    height:
+        30px;
+
+    flex:
+        0 0 auto;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid
+        rgba(0,217,255,.13);
+
+    border-radius:
+        8px;
+
+    color:
+        var(--ls-cyan);
+
+    background:
+        rgba(0,217,255,.04);
+}
+
+.course-sidebar .module-copy {
+    min-width:
+        0;
+
+    flex:
+        1;
+}
+
+.course-sidebar .module-title {
+    display:
+        block;
+
+    color:
+        inherit;
+
+    line-height:
+        1.3;
+}
+
+.course-sidebar .module-meta {
+    display:
+        flex;
+
+    gap:
+        8px;
+
+    margin-top:
+        5px;
+
+    color:
+        var(--ls-muted);
+
+    font-size:
+        10px;
+
+    font-weight:
+        700;
+}
+
+.course-sidebar .module-progress {
+    width:
+        70px;
+
+    height:
+        5px;
+
+    margin-top:
+        6px;
+
+    border-radius:
+        20px;
+
+    overflow:
+        hidden;
+
+    background:
+        rgba(148,163,184,.10);
+}
+
+.course-sidebar .module-progress span {
+    display:
+        block;
+
+    height:
+        100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--ls-blue),
+            var(--ls-cyan)
+        );
+}
+
+.course-sidebar .module-chevron {
+    color:
+        var(--ls-muted);
+
+    font-size:
+        11px;
+
+    transition:
+        transform .25s ease;
+}
+
+.course-sidebar .module-btn[aria-expanded="true"]
+.module-chevron {
+    transform:
+        rotate(180deg);
+}
+
+.course-sidebar .chapter-item {
+    margin:
+        0 10px 9px;
+}
+
+.course-sidebar .chapter-btn {
+    width:
+        100%;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    padding:
+        10px 11px;
+
+    border:
+        1px solid
+        transparent;
+
+    border-radius:
+        7px;
+
+    background:
+        rgba(255,255,255,.012);
+
+    color:
+        var(--ls-muted);
+
+    text-align:
+        left;
+
+    font-size:
+        13px;
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+
+    transition:
+        color .2s ease,
+        background .2s ease;
+}
+
+.course-sidebar .chapter-btn:hover {
+    color:
+        var(--ls-cyan);
+
+    background:
+        rgba(0,217,255,.025);
+}
+
+.course-sidebar .lesson-list {
+    margin:
+        6px 0 8px;
+
+    padding:
+        0 5px;
+
+    list-style:
+        none;
+}
+
+.course-sidebar .lesson-list-item {
+    margin-bottom:
+        4px;
+}
+
+.course-sidebar .lesson-link {
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    gap:
+        8px;
+
+    padding:
+        9px 10px;
+
+    border:
+        1px solid
+        transparent;
+
+    border-radius:
+        7px;
+
+    color:
+        var(--ls-muted) !important;
+
+    text-decoration:
+        none;
+
+    font-size:
+        13px;
+
+    line-height:
+        1.45;
+
+    transition:
+        color .2s ease,
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+}
+
+.course-sidebar .lesson-link:hover {
+    color:
+        var(--ls-soft) !important;
+
+    background:
+        rgba(0,217,255,.025) !important;
+
+    transform:
+        translateX(2px);
+}
+
+.course-sidebar .lesson-link.active-lesson {
+    color:
+        #fff !important;
+
+    border-color:
+        rgba(0,217,255,.20) !important;
+
+    background:
+        linear-gradient(
+            100deg,
+            rgba(0,217,255,.12),
+            rgba(59,130,246,.08)
+        ) !important;
+
+    box-shadow:
+        inset 3px 0 0
+        var(--ls-cyan);
+}
+
+.course-sidebar .lesson-link small {
+    margin-left:
+        auto;
+
+    white-space:
+        nowrap;
+
+    color:
+        inherit !important;
+
+    opacity:
+        .7;
+
+    font-size:
+        10px;
+}
+
+.course-sidebar .quiz-link {
+    display:
+        block;
+
+    margin:
+        3px 0 5px 27px;
+
+    padding:
+        7px 9px;
+
+    border-left:
+        1px solid
+        rgba(245,158,11,.26);
+
+    color:
+        #fbbf24 !important;
+
+    text-decoration:
+        none;
+
+    font-size:
+        12px;
+}
+
+.course-sidebar .quiz-link:hover {
+    color:
+        #fde68a !important;
+}
+
+.course-sidebar .module-quiz-link {
+    display:
+        block;
+
+    margin:
+        6px 12px 10px;
+
+    padding:
+        8px 10px;
+
+    border:
+        1px solid
+        rgba(34,197,94,.16);
+
+    border-radius:
+        7px;
+
+    color:
+        #4ade80 !important;
+
+    text-decoration:
+        none;
+
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+}
+
+.course-sidebar .final-quiz-link {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    width:
+        100%;
+
+    margin-top:
+        10px;
+
+    padding:
+        12px 13px;
+
+    border:
+        1px solid
+        rgba(239,68,68,.20);
+
+    border-radius:
+        8px;
+
+    background:
+        rgba(239,68,68,.04);
+
+    color:
+        #fca5a5 !important;
+
+    text-decoration:
+        none;
+
+    font-size:
+        13px;
+
+    font-weight:
+        900;
+}
+
+
+/* =========================================================
+   ADMIN / LECTURER ACTIONS
+   ========================================================= */
+
+.lesson-admin-actions {
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        9px;
+
+    margin-top:
+        18px;
+}
+
+.lesson-assessment-actions {
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        9px;
+
+    margin-top:
+        14px;
+}
+
+.lesson-admin-actions .btn,
+.lesson-assessment-actions .btn {
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+}
+
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+[data-theme="light"] .lesson-studio {
+    --ls-bg:
+        #f3f8fb;
+
+    --ls-surface:
+        rgba(255,255,255,.88);
+
+    --ls-surface-2:
+        rgba(255,255,255,.80);
+
+    --ls-border:
+        rgba(0,132,173,.15);
+
+    --ls-border-soft:
+        rgba(15,23,42,.08);
+
+    --ls-text:
+        #0f172a;
+
+    --ls-muted:
+        #64748b;
+
+    --ls-soft:
+        #475569;
+
+    background:
+        radial-gradient(
+            circle at 8% 10%,
+            rgba(0,132,173,.055),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 92% 55%,
+            rgba(139,92,246,.045),
+            transparent 30%
+        ),
+        var(--ls-bg);
+}
+
+[data-theme="light"] .lesson-player-card,
+[data-theme="light"] .course-sidebar,
+[data-theme="light"] .lesson-info,
+[data-theme="light"] .lesson-panel {
+    box-shadow:
+        0 15px 45px
+        rgba(15,23,42,.08);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .lesson-workspace {
+        grid-template-columns:
+            minmax(0,1fr)
+            330px;
+    }
+}
+
+@media (max-width: 980px) {
+
+    .lesson-studio {
+        padding:
+            22px 20px 40px;
+    }
+
+    .lesson-topbar {
+        grid-template-columns:
+            1fr;
+    }
+
+    .lesson-course-progress {
+        width:
+            100%;
+    }
+
+    .lesson-workspace {
+        grid-template-columns:
+            1fr;
+    }
+
+    .course-sidebar {
+        position:
+            relative;
+
+        top:
+            auto;
+
+        height:
+            auto;
+
+        max-height:
+            650px;
+
+        order:
+            2;
+    }
+
+    .course-sidebar .curriculum-scroll {
+        height:
+            470px;
+    }
+}
+
+@media (max-width: 620px) {
+
+    .lesson-studio {
+        padding:
+            18px 14px 32px;
+    }
+
+    .lesson-back,
+    .lesson-context-title {
+        font-size:
+            14px;
+    }
+
+    .lesson-context-label {
+        font-size:
+            9px;
+    }
+
+    .lesson-player-header,
+    .course-sidebar .lesson-player-header {
+        min-height:
+            50px;
+
+        padding:
+            0 12px;
+    }
+
+    .lesson-player-status,
+    .lesson-player-node {
+        font-size:
+            10px;
+    }
+
+    .lesson-video-stage {
+        padding:
+            10px;
+    }
+
+    .lesson-controls {
+        justify-content:
+            stretch;
+    }
+
+    .lesson-language-wrap {
+        width:
+            100%;
+
+        justify-content:
+            space-between;
+    }
+
+    .language-select {
+        flex:
+            1;
+
+        min-width:
+            0;
+    }
+
+    .lesson-title {
+        font-size:
+            24px;
+    }
+
+    .lesson-navigation {
+        flex-wrap:
+            wrap;
+    }
+
+    .lesson-nav-btn {
+        flex:
+            1;
+
+        justify-content:
+            center;
+    }
+
+    .lesson-bottom-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+    .course-sidebar .module-btn {
+        font-size:
+            13px;
+    }
+
+    .course-sidebar .lesson-link {
+        font-size:
+            12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .lesson-studio::after,
+    .lesson-player-status span {
+        animation:
+            none;
+    }
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior:
+            auto !important;
+
+        transition-duration:
+            .01ms !important;
+    }
+}
+
+/* =========================================================
+   FINAL LESSON STUDIO LAYOUT / TYPOGRAPHY / SIDEBAR CONTROL
+   ========================================================= */
+
+.lesson-studio {
+    font-family:
+        "Inter",
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+
+    overflow: visible;
+}
+
+.lesson-topbar {
+    grid-template-columns:
+        auto
+        minmax(0, 1fr)
+        minmax(190px, 240px)
+        auto;
+}
+
+.lesson-workspace {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        390px;
+
+    gap: 22px;
+}
+
+.course-sidebar {
+    position: sticky;
+
+    top: 88px;
+
+    height:
+        calc(100vh - 112px);
+
+    overflow: visible;
+}
+
+.course-sidebar .curriculum-scroll {
+    height:
+        calc(100vh - 300px);
+
+    overflow-y:
+        auto;
+
+    overflow-x:
+        hidden;
+
+    overscroll-behavior:
+        contain;
+}
+
+
+/* =========================================================
+   CLOSE SIDEBAR
+   ========================================================= */
+
+.lesson-studio.sidebar-collapsed
+.lesson-workspace {
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        0px;
+
+    gap:
+        0;
+}
+
+
+.lesson-studio.sidebar-collapsed
+.course-sidebar {
+
+    min-width:
+        0;
+
+    width:
+        0 !important;
+
+    padding-left:
+        0;
+
+    padding-right:
+        0;
+
+    border-left-width:
+        0;
+
+    border-right-width:
+        0;
+
+    opacity:
+        0;
+
+    transform:
+        translateX(24px);
+
+    pointer-events:
+        none;
+
+    visibility:
+        hidden;
+}
+
+/* =========================================================
+   COURSE CONTENT — INDEPENDENT SCROLL
+   ========================================================= */
+
+/* Keep the course panel itself fixed while the page scrolls */
+.course-sidebar {
+    position: sticky;
+    top: 88px;
+
+    height: calc(100vh - 110px);
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* Only this section gets its own scrollbar */
+.course-sidebar .curriculum-scroll {
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding-right: 8px;
+
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 217, 255, 0.35) transparent;
+}
+
+/* Chrome / Edge / Safari */
+.course-sidebar .curriculum-scroll::-webkit-scrollbar {
+    width: 7px;
+}
+
+.course-sidebar .curriculum-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.course-sidebar .curriculum-scroll::-webkit-scrollbar-thumb {
+    background: rgba(0, 217, 255, 0.28);
+    border-radius: 20px;
+}
+
+.course-sidebar .curriculum-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 217, 255, 0.55);
+}
+
+
+/* =========================================================
+   WHEN SIDEBAR IS CLOSED
+   ========================================================= */
+
+.lesson-studio.sidebar-collapsed .course-sidebar {
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .course-sidebar {
+        position: relative;
+        top: auto;
+
+        height: auto;
+        max-height: none;
+
+        overflow: hidden;
+    }
+
+    .course-sidebar .curriculum-scroll {
+        height: 470px;
+        max-height: 470px;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+}
+
+/* =========================================================
+   COURSE CONTENT — TOP RIGHT CLOSE BUTTON
+   ========================================================= */
+
+.course-sidebar .lesson-sidebar-head {
+    position: relative;
+}
+
+.course-sidebar-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.course-sidebar-header-row > div:first-child {
+    min-width: 0;
+    flex: 1;
+}
+
+.lesson-sidebar-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: 36px;
+    height: 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid rgba(0, 217, 255, 0.18);
+    border-radius: 8px;
+
+    background: rgba(0, 217, 255, 0.04);
+    color: #8ea5b2;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.lesson-sidebar-close:hover {
+    color: #ffffff;
+
+    background: rgba(255, 70, 100, 0.10);
+
+    border-color: rgba(255, 70, 100, 0.35);
+
+    transform: rotate(90deg);
+
+    box-shadow:
+        0 0 18px rgba(255, 70, 100, 0.15);
+}
+
+.lesson-sidebar-close:active {
+    transform: rotate(90deg) scale(0.92);
+}
+
+
+/* Give the heading some space so the X never overlaps */
+.course-sidebar .lesson-sidebar-eyebrow,
+.course-sidebar .lesson-sidebar-title,
+.course-sidebar .lesson-sidebar-meta {
+    padding-right: 48px;
+}
+
+/* =========================================================
+   C-DAC LMS — UNIFIED HPC / AI LEARNING STUDIO
+   Standard Theme + Typography
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   GLOBAL FONT
+   --------------------------------------------------------- */
+
+.lesson-studio,
+.lesson-studio * {
+    font-family:
+        "Inter",
+        "Segoe UI",
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* =========================================================
+   STANDARD HPC COLOR SYSTEM
+   ========================================================= */
+
+.lesson-studio {
+
+    --ls-cyan: #00d9ff;
+    --ls-blue: #147aff;
+    --ls-purple: #7b4dff;
+
+    --ls-green: #22c55e;
+    --ls-orange: #f59e0b;
+
+    --ls-bg: #030914;
+    --ls-bg-2: #071426;
+
+    --ls-surface:
+        rgba(7, 20, 38, 0.78);
+
+    --ls-surface-2:
+        rgba(8, 22, 40, 0.68);
+
+    --ls-border:
+        rgba(125, 170, 210, 0.14);
+
+    --ls-border-soft:
+        rgba(125, 170, 210, 0.10);
+
+    --ls-text:
+        #f4f9ff;
+
+    --ls-soft:
+        #aab7ca;
+
+    --ls-muted:
+        #71829a;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(0, 217, 255, .055),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 90% 45%,
+            rgba(123, 77, 255, .055),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #030914 0%,
+            #071426 48%,
+            #030914 100%
+        );
+
+    color:
+        var(--ls-text);
+}
+
+
+/* ---------------------------------------------------------
+   HPC GRID
+   --------------------------------------------------------- */
+
+.lesson-studio::before {
+
+    opacity:
+        .30;
+
+    background-image:
+
+        linear-gradient(
+            rgba(0, 217, 255, .025) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(0, 217, 255, .025) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        44px 44px;
+}
+
+
+/* ---------------------------------------------------------
+   SCANNING LINE
+   --------------------------------------------------------- */
+
+.lesson-studio::after {
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(0,217,255,.38),
+            rgba(123,77,255,.20),
+            transparent
+        );
+
+    animation:
+        lessonScan
+        9s linear infinite;
+}
+
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+
+.lesson-topbar {
+
+    gap:
+        20px;
+
+    margin-bottom:
+        22px;
+}
+
+
+.lesson-back {
+
+    padding:
+        10px 14px;
+
+    border-radius:
+        10px;
+
+    border-color:
+        var(--ls-border);
+
+    background:
+        rgba(0,217,255,.035);
+
+    color:
+        var(--ls-soft);
+
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+}
+
+
+.lesson-back:hover {
+
+    color:
+        var(--ls-cyan);
+
+    border-color:
+        rgba(0,217,255,.34);
+
+    background:
+        rgba(0,217,255,.07);
+
+    box-shadow:
+        0 0 20px rgba(0,217,255,.04);
+}
+
+
+.lesson-context-label {
+
+    color:
+        var(--ls-cyan);
+
+    font-size:
+        10px;
+
+    letter-spacing:
+        1.7px;
+}
+
+
+.lesson-context-title {
+
+    color:
+        var(--ls-text);
+
+    font-size:
+        18px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        -.25px;
+}
+
+
+/* =========================================================
+   COURSE PROGRESS
+   ========================================================= */
+
+.lesson-course-progress {
+
+    border-color:
+        var(--ls-border);
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(7,20,38,.68);
+
+    backdrop-filter:
+        blur(16px);
+}
+
+
+/* =========================================================
+   MAIN WORKSPACE
+   ========================================================= */
+
+.lesson-workspace {
+
+    gap:
+        20px;
+}
+
+
+/* =========================================================
+   COURSE SIDEBAR
+   ========================================================= */
+
+.course-sidebar {
+
+    border:
+        1px solid var(--ls-border);
+
+    border-radius:
+        18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.035),
+            rgba(255,255,255,.008)
+        ),
+        var(--ls-surface);
+
+    box-shadow:
+        0 22px 55px rgba(0,0,0,.20),
+        0 0 25px rgba(0,217,255,.02);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+}
+
+
+/* ---------------------------------------------------------
+   SIDEBAR HEADING
+   --------------------------------------------------------- */
+
+.course-sidebar .lesson-sidebar-eyebrow {
+
+    color:
+        var(--ls-cyan);
+
+    font-size:
+        10px;
+
+    letter-spacing:
+        1.7px;
+}
+
+
+.course-sidebar .lesson-sidebar-title {
+
+    color:
+        var(--ls-text);
+
+    font-size:
+        20px;
+
+    font-weight:
+        800;
+}
+
+
+.course-sidebar .lesson-sidebar-meta {
+
+    color:
+        var(--ls-muted);
+
+    font-size:
+        12px;
+}
+
+
+/* =========================================================
+   PLAYER CARD
+   ========================================================= */
+
+.lesson-player-card {
+
+    border:
+        1px solid var(--ls-border);
+
+    border-radius:
+        18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.035),
+            rgba(255,255,255,.008)
+        ),
+        var(--ls-surface);
+
+    box-shadow:
+        0 24px 65px rgba(0,0,0,.22),
+        0 0 28px rgba(0,217,255,.02);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+}
+
+
+/* ---------------------------------------------------------
+   PLAYER HEADER
+   --------------------------------------------------------- */
+
+.lesson-player-header {
+
+    min-height:
+        56px;
+
+    padding:
+        0 18px;
+
+    border-bottom:
+        1px solid var(--ls-border-soft);
+}
+
+
+.lesson-player-status {
+
+    font-size:
+        11px;
+
+    letter-spacing:
+        1.1px;
+}
+
+
+.lesson-player-node {
+
+    color:
+        var(--ls-muted);
+
+    font-size:
+        10px;
+
+    letter-spacing:
+        1.2px;
+}
+
+
+/* =========================================================
+   VIDEO AREA
+   ========================================================= */
+
+.lesson-video-stage {
+
+    padding:
+        17px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0,217,255,.035),
+            transparent 62%
+        );
+}
+
+
+.lesson-video-shell {
+
+    border-radius:
+        14px;
+
+    border-color:
+        rgba(0,217,255,.14);
+
+    box-shadow:
+        inset 0 0 60px rgba(0,0,0,.50),
+        0 0 40px rgba(0,217,255,.035);
+}
+
+
+/* Keep actual video black */
+.video-player {
+
+    background:
+        #000000;
+}
+
+
+/* =========================================================
+   VIDEO CONTROLS
+   ========================================================= */
+
+.lesson-controls {
+
+    padding:
+        13px 2px;
+}
+
+
+.lesson-control-label {
+
+    color:
+        var(--ls-muted);
+
+    font-size:
+        10px;
+
+    letter-spacing:
+        1px;
+}
+
+
+.language-select {
+
+    border-color:
+        var(--ls-border);
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(0,217,255,.035);
+
+    color:
+        var(--ls-text);
+
+    font-size:
+        12px;
+
+    transition:
+        border-color .25s ease,
+        background .25s ease,
+        box-shadow .25s ease;
+}
+
+
+.language-select:hover,
+.language-select:focus {
+
+    border-color:
+        rgba(0,217,255,.36);
+
+    background:
+        rgba(0,217,255,.07);
+
+    box-shadow:
+        0 0 20px rgba(0,217,255,.04);
+}
+
+
+/* =========================================================
+   LESSON INFORMATION
+   ========================================================= */
+
+.lesson-info {
+
+    margin-top:
+        17px;
+
+    padding:
+        23px;
+
+    border:
+        1px solid var(--ls-border);
+
+    border-radius:
+        16px;
+
+    background:
+        var(--ls-surface-2);
+
+    box-shadow:
+        0 18px 42px rgba(0,0,0,.12);
+
+    backdrop-filter:
+        blur(16px);
+}
+
+
+.lesson-eyebrow {
+
+    color:
+        var(--ls-cyan);
+
+    font-size:
+        10px;
+
+    letter-spacing:
+        1.7px;
+}
+
+
+.lesson-title {
+
+    color:
+        var(--ls-text);
+
+    font-size:
+        clamp(
+            1.65rem,
+            2.5vw,
+            2.2rem
+        );
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        -.65px;
+
+    line-height:
+        1.15;
+}
+
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.lesson-progress-head span:first-child {
+
+    color:
+        var(--ls-muted);
+
+    font-size:
+        10px;
+}
+
+
+.lesson-progress-head span:last-child {
+
+    color:
+        var(--ls-cyan);
+
+    font-size:
+        12px;
+}
+
+
+.lesson-progress-track {
+
+    height:
+        7px;
+
+    background:
+        rgba(113,130,154,.12);
+}
+
+
+.lesson-progress-track .progressBar {
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--ls-blue),
+            var(--ls-cyan),
+            var(--ls-purple)
+        );
+
+    box-shadow:
+        0 0 14px rgba(0,217,255,.20);
+}
+
+
+/* =========================================================
+   PREVIOUS / NEXT
+   ========================================================= */
+
+.lesson-nav-btn {
+
+    min-height:
+        45px;
+
+    padding:
+        0 16px;
+
+    border-radius:
+        10px;
+
+    border-color:
+        var(--ls-border);
+
+    background:
+        rgba(255,255,255,.018);
+
+    color:
+        var(--ls-soft);
+
+    font-size:
+        11px;
+
+    font-weight:
+        800;
+}
+
+
+.lesson-nav-btn:hover {
+
+    color:
+        var(--ls-cyan);
+
+    border-color:
+        rgba(0,217,255,.30);
+
+    background:
+        rgba(0,217,255,.05);
+
+    box-shadow:
+        0 0 20px rgba(0,217,255,.035);
+}
+
+
+.lesson-nav-btn.next {
+
+    color:
+        #ffffff;
+
+    background:
+        linear-gradient(
+            100deg,
+            var(--ls-blue),
+            var(--ls-purple)
+        );
+
+    box-shadow:
+        0 10px 28px rgba(20,122,255,.15);
+}
+
+
+/* =========================================================
+   RESOURCE / ASSESSMENT PANELS
+   ========================================================= */
+
+.lesson-panel {
+
+    border:
+        1px solid var(--ls-border);
+
+    border-radius:
+        14px;
+
+    background:
+        var(--ls-surface);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.10);
+
+    backdrop-filter:
+        blur(16px);
+}
+
+
+.lesson-panel-header {
+
+    min-height:
+        52px;
+
+    color:
+        var(--ls-text);
+
+    font-size:
+        12px;
+
+    border-bottom:
+        1px solid var(--ls-border-soft);
+}
+
+
+.lesson-panel-header i {
+
+    color:
+        var(--ls-cyan);
+}
+
+
+.lesson-resource {
+
+    padding:
+        10px 11px;
+
+    border-radius:
+        9px;
+
+    color:
+        var(--ls-soft);
+
+    font-size:
+        13px;
+}
+
+
+.lesson-resource:hover {
+
+    color:
+        var(--ls-cyan);
+
+    background:
+        rgba(0,217,255,.035);
+
+    border-color:
+        rgba(0,217,255,.12);
+}
+
+
+/* =========================================================
+   CURRICULUM
+   ========================================================= */
+
+.course-sidebar .module-item {
+
+    border-color:
+        var(--ls-border-soft);
+
+    border-radius:
+        11px;
+
+    background:
+        rgba(255,255,255,.010);
+}
+
+
+.course-sidebar .module-btn {
+
+    padding:
+        13px;
+
+    color:
+        var(--ls-soft);
+
+    font-size:
+        13px;
+
+    border-radius:
+        10px;
+}
+
+
+.course-sidebar .module-btn:hover {
+
+    color:
+        var(--ls-cyan);
+
+    background:
+        rgba(0,217,255,.025);
+}
+
+
+.course-sidebar .module-icon {
+
+    border-color:
+        rgba(0,217,255,.14);
+
+    border-radius:
+        8px;
+
+    color:
+        var(--ls-cyan);
+
+    background:
+        rgba(0,217,255,.04);
+}
+
+
+.course-sidebar .module-meta {
+
+    color:
+        var(--ls-muted);
+
+    font-size:
+        10px;
+}
+
+
+.course-sidebar .chapter-btn {
+
+    color:
+        var(--ls-muted);
+
+    font-size:
+        12.5px;
+
+    border-radius:
+        8px;
+}
+
+
+.course-sidebar .chapter-btn:hover {
+
+    color:
+        var(--ls-cyan);
+
+    background:
+        rgba(0,217,255,.025);
+}
+
+
+.course-sidebar .lesson-link {
+
+    color:
+        var(--ls-muted) !important;
+
+    font-size:
+        12.5px;
+
+    border-radius:
+        8px;
+}
+
+
+.course-sidebar .lesson-link:hover {
+
+    color:
+        var(--ls-soft) !important;
+
+    background:
+        rgba(0,217,255,.025) !important;
+}
+
+
+.course-sidebar .lesson-link.active-lesson {
+
+    color:
+        #f4f9ff !important;
+
+    border-color:
+        rgba(0,217,255,.20) !important;
+
+    background:
+        linear-gradient(
+            100deg,
+            rgba(0,217,255,.11),
+            rgba(20,122,255,.07)
+        ) !important;
+
+    box-shadow:
+        inset 3px 0 0 var(--ls-cyan),
+        0 0 18px rgba(0,217,255,.025);
+}
+
+
+/* =========================================================
+   SIDEBAR CLOSE BUTTON
+   ========================================================= */
+
+.lesson-sidebar-close {
+
+    border-color:
+        rgba(0,217,255,.18);
+
+    border-radius:
+        9px;
+
+    background:
+        rgba(0,217,255,.035);
+
+    color:
+        var(--ls-muted);
+}
+
+
+.lesson-sidebar-close:hover {
+
+    color:
+        #ffffff;
+
+    background:
+        rgba(255,70,100,.10);
+
+    border-color:
+        rgba(255,70,100,.32);
+
+    box-shadow:
+        0 0 18px rgba(255,70,100,.12);
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   Same theme, softer blue/slate content
+   ========================================================= */
+
+html[data-theme="light"] .lesson-studio {
+
+    --ls-bg:
+        #f4f8fc;
+
+    --ls-bg-2:
+        #edf3f9;
+
+    --ls-surface:
+        rgba(255,255,255,.88);
+
+    --ls-surface-2:
+        rgba(255,255,255,.78);
+
+    --ls-border:
+        rgba(11,23,40,.10);
+
+    --ls-border-soft:
+        rgba(11,23,40,.075);
+
+    --ls-text:
+        #2a3d52;
+
+    --ls-soft:
+        #60758b;
+
+    --ls-muted:
+        #8193a5;
+
+    --ls-cyan:
+        #087f9f;
+
+    --ls-blue:
+        #2f73d9;
+
+    --ls-purple:
+        #7254d6;
+
+    --ls-green:
+        #18845b;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(0,217,255,.045),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 90% 45%,
+            rgba(123,77,255,.045),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #f4f8fc 0%,
+            #edf3f9 100%
+        );
+
+    color:
+        var(--ls-text);
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT GRID
+   --------------------------------------------------------- */
+
+html[data-theme="light"] .lesson-studio::before {
+
+    opacity:
+        .18;
+
+    background-image:
+
+        linear-gradient(
+            rgba(0,143,189,.035) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(0,143,189,.035) 1px,
+            transparent 1px
+        );
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT SIDEBAR + CARDS
+   --------------------------------------------------------- */
+
+html[data-theme="light"]
+.lesson-player-card,
+html[data-theme="light"]
+.course-sidebar,
+html[data-theme="light"]
+.lesson-info,
+html[data-theme="light"]
+.lesson-panel,
+html[data-theme="light"]
+.lesson-course-progress {
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.97),
+            rgba(247,251,255,.92)
+        ),
+        var(--ls-surface);
+
+    border-color:
+        rgba(11,23,40,.085);
+
+    box-shadow:
+        0 16px 40px rgba(13,38,76,.075);
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT TEXT
+   --------------------------------------------------------- */
+
+html[data-theme="light"]
+.lesson-title,
+html[data-theme="light"]
+.lesson-context-title,
+html[data-theme="light"]
+.lesson-player-node,
+html[data-theme="light"]
+.course-sidebar .lesson-sidebar-title,
+html[data-theme="light"]
+.lesson-panel-header {
+
+    color:
+        #2a3d52;
+}
+
+
+html[data-theme="light"]
+.lesson-context-label,
+html[data-theme="light"]
+.lesson-eyebrow,
+html[data-theme="light"]
+.lesson-sidebar-eyebrow {
+
+    color:
+        #087f9f;
+}
+
+
+html[data-theme="light"]
+.lesson-back,
+html[data-theme="light"]
+.lesson-resource,
+html[data-theme="light"]
+.course-sidebar .module-btn {
+
+    color:
+        #60758b;
+}
+
+
+html[data-theme="light"]
+.course-sidebar .chapter-btn,
+html[data-theme="light"]
+.course-sidebar .lesson-link {
+
+    color:
+        #71869a;
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT INPUT
+   --------------------------------------------------------- */
+
+html[data-theme="light"] .language-select {
+
+    background:
+        rgba(244,248,252,.92);
+
+    border-color:
+        rgba(11,23,40,.10);
+
+    color:
+        #344b61;
+}
+
+
+html[data-theme="light"] .language-select:focus {
+
+    background:
+        #ffffff;
+
+    border-color:
+        rgba(0,143,189,.38);
+
+    box-shadow:
+        0 0 20px rgba(0,143,189,.05);
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT ACTIVE LESSON
+   --------------------------------------------------------- */
+
+html[data-theme="light"]
+.course-sidebar .lesson-link.active-lesson {
+
+    color:
+        #264157 !important;
+
+    border-color:
+        rgba(0,143,189,.20) !important;
+
+    background:
+        linear-gradient(
+            100deg,
+            rgba(0,143,189,.075),
+            rgba(47,115,217,.055)
+        ) !important;
+
+    box-shadow:
+        inset 3px 0 0 #087f9f;
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT NEXT BUTTON
+   --------------------------------------------------------- */
+
+html[data-theme="light"]
+.lesson-nav-btn.next {
+
+    color:
+        #ffffff;
+
+    background:
+        linear-gradient(
+            100deg,
+            #2f73d9,
+            #7254d6
+        );
+
+    box-shadow:
+        0 10px 25px rgba(47,115,217,.16);
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT SIDEBAR CLOSE
+   --------------------------------------------------------- */
+
+html[data-theme="light"] .lesson-sidebar-close {
+
+    color:
+        #71869a;
+
+    background:
+        rgba(0,143,189,.035);
+
+    border-color:
+        rgba(0,143,189,.15);
+}
+
+
+/* =========================================================
+   SLIGHTLY COMPACT SCALE
+   ========================================================= */
+
+.lesson-studio {
+
+    font-size:
+        14px;
+}
+
+.lesson-title {
+    font-size:
+        clamp(
+            1.55rem,
+            2.3vw,
+            2.05rem
+        );
+}
+
+.lesson-panel-header {
+    font-size:
+        12px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 620px) {
+
+    .lesson-studio {
+
+        padding:
+            22px 14px 35px;
+    }
+
+    .lesson-title {
+
+        font-size:
+            1.55rem;
+    }
+
+    .lesson-context-title {
+
+        font-size:
+            16px;
+    }
+
+    .lesson-player-card,
+    .lesson-info,
+    .course-sidebar {
+
+        border-radius:
+            14px;
+    }
+}

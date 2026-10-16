@@ -1,0 +1,6407 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    File Manager | {{ lab.name }}
+{% endblock title %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/virtual_lab.css' %}"
+>
+
+<style>
+
+/* =========================================================
+   VIRTUAL LAB FILE MANAGER
+   CODE EDITOR — C-DAC / HPC STYLE
+   ========================================================= */
+
+.vl-fm-code-editor {
+    --editor-bg: #0b1220;
+    --editor-surface: #101a2b;
+    --editor-surface-2: #0d1726;
+    --editor-surface-3: #111f33;
+
+    --editor-border: rgba(148, 163, 184, 0.14);
+    --editor-border-hover: rgba(56, 189, 248, 0.38);
+
+    --editor-text: #e5edf7;
+    --editor-text-soft: #c4d0df;
+    --editor-muted: #8293a8;
+
+    --editor-accent: #38bdf8;
+    --editor-accent-strong: #0ea5e9;
+
+    --editor-success: #34d399;
+    --editor-warning: #fbbf24;
+    --editor-danger: #fb7185;
+
+    width: 100%;
+    margin-top: 18px;
+
+    border: 1px solid var(--editor-border);
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 90% 0%,
+            rgba(56, 189, 248, 0.08),
+            transparent 30%
+        ),
+        linear-gradient(
+            180deg,
+            #0d1727 0%,
+            #09111e 100%
+        );
+
+    box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.22),
+        0 0 0 1px rgba(255,255,255,0.015) inset;
+}
+
+
+/* =========================================================
+   EDITOR TOOLBAR
+   ========================================================= */
+
+.vl-fm-code-toolbar {
+    min-height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    padding: 9px 12px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.025),
+            rgba(255,255,255,0)
+        ),
+        var(--editor-surface);
+
+    border-bottom: 1px solid var(--editor-border);
+}
+
+
+/* =========================================================
+   FILE INFORMATION
+   ========================================================= */
+
+.vl-fm-code-file {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    flex: 1;
+}
+
+
+.vl-fm-code-file-icon {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 9px;
+
+    color: var(--editor-accent);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(56,189,248,0.16),
+            rgba(14,165,233,0.05)
+        );
+
+    border: 1px solid rgba(56,189,248,0.15);
+
+    box-shadow:
+        0 0 18px rgba(56,189,248,0.06);
+}
+
+
+.vl-fm-code-file-icon i {
+    font-size: 15px;
+}
+
+
+.vl-fm-code-file-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.vl-fm-code-file-name {
+    display: block;
+
+    max-width: 420px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--editor-text);
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 0.05px;
+}
+
+
+.vl-fm-code-file-path {
+    display: block;
+
+    max-width: 420px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--editor-muted);
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    font-size: 10px;
+}
+
+
+.vl-fm-code-state {
+    margin-left: 4px;
+
+    color: var(--editor-success);
+
+    font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+.vl-fm-code-state.is-dirty {
+    color: var(--editor-warning);
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.vl-fm-code-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    flex-shrink: 0;
+}
+
+
+.vl-fm-code-btn {
+    height: 32px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--editor-border);
+    border-radius: 7px;
+
+    background: rgba(255,255,255,0.035);
+
+    color: var(--editor-text-soft);
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+
+.vl-fm-code-btn:hover {
+    color: #ffffff;
+
+    border-color: var(--editor-border-hover);
+
+    background: rgba(56,189,248,0.08);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 16px rgba(0,0,0,0.16);
+}
+
+
+.vl-fm-code-btn:active {
+    transform: translateY(0);
+}
+
+
+.vl-fm-code-btn.primary {
+    color: #dffcff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(14,165,233,0.20),
+            rgba(56,189,248,0.08)
+        );
+
+    border-color:
+        rgba(56,189,248,0.30);
+}
+
+
+.vl-fm-code-btn.primary:hover {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(14,165,233,0.30),
+            rgba(56,189,248,0.14)
+        );
+
+    border-color:
+        rgba(56,189,248,0.50);
+
+    box-shadow:
+        0 5px 20px rgba(14,165,233,0.14);
+}
+
+
+.vl-fm-code-btn i {
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   EDITOR BODY
+   ========================================================= */
+
+.vl-fm-code-body {
+    position: relative;
+
+    width: 100%;
+
+    min-height: 540px;
+
+    background: var(--editor-bg);
+}
+
+
+/* =========================================================
+   CODEMIRROR
+   ========================================================= */
+
+.vl-fm-code-body .CodeMirror {
+    height: 540px;
+
+    background:
+        radial-gradient(
+            circle at 85% 0%,
+            rgba(56,189,248,0.025),
+            transparent 35%
+        ),
+        var(--editor-bg);
+
+    color: var(--editor-text);
+
+    font-family:
+        "JetBrains Mono",
+        "Cascadia Code",
+        Consolas,
+        "SFMono-Regular",
+        "Liberation Mono",
+        Menlo,
+        monospace;
+
+    font-size: 14px;
+
+    line-height: 1.65;
+
+    letter-spacing: 0;
+
+    border: 0;
+
+    cursor: text;
+}
+
+
+/* Text area */
+
+.vl-fm-code-body .CodeMirror textarea {
+    font-family:
+        "JetBrains Mono",
+        "Cascadia Code",
+        Consolas,
+        monospace;
+}
+
+
+/* =========================================================
+   CODEMIRROR GUTTERS
+   ========================================================= */
+
+.vl-fm-code-body .CodeMirror-gutters {
+    min-width: 50px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #091321,
+            #0b1524
+        );
+
+    border-right:
+        1px solid rgba(148,163,184,0.10);
+}
+
+
+.vl-fm-code-body .CodeMirror-linenumber {
+    padding-left: 8px;
+    padding-right: 13px;
+
+    color: #52647b;
+
+    font-family:
+        "JetBrains Mono",
+        "Cascadia Code",
+        Consolas,
+        monospace;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   ACTIVE LINE
+   ========================================================= */
+
+.vl-fm-code-body .CodeMirror-activeline-background {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(56,189,248,0.065),
+            rgba(56,189,248,0.018)
+        );
+}
+
+
+.vl-fm-code-body
+.CodeMirror-activeline
+.CodeMirror-linenumber {
+    color: #8ddcff;
+}
+
+
+/* =========================================================
+   CURSOR
+   ========================================================= */
+
+.vl-fm-code-body .CodeMirror-cursor {
+    border-left:
+        2px solid var(--editor-accent);
+}
+
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
+.vl-fm-code-body .CodeMirror-selected {
+    background:
+        rgba(56,189,248,0.20) !important;
+}
+
+
+/* =========================================================
+   BRACKET MATCHING
+   ========================================================= */
+
+.vl-fm-code-body .CodeMirror-matchingbracket {
+    color: #ffffff !important;
+
+    background:
+        rgba(56,189,248,0.16);
+
+    outline:
+        1px solid rgba(56,189,248,0.38);
+
+    border-radius: 3px;
+}
+
+
+/* =========================================================
+   CODEMIRROR SCROLLBAR
+   ========================================================= */
+
+.vl-fm-code-body
+.CodeMirror-vscrollbar::-webkit-scrollbar,
+.vl-fm-code-body
+.CodeMirror-hscrollbar::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+
+.vl-fm-code-body
+.CodeMirror-vscrollbar::-webkit-scrollbar-track,
+.vl-fm-code-body
+.CodeMirror-hscrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.vl-fm-code-body
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb,
+.vl-fm-code-body
+.CodeMirror-hscrollbar::-webkit-scrollbar-thumb {
+    background:
+        rgba(148,163,184,0.20);
+
+    border-radius: 20px;
+}
+
+
+.vl-fm-code-body
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb:hover,
+.vl-fm-code-body
+.CodeMirror-hscrollbar::-webkit-scrollbar-thumb:hover {
+    background:
+        rgba(148,163,184,0.35);
+}
+
+
+/* =========================================================
+   SEARCH / REPLACE DIALOG
+   ========================================================= */
+
+.vl-fm-code-body .CodeMirror-dialog {
+    position: absolute;
+
+    top: 12px;
+    right: 14px;
+
+    z-index: 100;
+
+    padding: 8px 10px;
+
+    border:
+        1px solid rgba(56,189,248,0.25);
+
+    border-radius: 8px;
+
+    background:
+        rgba(13,23,38,0.97);
+
+    color: var(--editor-text);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.30);
+}
+
+
+.vl-fm-code-body .CodeMirror-dialog input {
+    width: 200px;
+
+    padding: 7px 9px;
+
+    border:
+        1px solid rgba(148,163,184,0.16);
+
+    border-radius: 6px;
+
+    outline: none;
+
+    background: #091321;
+
+    color: #ffffff;
+
+    font-family:
+        "JetBrains Mono",
+        Consolas,
+        monospace;
+
+    font-size: 12px;
+}
+
+
+.vl-fm-code-body .CodeMirror-dialog input:focus {
+    border-color:
+        var(--editor-accent);
+}
+
+/* =========================================================
+   PROGRAM OUTPUT TERMINAL
+   ========================================================= */
+
+.vl-fm-run-output {
+    margin-top: 0;
+
+    border-top: 1px solid rgba(148, 163, 184, 0.14);
+
+    background: #07101c;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 -8px 25px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ---------------------------------------------------------
+   OUTPUT HEADER
+   --------------------------------------------------------- */
+
+.vl-fm-run-output-head {
+    min-height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 0 15px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #101c2d 0%,
+            #0b1625 100%
+        );
+
+    border-bottom:
+        1px solid rgba(148, 163, 184, 0.13);
+
+    color: #e8f1fb;
+
+    font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 0.15px;
+}
+
+
+/* Terminal icon */
+
+.vl-fm-run-output-head > span:first-child {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.vl-fm-run-output-head > span:first-child i {
+    color: #38bdf8;
+
+    font-size: 13px;
+
+    filter:
+        drop-shadow(
+            0 0 6px rgba(56,189,248,0.45)
+        );
+}
+
+
+/* ---------------------------------------------------------
+   STATUS
+   --------------------------------------------------------- */
+
+.vl-fm-run-output-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 4px 9px;
+
+    border-radius: 999px;
+
+    background: rgba(148,163,184,0.08);
+
+    border:
+        1px solid rgba(148,163,184,0.14);
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.25px;
+}
+
+
+.vl-fm-run-output-status::before {
+    content: "";
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+
+    box-shadow:
+        0 0 7px currentColor;
+}
+
+
+.vl-fm-run-output-status.is-running {
+    color: #38bdf8;
+
+    background:
+        rgba(56,189,248,0.08);
+
+    border-color:
+        rgba(56,189,248,0.20);
+
+    animation:
+        vlEditorPulse 1.2s ease-in-out infinite;
+}
+
+
+.vl-fm-run-output-status.is-success {
+    color: #34d399;
+
+    background:
+        rgba(52,211,153,0.08);
+
+    border-color:
+        rgba(52,211,153,0.20);
+}
+
+
+.vl-fm-run-output-status.is-error {
+    color: #fb7185;
+
+    background:
+        rgba(251,113,133,0.08);
+
+    border-color:
+        rgba(251,113,133,0.20);
+}
+
+
+/* ---------------------------------------------------------
+   TERMINAL AREA
+   --------------------------------------------------------- */
+
+.vl-fm-run-output-body {
+    position: relative;
+
+    width: 100%;
+
+    height: 280px;
+
+    min-height: 150px;
+
+    max-height: 380px;
+
+    padding: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+
+    background: #07101c;
+}
+.vl-fm-run-output-body .xterm {
+    width: 100% !important;
+
+    height: 100% !important;
+
+    padding: 14px 16px;
+
+    box-sizing: border-box;
+}
+
+
+.vl-fm-run-output-body .xterm-viewport {
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+
+    background: transparent !important;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        rgba(100,116,139,0.55)
+        transparent;
+}
+
+
+.vl-fm-run-output-body .xterm-screen {
+    position: relative;
+
+    padding: 0;
+}
+
+
+/* Chrome / Edge scrollbar */
+
+.vl-fm-run-output-body
+.xterm-viewport::-webkit-scrollbar {
+    width: 9px;
+
+    height: 9px;
+}
+
+
+.vl-fm-run-output-body
+.xterm-viewport::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.vl-fm-run-output-body
+.xterm-viewport::-webkit-scrollbar-thumb {
+    background:
+        rgba(100,116,139,0.50);
+
+    border-radius: 20px;
+}
+
+
+.vl-fm-run-output-body
+.xterm-viewport::-webkit-scrollbar-thumb:hover {
+    background:
+        rgba(100,116,139,0.75);
+}
+
+/* ---------------------------------------------------------
+   XTERM
+   --------------------------------------------------------- */
+
+.vl-fm-run-output-body .xterm {
+    width: 100%;
+    height: 100%;
+
+    padding: 15px 17px;
+
+    box-sizing: border-box;
+
+    color: #f1f7ff;
+
+    font-family:
+        "JetBrains Mono",
+        "Cascadia Code",
+        Consolas,
+        monospace;
+}
+
+
+.vl-fm-run-output-body .xterm-viewport {
+    background: transparent !important;
+
+    overflow-y: auto !important;
+}
+
+
+.vl-fm-run-output-body .xterm-screen {
+    padding: 0;
+
+    background: transparent;
+}
+
+
+.vl-fm-run-output-body .xterm-rows {
+    color: #f1f7ff;
+
+    font-weight: 500;
+
+    letter-spacing: 0.15px;
+}
+
+
+/* Cursor */
+
+.vl-fm-run-output-body .xterm-cursor-block {
+    background: #f8fafc !important;
+
+    color: #07101c !important;
+
+    opacity: 1 !important;
+}
+
+
+.vl-fm-run-output-body .xterm-cursor-bar {
+    background: #38bdf8 !important;
+
+    width: 2px !important;
+}
+
+
+/* Selection */
+
+.vl-fm-run-output-body .xterm-selection {
+    background:
+        rgba(56,189,248,0.28) !important;
+}
+
+
+/* ---------------------------------------------------------
+   XTERM SCROLLBAR
+   --------------------------------------------------------- */
+
+.vl-fm-run-output-body .xterm-viewport::-webkit-scrollbar {
+    width: 9px;
+}
+
+
+.vl-fm-run-output-body .xterm-viewport::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.vl-fm-run-output-body .xterm-viewport::-webkit-scrollbar-thumb {
+    background:
+        rgba(148,163,184,0.24);
+
+    border-radius: 20px;
+}
+
+
+.vl-fm-run-output-body .xterm-viewport::-webkit-scrollbar-thumb:hover {
+    background:
+        rgba(148,163,184,0.40);
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT THEME
+   --------------------------------------------------------- */
+
+html[data-theme="light"] .vl-fm-run-output,
+[data-theme="light"] .vl-fm-run-output {
+    background: #f4f7fb;
+
+    border-top-color:
+        rgba(15,23,42,0.10);
+}
+
+
+html[data-theme="light"] .vl-fm-run-output-head,
+[data-theme="light"] .vl-fm-run-output-head {
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #f1f5f9 100%
+        );
+
+    color: #172033;
+
+    border-bottom-color:
+        rgba(15,23,42,0.10);
+}
+
+
+html[data-theme="light"] .vl-fm-run-output-body,
+[data-theme="light"] .vl-fm-run-output-body {
+    background:
+        radial-gradient(
+            circle at 85% 0%,
+            rgba(14,165,233,0.07),
+            transparent 32%
+        ),
+        #f8fafc;
+}
+
+
+/* Keep terminal text dark and clearly visible in light mode */
+
+html[data-theme="light"]
+.vl-fm-run-output-body .xterm-rows,
+
+[data-theme="light"]
+.vl-fm-run-output-body .xterm-rows {
+    color: #172033;
+}
+
+
+/* Light mode cursor */
+
+html[data-theme="light"]
+.vl-fm-run-output-body .xterm-cursor-block,
+
+[data-theme="light"]
+.vl-fm-run-output-body .xterm-cursor-block {
+    background: #172033 !important;
+
+    color: #ffffff !important;
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 768px) {
+
+    .vl-fm-run-output-head {
+        min-height: 42px;
+
+        padding: 0 11px;
+
+        font-size: 11px;
+    }
+
+    .vl-fm-run-output-body {
+        height: 240px;
+
+        min-height: 130px;
+    }
+
+    .vl-fm-run-output-body .xterm {
+        padding: 12px 13px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .vl-fm-run-output-head {
+        min-height: 38px;
+
+        padding: 0 9px;
+
+        font-size: 10px;
+    }
+
+    .vl-fm-run-output-status {
+        padding: 3px 7px;
+
+        font-size: 9px;
+    }
+
+    .vl-fm-run-output-body {
+        height: 220px;
+    }
+
+    .vl-fm-run-output-body .xterm {
+        padding: 10px 11px;
+    }
+
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.vl-fm-code-footer {
+    min-height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 0 13px;
+
+    background:
+        var(--editor-surface-2);
+
+    border-top:
+        1px solid var(--editor-border);
+
+    color:
+        var(--editor-muted);
+
+    font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+
+.vl-fm-code-footer > * {
+    min-width: 0;
+}
+
+
+.vl-fm-code-footer .language {
+    color:
+        #7dd3fc;
+
+    font-weight: 600;
+}
+
+
+.vl-fm-code-footer .save-state {
+    color:
+        var(--editor-success);
+}
+
+
+/* =========================================================
+   SHORTCUTS
+   ========================================================= */
+
+.vl-fm-code-shortcuts {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+
+.vl-fm-code-shortcuts kbd {
+    padding:
+        2px 5px;
+
+    border:
+        1px solid rgba(148,163,184,0.13);
+
+    border-radius: 4px;
+
+    background:
+        #111d2d;
+
+    color:
+        #94a3b8;
+
+    font-family:
+        "JetBrains Mono",
+        Consolas,
+        monospace;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes vlEditorPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.45;
+    }
+
+}
+
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+html[data-theme="light"] .vl-fm-code-editor,
+[data-theme="light"] .vl-fm-code-editor {
+
+    --editor-bg: #f8fafc;
+
+    --editor-surface: #ffffff;
+
+    --editor-surface-2: #f1f5f9;
+
+    --editor-surface-3: #eaf1f8;
+
+    --editor-border:
+        rgba(15,23,42,0.10);
+
+    --editor-border-hover:
+        rgba(37,99,235,0.35);
+
+    --editor-text:
+        #172033;
+
+    --editor-text-soft:
+        #334155;
+
+    --editor-muted:
+        #64748b;
+
+    --editor-accent:
+        #0284c7;
+
+    --editor-accent-strong:
+        #2563eb;
+
+    background:
+        radial-gradient(
+            circle at 90% 0%,
+            rgba(14,165,233,0.08),
+            transparent 30%
+        ),
+        #f8fafc;
+
+    box-shadow:
+        0 14px 40px rgba(15,23,42,0.10);
+}
+
+
+/* Light toolbar */
+
+html[data-theme="light"]
+.vl-fm-code-toolbar,
+[data-theme="light"]
+.vl-fm-code-toolbar {
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #f8fafc
+        );
+}
+
+
+/* Light file name */
+
+html[data-theme="light"]
+.vl-fm-code-file-name,
+[data-theme="light"]
+.vl-fm-code-file-name {
+
+    color: #172033;
+}
+
+
+/* Light file path */
+
+html[data-theme="light"]
+.vl-fm-code-file-path,
+[data-theme="light"]
+.vl-fm-code-file-path {
+
+    color: #64748b;
+}
+
+
+/* Light buttons */
+
+html[data-theme="light"]
+.vl-fm-code-btn,
+[data-theme="light"]
+.vl-fm-code-btn {
+
+    background:
+        rgba(15,23,42,0.035);
+
+    color:
+        #475569;
+
+    border-color:
+        rgba(15,23,42,0.10);
+}
+
+
+html[data-theme="light"]
+.vl-fm-code-btn:hover,
+[data-theme="light"]
+.vl-fm-code-btn:hover {
+
+    background:
+        rgba(14,165,233,0.07);
+
+    color:
+        #0f172a;
+}
+
+
+/* Light editor */
+
+html[data-theme="light"]
+.vl-fm-code-body .CodeMirror,
+[data-theme="light"]
+.vl-fm-code-body .CodeMirror {
+
+    background:
+        #f8fafc;
+
+    color:
+        #172033;
+}
+
+
+/* Light gutter */
+
+html[data-theme="light"]
+.vl-fm-code-body .CodeMirror-gutters,
+[data-theme="light"]
+.vl-fm-code-body .CodeMirror-gutters {
+
+    background:
+        #eef3f8;
+
+    border-right-color:
+        rgba(15,23,42,0.08);
+}
+
+
+/* Light line numbers */
+
+html[data-theme="light"]
+.vl-fm-code-body .CodeMirror-linenumber,
+[data-theme="light"]
+.vl-fm-code-body .CodeMirror-linenumber {
+
+    color:
+        #94a3b8;
+}
+
+
+/* Light active line */
+
+html[data-theme="light"]
+.vl-fm-code-body
+.CodeMirror-activeline-background,
+[data-theme="light"]
+.vl-fm-code-body
+.CodeMirror-activeline-background {
+
+    background:
+        rgba(14,165,233,0.055);
+}
+
+
+/* Light selection */
+
+html[data-theme="light"]
+.vl-fm-code-body .CodeMirror-selected,
+[data-theme="light"]
+.vl-fm-code-body .CodeMirror-selected {
+
+    background:
+        rgba(14,165,233,0.14) !important;
+}
+
+
+/* Light search dialog */
+
+html[data-theme="light"]
+.vl-fm-code-body .CodeMirror-dialog,
+[data-theme="light"]
+.vl-fm-code-body .CodeMirror-dialog {
+
+    background:
+        rgba(255,255,255,0.98);
+
+    color:
+        #172033;
+
+    border-color:
+        rgba(37,99,235,0.22);
+
+    box-shadow:
+        0 12px 30px rgba(15,23,42,0.15);
+}
+
+
+html[data-theme="light"]
+.vl-fm-code-body .CodeMirror-dialog input,
+[data-theme="light"]
+.vl-fm-code-body .CodeMirror-dialog input {
+
+    background:
+        #ffffff;
+
+    color:
+        #172033;
+
+    border-color:
+        rgba(15,23,42,0.12);
+}
+
+
+/* Light output */
+
+html[data-theme="light"]
+.vl-fm-run-output,
+[data-theme="light"]
+.vl-fm-run-output {
+
+    background:
+        #f8fafc;
+}
+
+
+html[data-theme="light"]
+.vl-fm-run-output-head,
+[data-theme="light"]
+.vl-fm-run-output-head {
+
+    background:
+        #eef3f8;
+
+    color:
+        #334155;
+
+    border-bottom-color:
+        rgba(15,23,42,0.08);
+}
+
+
+html[data-theme="light"]
+.vl-fm-run-output-body,
+[data-theme="light"]
+.vl-fm-run-output-body {
+
+    background:
+        #f8fafc;
+
+    color:
+        #1e293b;
+}
+
+
+/* Light footer */
+
+html[data-theme="light"]
+.vl-fm-code-footer,
+[data-theme="light"]
+.vl-fm-code-footer {
+
+    background:
+        #f1f5f9;
+
+    border-top-color:
+        rgba(15,23,42,0.08);
+
+    color:
+        #64748b;
+}
+
+
+/* Light shortcuts */
+
+html[data-theme="light"]
+.vl-fm-code-shortcuts kbd,
+[data-theme="light"]
+.vl-fm-code-shortcuts kbd {
+
+    background:
+        #e8eef5;
+
+    border-color:
+        rgba(15,23,42,0.10);
+
+    color:
+        #64748b;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .vl-fm-code-editor {
+        margin-top: 14px;
+
+        border-radius: 11px;
+    }
+
+
+    .vl-fm-code-toolbar {
+
+        flex-wrap: wrap;
+
+        padding: 9px;
+
+        gap: 9px;
+    }
+
+
+    .vl-fm-code-file {
+
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+
+    .vl-fm-code-file-name {
+        max-width: 260px;
+    }
+
+
+    .vl-fm-code-file-path {
+        max-width: 260px;
+    }
+
+
+    .vl-fm-code-actions {
+
+        width: 100%;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+
+        gap: 5px;
+    }
+
+
+    .vl-fm-code-btn {
+
+        width: 100%;
+
+        padding: 0 6px;
+
+        height: 32px;
+    }
+
+
+    .vl-fm-code-btn span {
+        display: none;
+    }
+
+
+    .vl-fm-code-body {
+        min-height: 440px;
+    }
+
+
+    .vl-fm-code-body .CodeMirror {
+
+        height: 440px;
+
+        min-height: 440px;
+
+        font-size: 13px;
+
+        line-height: 1.6;
+    }
+
+
+    .vl-fm-code-body .CodeMirror-gutters {
+        min-width: 43px;
+    }
+
+
+    .vl-fm-code-body .CodeMirror-linenumber {
+
+        padding-left: 5px;
+        padding-right: 9px;
+
+        font-size: 10px;
+    }
+
+
+    .vl-fm-code-footer {
+
+        padding: 0 9px;
+
+        font-size: 9px;
+    }
+
+
+    .vl-fm-code-shortcuts {
+        gap: 7px;
+    }
+
+
+    .vl-fm-run-output-body {
+        font-size: 11px;
+
+        max-height: 240px;
+    }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .vl-fm-code-toolbar {
+        padding: 8px;
+    }
+
+
+    .vl-fm-code-file-icon {
+
+        width: 30px;
+        height: 30px;
+
+        flex-basis: 30px;
+    }
+
+
+    .vl-fm-code-file-name {
+        font-size: 12px;
+
+        max-width: 210px;
+    }
+
+
+    .vl-fm-code-file-path {
+        font-size: 9px;
+
+        max-width: 210px;
+    }
+
+
+    .vl-fm-code-actions {
+        grid-template-columns:
+            repeat(4, 1fr);
+    }
+
+
+    .vl-fm-code-btn {
+
+        height: 31px;
+
+        font-size: 10px;
+    }
+
+
+    .vl-fm-code-body {
+        min-height: 370px;
+    }
+
+
+    .vl-fm-code-body .CodeMirror {
+
+        height: 370px;
+
+        min-height: 370px;
+
+        font-size: 12px;
+
+        line-height: 1.6;
+    }
+
+
+    .vl-fm-code-body .CodeMirror-gutters {
+        min-width: 39px;
+    }
+
+
+    .vl-fm-code-body .CodeMirror-linenumber {
+
+        padding-left: 4px;
+        padding-right: 7px;
+
+        font-size: 9px;
+    }
+
+
+    .vl-fm-code-footer {
+
+        min-height: 30px;
+
+        padding: 0 8px;
+
+        font-size: 8px;
+    }
+
+
+    .vl-fm-run-output-head {
+
+        min-height: 36px;
+
+        padding: 7px 9px;
+
+        font-size: 10px;
+    }
+
+
+    .vl-fm-run-output-body {
+
+        padding: 10px;
+
+        font-size: 10px;
+    }
+}
+
+</style>
+{% endblock extra_css %}
+
+{% block maincontent %}
+
+<div
+    class="vl-file-manager-page"
+    data-files-url="{% url 'virtuallab:workspace_files' lab.id %}"
+    data-lab-id="{{ lab.id }}"
+>
+
+    <!-- HEADER -->
+    <header class="vl-fm-header">
+
+        <div class="vl-fm-header-left">
+
+            <a
+                href="{% url 'virtuallab:lab_session' lab.id %}"
+                class="vl-fm-back"
+            >
+                <i class="fas fa-arrow-left"></i>
+                Back to Lab
+            </a>
+
+            <div class="vl-fm-title-row">
+
+                <div class="vl-fm-title-icon">
+                    <i class="fas fa-folder-tree"></i>
+                </div>
+
+                <div>
+
+                    <span class="vl-section-kicker">
+                        VIRTUAL LAB / WORKSPACE
+                    </span>
+
+                    <h1>
+                        File Manager
+                    </h1>
+
+                    <p>
+                        Manage files and folders inside your
+                        isolated laboratory workspace.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="vl-fm-session">
+
+            <span class="vl-session-status-dot"></span>
+
+            <div>
+                <strong>SESSION ACTIVE</strong>
+                <small>#{{ session.id }}</small>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- WORKSPACE BAR -->
+
+    <section class="vl-fm-workspace-bar">
+
+        <div class="vl-fm-path">
+
+            <i class="fas fa-folder-open"></i>
+
+            <span>/workspace</span>
+
+        </div>
+
+
+        <div class="vl-fm-actions">
+
+            <button
+                type="button"
+                class="vl-fm-action"
+                id="vl-fm-new-file"
+            >
+                <i class="fas fa-file-circle-plus"></i>
+                New File
+            </button>
+
+            <button
+                type="button"
+                class="vl-fm-action"
+                id="vl-fm-new-folder"
+            >
+                <i class="fas fa-folder-plus"></i>
+                New Folder
+            </button>
+
+            <button
+                type="button"
+                class="vl-fm-action"
+                id="vl-fm-upload-file"
+            >
+                <i class="fas fa-upload"></i>
+                Upload File
+            </button>
+
+            <input
+                type="file"
+                id="vl-fm-upload-input"
+                hidden
+            >
+
+            <button
+                type="button"
+                class="vl-fm-action"
+                id="vl-fm-refresh"
+                title="Refresh"
+            >
+                <i class="fas fa-rotate"></i>
+                Refresh
+            </button>
+
+</div>
+
+    </section>
+
+
+    <!-- FILE MANAGER -->
+
+    <section class="vl-fm-panel">
+
+        <div class="vl-fm-panel-header">
+
+            <div>
+
+                <span class="vl-section-kicker">
+                    WORKSPACE FILES
+                </span>
+
+                <h2>
+                    /workspace
+                </h2>
+
+            </div>
+
+            <span
+                class="vl-fm-count"
+                id="vl-fm-count"
+            >
+                Loading...
+            </span>
+
+        </div>
+
+
+        <!-- LOADING -->
+
+        <div
+            class="vl-fm-loading"
+            id="vl-fm-loading"
+        >
+
+            <div class="vl-fm-spinner"></div>
+
+            <span>
+                Loading workspace...
+            </span>
+
+        </div>
+
+
+        <!-- ERROR -->
+
+        <div
+            class="vl-fm-error"
+            id="vl-fm-error"
+            hidden
+        >
+
+            <i class="fas fa-triangle-exclamation"></i>
+
+            <div>
+
+                <strong>
+                    Unable to load workspace
+                </strong>
+
+                <p id="vl-fm-error-message">
+                    An error occurred while loading your files.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- EMPTY -->
+
+        <div
+            class="vl-fm-empty"
+            id="vl-fm-empty"
+            hidden
+        >
+
+            <div class="vl-fm-empty-icon">
+                <i class="fas fa-folder-open"></i>
+            </div>
+
+            <h3>
+                Workspace is empty
+            </h3>
+
+            <p>
+                Files created inside your Virtual Lab will
+                appear here.
+            </p>
+
+        </div>
+
+
+        <!-- FILE LIST -->
+
+        <div
+            class="vl-fm-file-list"
+            id="vl-fm-file-list"
+        >
+
+            <!-- JavaScript will populate this -->
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <div class="vl-fm-footer">
+
+        <a
+            href="{% url 'virtuallab:lab_session' lab.id %}"
+        >
+            <i class="fas fa-arrow-left"></i>
+            Back to Virtual Lab
+        </a>
+
+    </div>
+
+</div>
+<!-- =========================================================
+     CREATE ITEM MODAL
+     ========================================================= -->
+
+<div
+    class="vl-fm-modal-overlay"
+    id="vl-fm-create-modal"
+    hidden
+>
+    <div
+        class="vl-fm-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vl-fm-modal-title"
+    >
+
+        <button
+            type="button"
+            class="vl-fm-modal-close"
+            id="vl-fm-modal-close"
+            aria-label="Close"
+        >
+            <i class="fas fa-xmark"></i>
+        </button>
+
+        <div class="vl-fm-modal-icon" id="vl-fm-modal-icon">
+            <i class="fas fa-file-circle-plus"></i>
+        </div>
+
+        <span class="vl-section-kicker">
+            WORKSPACE
+        </span>
+
+        <h2 id="vl-fm-modal-title">
+            Create New File
+        </h2>
+
+        <p class="vl-fm-modal-description">
+            Create a new item inside your Virtual Lab workspace.
+        </p>
+
+        <label
+            class="vl-fm-modal-label"
+            for="vl-fm-create-name"
+        >
+            Name
+        </label>
+
+        <input
+            type="text"
+            id="vl-fm-create-name"
+            class="vl-fm-modal-input"
+            placeholder="main.py"
+            autocomplete="off"
+        >
+
+        <div class="vl-fm-modal-location">
+
+            <i class="fas fa-folder-open"></i>
+
+            <div>
+                <span>Location</span>
+                <strong id="vl-fm-modal-location">
+                    /workspace
+                </strong>
+            </div>
+
+        </div>
+
+        <div
+            class="vl-fm-modal-error"
+            id="vl-fm-modal-error"
+            hidden
+        >
+            <i class="fas fa-circle-exclamation"></i>
+            <span id="vl-fm-modal-error-text"></span>
+        </div>
+
+        <div class="vl-fm-modal-actions">
+
+            <button
+                type="button"
+                class="vl-fm-modal-cancel"
+                id="vl-fm-modal-cancel"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="vl-fm-modal-submit"
+                id="vl-fm-modal-submit"
+            >
+                <i class="fas fa-file-circle-plus"></i>
+                <span id="vl-fm-modal-submit-text">
+                    Create File
+                </span>
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- =========================================================
+     RENAME ITEM MODAL
+     ========================================================= -->
+
+<div
+    class="vl-fm-modal-overlay"
+    id="vl-fm-rename-modal"
+    hidden
+>
+    <div
+        class="vl-fm-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vl-fm-rename-modal-title"
+    >
+
+        <button
+            type="button"
+            class="vl-fm-modal-close"
+            id="vl-fm-rename-modal-close"
+            aria-label="Close"
+        >
+            <i class="fas fa-xmark"></i>
+        </button>
+
+        <div class="vl-fm-modal-icon">
+            <i class="fas fa-pen-to-square"></i>
+        </div>
+
+        <span class="vl-section-kicker">
+            WORKSPACE
+        </span>
+
+        <h2 id="vl-fm-rename-modal-title">
+            Rename Item
+        </h2>
+
+        <p class="vl-fm-modal-description">
+            Enter a new name for the selected file or folder.
+        </p>
+
+        <label
+            class="vl-fm-modal-label"
+            for="vl-fm-rename-name"
+        >
+            New Name
+        </label>
+
+        <input
+            type="text"
+            id="vl-fm-rename-name"
+            class="vl-fm-modal-input"
+            placeholder="New name"
+            autocomplete="off"
+        >
+
+        <div class="vl-fm-modal-location">
+            <i class="fas fa-location-dot"></i>
+            <div>
+                <span>Current Item</span>
+                <strong id="vl-fm-rename-location">
+                    /workspace
+                </strong>
+            </div>
+        </div>
+
+        <div
+            class="vl-fm-modal-error"
+            id="vl-fm-rename-error"
+            hidden
+        >
+            <i class="fas fa-circle-exclamation"></i>
+            <span id="vl-fm-rename-error-text"></span>
+        </div>
+
+        <div class="vl-fm-modal-actions">
+
+            <button
+                type="button"
+                class="vl-fm-modal-cancel"
+                id="vl-fm-rename-cancel"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="vl-fm-modal-submit"
+                id="vl-fm-rename-submit"
+            >
+                <i class="fas fa-pen-to-square"></i>
+                <span>Rename</span>
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================================================
+     DELETE CONFIRMATION MODAL
+     ========================================================= -->
+
+<div
+    class="vl-fm-modal-overlay"
+    id="vl-fm-delete-modal"
+    hidden
+>
+    <div
+        class="vl-fm-modal vl-fm-delete-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vl-fm-delete-title"
+    >
+
+        <button
+            type="button"
+            class="vl-fm-modal-close"
+            id="vl-fm-delete-close"
+            aria-label="Close"
+        >
+            <i class="fas fa-xmark"></i>
+        </button>
+
+        <div class="vl-fm-modal-icon vl-fm-delete-icon">
+            <i class="fas fa-trash-can"></i>
+        </div>
+
+        <span class="vl-section-kicker">
+            WORKSPACE
+        </span>
+
+        <h2 id="vl-fm-delete-title">
+            Delete Item
+        </h2>
+
+        <p class="vl-fm-modal-description">
+            Are you sure you want to delete this item?
+        </p>
+
+        <div class="vl-fm-delete-item">
+
+            <i
+                class="fas fa-file"
+                id="vl-fm-delete-item-icon"
+            ></i>
+
+            <div>
+                <strong id="vl-fm-delete-item-name">
+                    item
+                </strong>
+
+                <span id="vl-fm-delete-item-path">
+                    /workspace
+                </span>
+            </div>
+
+        </div>
+
+        <div
+            class="vl-fm-delete-warning"
+            id="vl-fm-delete-warning"
+        >
+            <i class="fas fa-triangle-exclamation"></i>
+
+            <span>
+                This action cannot be undone.
+                If this is a folder, everything inside it
+                will also be deleted.
+            </span>
+        </div>
+
+        <div
+            class="vl-fm-modal-error"
+            id="vl-fm-delete-error"
+            hidden
+        >
+            <i class="fas fa-circle-exclamation"></i>
+
+            <span id="vl-fm-delete-error-text"></span>
+        </div>
+
+        <div class="vl-fm-modal-actions">
+
+            <button
+                type="button"
+                class="vl-fm-modal-cancel"
+                id="vl-fm-delete-cancel"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="vl-fm-modal-submit vl-fm-delete-submit"
+                id="vl-fm-delete-submit"
+            >
+                <i class="fas fa-trash-can"></i>
+
+                <span>
+                    Delete
+                </span>
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js">
+</script>
+
+<!-- Code Editor -->
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css"
+>
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/searchcursor.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/search.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/shell/shell.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/yaml/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css"
+>
+
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const labId = {{ lab.id }};
+
+    const page = document.querySelector(".vl-file-manager-page");
+
+    if (!page) {
+        return;
+    }
+
+
+    /* =====================================================
+       URLS
+       ===================================================== */
+
+    const filesUrl = page.dataset.filesUrl;
+
+    const fileUrl =
+        "{% url 'virtuallab:workspace_file' lab.id %}";
+
+    const createFileUrl =
+        "{% url 'virtuallab:create_workspace_file' lab.id %}";
+
+    const createFolderUrl =
+        "{% url 'virtuallab:create_workspace_folder' lab.id %}";
+
+    const renameItemUrl =
+        "{% url 'virtuallab:rename_workspace_item' lab.id %}";
+
+    const deleteItemUrl =
+        "{% url 'virtuallab:delete_workspace_item' lab.id %}";
+
+    const saveFileUrl =
+        "{% url 'virtuallab:save_workspace_file' lab.id %}";
+
+    const runCodeUrl =
+        "{% url 'virtuallab:run_code' lab.id %}";
+
+    const fileContentUrl =
+        "{% url 'virtuallab:workspace_file_content' lab.id %}";
+
+    const uploadFileUrl =
+        "{% url 'virtuallab:upload_workspace_file' lab.id %}";
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const loading =
+        document.getElementById("vl-fm-loading");
+
+    const error =
+        document.getElementById("vl-fm-error");
+
+    const errorMessage =
+        document.getElementById("vl-fm-error-message");
+
+    const empty =
+        document.getElementById("vl-fm-empty");
+
+    const fileList =
+        document.getElementById("vl-fm-file-list");
+
+    const count =
+        document.getElementById("vl-fm-count");
+
+    const refreshButton =
+        document.getElementById("vl-fm-refresh");
+
+    const newFileButton =
+        document.getElementById("vl-fm-new-file");
+
+    const newFolderButton =
+        document.getElementById("vl-fm-new-folder");
+
+    const uploadFileButton =
+        document.getElementById("vl-fm-upload-file");
+
+    const uploadFileInput =
+        document.getElementById("vl-fm-upload-input");
+
+    /* =====================================================
+    UPLOAD FILE
+    ===================================================== */
+
+    uploadFileButton.addEventListener(
+        "click",
+        function () {
+
+            uploadFileInput.value = "";
+
+            uploadFileInput.click();
+
+        }
+    );
+
+
+    uploadFileInput.addEventListener(
+        "change",
+        async function () {
+
+            const file =
+                uploadFileInput.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            uploadFileButton.disabled = true;
+
+            uploadFileButton.innerHTML = `
+                <i class="fas fa-spinner fa-spin"></i>
+                Uploading...
+            `;
+
+
+            try {
+
+                const formData =
+                    new FormData();
+
+                formData.append(
+                    "file",
+                    file
+                );
+
+                formData.append(
+                    "path",
+                    currentPath
+                );
+
+
+                const response =
+                    await fetch(
+                        uploadFileUrl,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "X-CSRFToken":
+                                    getCsrfToken(),
+
+                                "X-Requested-With":
+                                    "XMLHttpRequest"
+                            },
+
+                            body: formData
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to upload file."
+                    );
+
+                }
+
+
+                await loadWorkspace();
+
+
+            }
+            catch (errorObject) {
+
+                alert(
+                    errorObject.message ||
+                    "Unable to upload file."
+                );
+
+            }
+            finally {
+
+                uploadFileButton.disabled =
+                    false;
+
+                uploadFileButton.innerHTML = `
+                    <i class="fas fa-upload"></i>
+                    Upload File
+                `;
+
+                uploadFileInput.value = "";
+
+            }
+
+        }
+    );
+
+    const pathDisplay =
+        document.querySelector(".vl-fm-path");
+
+    /* =====================================================
+    CREATE MODAL
+    ===================================================== */
+
+    const createModal =
+        document.getElementById("vl-fm-create-modal");
+
+    const createModalTitle =
+        document.getElementById("vl-fm-modal-title");
+
+    const createModalIcon =
+        document.getElementById("vl-fm-modal-icon");
+
+    const createNameInput =
+        document.getElementById("vl-fm-create-name");
+
+    const createModalLocation =
+        document.getElementById("vl-fm-modal-location");
+
+    const createModalError =
+        document.getElementById("vl-fm-modal-error");
+
+    const createModalErrorText =
+        document.getElementById("vl-fm-modal-error-text");
+
+    const createModalSubmit =
+        document.getElementById("vl-fm-modal-submit");
+
+    const createModalSubmitText =
+        document.getElementById("vl-fm-modal-submit-text");
+
+    const createModalClose =
+        document.getElementById("vl-fm-modal-close");
+
+    const createModalCancel =
+        document.getElementById("vl-fm-modal-cancel");
+
+    const renameModal =
+        document.getElementById("vl-fm-rename-modal");
+
+    const renameNameInput =
+        document.getElementById("vl-fm-rename-name");
+
+    const renameLocation =
+        document.getElementById("vl-fm-rename-location");
+
+    const renameError =
+        document.getElementById("vl-fm-rename-error");
+
+    const renameErrorText =
+        document.getElementById("vl-fm-rename-error-text");
+
+    const renameSubmit =
+        document.getElementById("vl-fm-rename-submit");
+
+    const renameClose =
+        document.getElementById("vl-fm-rename-modal-close");
+
+    const renameCancel =
+        document.getElementById("vl-fm-rename-cancel");
+
+    let renameEntry = null;
+
+    let createMode = "file";
+
+    /* =====================================================
+    OPEN CREATE MODAL
+    ===================================================== */
+
+    function openCreateModal(mode) {
+
+        createMode = mode;
+
+        createModal.hidden = false;
+
+        document.body.classList.add(
+            "vl-fm-modal-open"
+        );
+
+        createModalError.hidden = true;
+        createModalErrorText.textContent = "";
+
+        createNameInput.value = "";
+
+        createModalLocation.textContent =
+            currentPath
+                ? "/workspace/" + currentPath
+                : "/workspace";
+
+        if (mode === "folder") {
+
+            createModalTitle.textContent =
+                "Create New Folder";
+
+            createModalIcon.innerHTML =
+                '<i class="fas fa-folder-plus"></i>';
+
+            createNameInput.placeholder =
+                "new-folder";
+
+            createModalSubmitText.textContent =
+                "Create Folder";
+
+            createModalSubmit.querySelector("i").className =
+                "fas fa-folder-plus";
+
+        } else {
+
+            createModalTitle.textContent =
+                "Create New File";
+
+            createModalIcon.innerHTML =
+                '<i class="fas fa-file-circle-plus"></i>';
+
+            createNameInput.placeholder =
+                "main.py";
+
+            createModalSubmitText.textContent =
+                "Create File";
+
+            createModalSubmit.querySelector("i").className =
+                "fas fa-file-circle-plus";
+        }
+
+        setTimeout(function () {
+            createNameInput.focus();
+        }, 50);
+    }
+
+
+    /* =====================================================
+    CLOSE CREATE MODAL
+    ===================================================== */
+
+    function closeCreateModal() {
+
+        createModal.hidden = true;
+
+        document.body.classList.remove(
+            "vl-fm-modal-open"
+        );
+
+        createModalError.hidden = true;
+    }
+
+
+    /* =====================================================
+    CREATE ITEM
+    ===================================================== */
+
+    async function submitCreateItem() {
+
+        const name =
+            createNameInput.value.trim();
+
+        if (!name) {
+
+            showCreateModalError(
+                createMode === "folder"
+                    ? "Please enter a folder name."
+                    : "Please enter a file name."
+            );
+
+            createNameInput.focus();
+
+            return;
+        }
+
+        const url =
+            createMode === "folder"
+                ? createFolderUrl
+                : createFileUrl;
+
+        createModalSubmit.disabled = true;
+
+        createModalSubmitText.textContent =
+            createMode === "folder"
+                ? "Creating Folder..."
+                : "Creating File...";
+
+        createModalError.hidden = true;
+
+        try {
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "X-CSRFToken":
+                                getCsrfToken(),
+
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        },
+
+                        body: JSON.stringify({
+                            name: name,
+                            path: currentPath
+                        })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+                throw new Error(
+                    data.error ||
+                    "Unable to create item."
+                );
+            }
+
+            closeCreateModal();
+
+            await loadWorkspace();
+
+        } catch (errorObject) {
+
+            showCreateModalError(
+                errorObject.message ||
+                "Unable to create item."
+            );
+
+        } finally {
+
+            createModalSubmit.disabled = false;
+
+            createModalSubmitText.textContent =
+                createMode === "folder"
+                    ? "Create Folder"
+                    : "Create File";
+        }
+    }
+
+
+    /* =====================================================
+    MODAL ERROR
+    ===================================================== */
+
+    function showCreateModalError(message) {
+
+        createModalErrorText.textContent =
+            message;
+
+        createModalError.hidden = false;
+    }
+
+    newFileButton.addEventListener(
+        "click",
+        function () {
+            openCreateModal("file");
+        }
+    );
+
+    newFolderButton.addEventListener(
+        "click",
+        function () {
+            openCreateModal("folder");
+        }
+    );
+
+    createModalClose.addEventListener(
+        "click",
+        closeCreateModal
+    );
+
+    createModalCancel.addEventListener(
+        "click",
+        closeCreateModal
+    );
+
+    createModalSubmit.addEventListener(
+        "click",
+        submitCreateItem
+    );
+
+    createNameInput.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Enter") {
+                event.preventDefault();
+                submitCreateItem();
+            }
+
+            if (event.key === "Escape") {
+                closeCreateModal();
+            }
+        }
+    );
+
+    createModal.addEventListener(
+        "click",
+        function (event) {
+
+            if (event.target === createModal) {
+                closeCreateModal();
+            }
+        }
+    );
+
+
+
+    /* =====================================================
+       RENAME ITEM
+       ===================================================== */
+
+    function openRenameModal(entry) {
+
+        renameEntry = entry;
+
+        renameModal.hidden = false;
+
+        document.body.classList.add(
+            "vl-fm-modal-open"
+        );
+
+        renameError.hidden = true;
+        renameErrorText.textContent = "";
+
+        renameNameInput.value = entry.name;
+
+        renameLocation.textContent =
+            "/workspace/" + entry.path;
+
+        setTimeout(function () {
+            renameNameInput.focus();
+            renameNameInput.select();
+        }, 50);
+    }
+
+
+    function closeRenameModal() {
+
+        renameModal.hidden = true;
+
+        document.body.classList.remove(
+            "vl-fm-modal-open"
+        );
+
+        renameError.hidden = true;
+        renameEntry = null;
+    }
+
+
+    function showRenameError(message) {
+
+        renameErrorText.textContent = message;
+        renameError.hidden = false;
+    }
+
+
+    async function submitRenameItem() {
+
+        if (!renameEntry) {
+            closeRenameModal();
+            return;
+        }
+
+        const newName =
+            renameNameInput.value.trim();
+
+        if (!newName) {
+            showRenameError(
+                "Please enter a new name."
+            );
+            renameNameInput.focus();
+            return;
+        }
+
+        renameSubmit.disabled = true;
+
+        renameSubmit.querySelector("span").textContent =
+            "Renaming...";
+
+        renameError.hidden = true;
+
+        try {
+
+            const response =
+                await fetch(
+                    renameItemUrl,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "X-CSRFToken":
+                                getCsrfToken(),
+
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        },
+
+                        body: JSON.stringify({
+                            path: renameEntry.path,
+                            name: newName
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                throw new Error(
+                    data.error ||
+                    "Unable to rename item."
+                );
+            }
+
+
+            closeRenameModal();
+
+            await loadWorkspace();
+
+        }
+
+        catch (errorObject) {
+
+            showRenameError(
+                errorObject.message ||
+                "Unable to rename item."
+            );
+
+        }
+
+        finally {
+
+            renameSubmit.disabled = false;
+
+            renameSubmit.querySelector("span").textContent =
+                "Rename";
+        }
+    }
+
+
+    renameClose.addEventListener(
+        "click",
+        closeRenameModal
+    );
+
+
+    renameCancel.addEventListener(
+        "click",
+        closeRenameModal
+    );
+
+
+    renameSubmit.addEventListener(
+        "click",
+        submitRenameItem
+    );
+
+
+    renameNameInput.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+
+                submitRenameItem();
+
+            }
+
+            if (event.key === "Escape") {
+
+                closeRenameModal();
+
+            }
+
+        }
+    );
+
+
+    renameModal.addEventListener(
+        "click",
+        function (event) {
+
+            if (event.target === renameModal) {
+
+                closeRenameModal();
+
+            }
+
+        }
+    );
+
+    /* =====================================================
+    DELETE MODAL
+    ===================================================== */
+
+    const deleteModal =
+        document.getElementById("vl-fm-delete-modal");
+
+    const deleteClose =
+        document.getElementById("vl-fm-delete-close");
+
+    const deleteCancel =
+        document.getElementById("vl-fm-delete-cancel");
+
+    const deleteSubmit =
+        document.getElementById("vl-fm-delete-submit");
+
+    const deleteItemName =
+        document.getElementById("vl-fm-delete-item-name");
+
+    const deleteItemPath =
+        document.getElementById("vl-fm-delete-item-path");
+
+    const deleteItemIcon =
+        document.getElementById("vl-fm-delete-item-icon");
+
+    const deleteError =
+        document.getElementById("vl-fm-delete-error");
+
+    const deleteErrorText =
+        document.getElementById("vl-fm-delete-error-text");
+
+
+    let itemPendingDelete = null;
+
+
+    function openDeleteModal(entry) {
+
+        itemPendingDelete = entry;
+
+        deleteItemName.textContent =
+            entry.name;
+
+        deleteItemPath.textContent =
+            "/" + entry.path;
+
+        deleteItemIcon.className =
+            entry.type === "directory"
+                ? "fas fa-folder"
+                : "fas fa-file";
+
+
+        deleteError.hidden = true;
+
+        deleteErrorText.textContent = "";
+
+
+        deleteModal.hidden = false;
+
+        document.body.classList.add(
+            "vl-fm-modal-open"
+        );
+
+    }
+
+
+    function closeDeleteModal() {
+
+        deleteModal.hidden = true;
+
+        document.body.classList.remove(
+            "vl-fm-modal-open"
+        );
+
+        itemPendingDelete = null;
+
+    }
+
+
+    deleteClose.addEventListener(
+        "click",
+        closeDeleteModal
+    );
+
+
+    deleteCancel.addEventListener(
+        "click",
+        closeDeleteModal
+    );
+
+
+    deleteModal.addEventListener(
+        "click",
+        function (event) {
+
+            if (event.target === deleteModal) {
+                closeDeleteModal();
+            }
+
+        }
+    );
+
+
+    function isFileCurrentlyOpen(entry) {
+
+        const preview =
+            document.getElementById(
+                "vl-fm-file-preview"
+            );
+
+        if (!preview) {
+            return false;
+        }
+
+        const openPath =
+            preview.dataset.filePath;
+
+        if (!openPath) {
+            return false;
+        }
+
+        return openPath === entry.path;
+    }
+
+
+    async function deleteWorkspaceItem() {
+
+        if (!itemPendingDelete) {
+            return;
+        }
+
+
+        const entry = itemPendingDelete;
+
+
+        /*
+        * Do not allow deletion while the file
+        * is currently open in the editor/viewer.
+        */
+        if (
+            entry.type !== "directory" &&
+            isFileCurrentlyOpen(entry)
+        ) {
+
+            closeDeleteModal();
+
+            alert(
+                "Please close the editor/viewer before deleting this file."
+            );
+
+            return;
+        }
+
+
+        deleteSubmit.disabled = true;
+
+        deleteSubmit.innerHTML = `
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Deleting...</span>
+        `;
+
+
+        deleteError.hidden = true;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    deleteItemUrl,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "X-CSRFToken":
+                                getCsrfToken(),
+
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        },
+
+                        body: JSON.stringify({
+                            path: entry.path
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok || !data.success) {
+
+                throw new Error(
+                    data.error ||
+                    "Unable to delete the item."
+                );
+
+            }
+
+
+            closeDeleteModal();
+
+
+            await loadWorkspace();
+
+
+        } catch (error) {
+
+            deleteError.hidden = false;
+
+            deleteErrorText.textContent =
+                error.message ||
+                "Unable to delete the item.";
+
+
+        } finally {
+
+            deleteSubmit.disabled = false;
+
+            deleteSubmit.innerHTML = `
+                <i class="fas fa-trash-can"></i>
+                <span>Delete</span>
+            `;
+
+        }
+
+    }
+
+
+    deleteSubmit.addEventListener(
+        "click",
+        deleteWorkspaceItem
+    );
+
+
+    /* =====================================================
+       CURRENT PATH
+       ===================================================== */
+
+    let currentPath = "";
+
+
+    /* =====================================================
+       RESET
+       ===================================================== */
+
+    function resetState() {
+
+        loading.hidden = false;
+
+        error.hidden = true;
+
+        empty.hidden = true;
+
+        fileList.innerHTML = "";
+
+        count.textContent = "Loading...";
+
+    }
+
+
+    /* =====================================================
+       FILE ICON
+       ===================================================== */
+
+    function getFileIcon(entry) {
+
+        if (entry.type === "directory") {
+            return "fa-folder";
+        }
+
+
+        const name =
+            entry.name.toLowerCase();
+
+
+        if (
+            name.endsWith(".py") ||
+            name.endsWith(".java") ||
+            name.endsWith(".c") ||
+            name.endsWith(".cpp") ||
+            name.endsWith(".h") ||
+            name.endsWith(".hpp") ||
+            name.endsWith(".js") ||
+            name.endsWith(".ts") ||
+            name.endsWith(".html") ||
+            name.endsWith(".css") ||
+            name.endsWith(".json") ||
+            name.endsWith(".xml") ||
+            name.endsWith(".sh") ||
+            name.endsWith(".yaml") ||
+            name.endsWith(".yml") ||
+            name.endsWith(".md")
+        ) {
+            return "fa-file-code";
+        }
+
+
+        if (name.endsWith(".sql")) {
+            return "fa-database";
+        }
+
+
+        if (name.endsWith(".csv")) {
+            return "fa-file-csv";
+        }
+
+
+        if (name.endsWith(".pdf")) {
+            return "fa-file-pdf";
+        }
+
+
+        if (
+            name.endsWith(".png") ||
+            name.endsWith(".jpg") ||
+            name.endsWith(".jpeg") ||
+            name.endsWith(".gif") ||
+            name.endsWith(".webp")
+        ) {
+            return "fa-file-image";
+        }
+
+
+        /* No extension / unknown file → treat as text */
+        return "fa-file-lines";
+
+    }
+
+    /* =====================================================
+    TEXT FILE DETECTION
+    ===================================================== */
+
+    function isTextFile(entry) {
+
+        if (entry.type === "directory") {
+            return false;
+        }
+
+        const name =
+            entry.name.toLowerCase();
+
+        const knownTextExtensions = [
+            ".txt",
+            ".py",
+            ".java",
+            ".c",
+            ".cpp",
+            ".h",
+            ".hpp",
+            ".js",
+            ".ts",
+            ".html",
+            ".css",
+            ".json",
+            ".xml",
+            ".sh",
+            ".yaml",
+            ".yml",
+            ".md",
+            ".sql",
+            ".ini",
+            ".cfg",
+            ".conf",
+            ".properties"
+        ];
+
+        return (
+            !name.includes(".") ||
+            knownTextExtensions.some(
+                extension =>
+                    name.endsWith(extension)
+            )
+        );
+    }
+
+
+    /* =====================================================
+       FILE SIZE
+       ===================================================== */
+
+    function formatSize(size) {
+
+        if (
+            size === null ||
+            size === undefined
+        ) {
+            return "—";
+        }
+
+
+        if (size < 1024) {
+            return size + " B";
+        }
+
+
+        if (size < 1024 * 1024) {
+
+            return (
+                (size / 1024).toFixed(1)
+                + " KB"
+            );
+
+        }
+
+
+        return (
+            (size / (1024 * 1024)).toFixed(1)
+            + " MB"
+        );
+
+    }
+
+
+    /* =====================================================
+       UPDATE PATH
+       ===================================================== */
+
+    function updatePath() {
+
+        const displayPath =
+            currentPath
+                ? "/workspace/" + currentPath
+                : "/workspace";
+
+
+        pathDisplay.innerHTML = `
+            <i class="fas fa-folder-open"></i>
+            <span>${displayPath}</span>
+        `;
+
+    }
+
+
+    /* =====================================================
+       CREATE BACK BUTTON
+       ===================================================== */
+
+    function createBackButton() {
+
+        if (!currentPath) {
+            return null;
+        }
+
+
+        const backRow =
+            document.createElement("div");
+
+
+        backRow.className =
+            "vl-fm-file-row vl-fm-back-row";
+
+
+        const icon =
+            document.createElement("div");
+
+
+        icon.className =
+            "vl-fm-file-icon";
+
+
+        icon.innerHTML =
+            `<i class="fas fa-arrow-up"></i>`;
+
+
+        const information =
+            document.createElement("div");
+
+
+        information.className =
+            "vl-fm-file-information";
+
+
+        const name =
+            document.createElement("strong");
+
+
+        name.className =
+            "vl-fm-file-name";
+
+
+        name.textContent =
+            "Parent Folder";
+
+
+        const path =
+            document.createElement("span");
+
+
+        path.className =
+            "vl-fm-file-path";
+
+
+        path.textContent =
+            "Go back one level";
+
+
+        information.appendChild(name);
+
+        information.appendChild(path);
+
+
+        const type =
+            document.createElement("span");
+
+
+        type.className =
+            "vl-fm-file-type";
+
+
+        type.textContent =
+            "BACK";
+
+
+        const size =
+            document.createElement("span");
+
+
+        size.className =
+            "vl-fm-file-size";
+
+
+        size.textContent =
+            "↑";
+
+
+        backRow.appendChild(icon);
+
+        backRow.appendChild(information);
+
+        backRow.appendChild(type);
+
+        backRow.appendChild(size);
+
+
+        backRow.addEventListener(
+            "click",
+            function () {
+
+                const parts =
+                    currentPath
+                        .split("/")
+                        .filter(Boolean);
+
+
+                parts.pop();
+
+
+                currentPath =
+                    parts.join("/");
+
+
+                loadWorkspace();
+
+            }
+        );
+
+
+        return backRow;
+
+    }
+
+
+    /* =====================================================
+       CREATE FILE / FOLDER ROW
+       ===================================================== */
+
+    function createEntry(entry) {
+
+        const row = document.createElement("div");
+
+        row.className =
+            "vl-fm-file-row " +
+            (
+                entry.type === "directory"
+                    ? "vl-fm-directory"
+                    : "vl-fm-file"
+            );
+
+
+        /* ICON */
+
+        const icon = document.createElement("div");
+
+        icon.className = "vl-fm-file-icon";
+
+        icon.innerHTML =
+            `<i class="fas ${getFileIcon(entry)}"></i>`;
+
+
+        /* INFORMATION */
+
+        const information =
+            document.createElement("div");
+
+        information.className =
+            "vl-fm-file-information";
+
+
+        const name =
+            document.createElement("strong");
+
+        name.className =
+            "vl-fm-file-name";
+
+        name.textContent =
+            entry.name;
+
+
+        const path =
+            document.createElement("span");
+
+        path.className =
+            "vl-fm-file-path";
+
+        path.textContent =
+            entry.path;
+
+
+        information.appendChild(name);
+        information.appendChild(path);
+
+
+        /* TYPE */
+
+        const type =
+            document.createElement("span");
+
+        type.className =
+            "vl-fm-file-type";
+
+        type.textContent =
+            entry.type === "directory"
+                ? "FOLDER"
+                : "FILE";
+
+
+        /* SIZE */
+
+        const size =
+            document.createElement("span");
+
+        size.className =
+            "vl-fm-file-size";
+
+        size.textContent =
+            entry.type === "directory"
+                ? "—"
+                : formatSize(entry.size);
+
+
+        /* OPEN ACTION */
+
+        /* ROW ACTIONS */
+
+        const actions =
+            document.createElement("div");
+
+        actions.className =
+            "vl-fm-row-actions";
+
+
+        /* RENAME */
+
+        const renameAction =
+            document.createElement("button");
+
+        renameAction.type = "button";
+
+        renameAction.className =
+            "vl-fm-open-button";
+
+        renameAction.innerHTML = `
+            <span>RENAME</span>
+            <i class="fas fa-pen-to-square"></i>
+        `;
+
+        renameAction.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                openRenameModal(entry);
+
+            }
+        );
+
+
+        /* DELETE */
+
+        const deleteAction =
+            document.createElement("button");
+
+        deleteAction.type = "button";
+
+        deleteAction.className =
+            "vl-fm-row-delete";
+
+        deleteAction.title =
+            "Delete";
+
+        deleteAction.innerHTML = `
+            <i class="fas fa-trash-can"></i>
+        `;
+
+        deleteAction.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                openDeleteModal(entry);
+
+            }
+        );
+
+
+        /* ADD ACTIONS */
+
+        actions.appendChild(renameAction);
+
+        actions.appendChild(deleteAction);
+
+
+        /* ROW */
+
+        row.appendChild(icon);
+
+        row.appendChild(information);
+
+        row.appendChild(type);
+
+        row.appendChild(size);
+
+        row.appendChild(actions);
+
+
+        /* CLICK ROW */
+
+        row.addEventListener(
+            "click",
+            function () {
+
+                if (entry.type === "directory") {
+
+                    currentPath =
+                        entry.path;
+
+                    loadWorkspace();
+
+                    return;
+                }
+
+
+                openFile(entry);
+
+            }
+        );
+
+
+        return row;
+
+    }
+
+
+    /* =====================================================
+       LOAD WORKSPACE
+       ===================================================== */
+
+    async function loadWorkspace() {
+
+        resetState();
+
+        updatePath();
+
+
+        try {
+
+            const url =
+                currentPath
+                    ? `${filesUrl}?path=${encodeURIComponent(currentPath)}`
+                    : filesUrl;
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        }
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            console.log("VIRTUAL LAB WORKSPACE DATA:", data);
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                throw new Error(
+                    data.error ||
+                    "Unable to load workspace."
+                );
+
+            }
+
+
+            loading.hidden = true;
+
+
+            const entries =
+                data.entries || [];
+
+
+            count.textContent =
+                `${entries.length} item${
+                    entries.length === 1
+                        ? ""
+                        : "s"
+                }`;
+
+
+            /* EMPTY FOLDER */
+
+            if (
+                entries.length === 0 &&
+                !currentPath
+            ) {
+
+                empty.hidden = false;
+
+                return;
+
+            }
+
+
+            /* PARENT FOLDER */
+
+            const backButton =
+                createBackButton();
+
+
+            if (backButton) {
+
+                fileList.appendChild(
+                    backButton
+                );
+
+            }
+
+
+            /* FILES */
+
+            entries.forEach(
+                function (entry) {
+
+                    fileList.appendChild(
+                        createEntry(entry)
+                    );
+
+                }
+            );
+
+
+            /* EMPTY SUB-FOLDER */
+
+            if (
+                entries.length === 0
+            ) {
+
+                const emptyFolder =
+                    document.createElement("div");
+
+
+                emptyFolder.className =
+                    "vl-fm-empty";
+
+
+                emptyFolder.innerHTML = `
+                    <div class="vl-fm-empty-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+
+                    <h3>
+                        Folder is empty
+                    </h3>
+
+                    <p>
+                        This folder does not contain
+                        any files yet.
+                    </p>
+                `;
+
+
+                fileList.appendChild(
+                    emptyFolder
+                );
+
+            }
+
+        }
+
+        catch (errorObject) {
+
+            loading.hidden = true;
+
+            error.hidden = false;
+
+
+            errorMessage.textContent =
+                errorObject.message ||
+                "Unable to load workspace.";
+
+
+            count.textContent =
+                "Error";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       OPEN FILE
+       ===================================================== */
+
+    async function openFile(entry) {
+
+        try {
+
+            const name =
+                entry.name.toLowerCase();
+
+
+            /*
+            * PDF FILE
+            */
+            if (name.endsWith(".pdf")) {
+
+                showPdfPreview(entry);
+
+                return;
+            }
+
+
+            /*
+            * DOCX FILE
+            */
+            if (name.endsWith(".docx")) {
+
+                showDocxPreview(entry);
+
+                return;
+            }
+
+
+            /*
+            * SPREADSHEET FILE
+            *
+            * Supported:
+            * .xlsx
+            * .xls
+            * .csv
+            */
+            if (
+                name.endsWith(".xlsx") ||
+                name.endsWith(".xls") ||
+                name.endsWith(".csv")
+            ) {
+
+                showSpreadsheetPreview(entry);
+
+                return;
+            }
+
+
+            /*
+            * IMAGE FILE
+            *
+            * Supported:
+            * .jpg
+            * .jpeg
+            * .png
+            * .gif
+            * .svg
+            * .webp
+            * .bmp
+            */
+            if (
+                name.endsWith(".jpg") ||
+                name.endsWith(".jpeg") ||
+                name.endsWith(".png") ||
+                name.endsWith(".gif") ||
+                name.endsWith(".svg") ||
+                name.endsWith(".webp") ||
+                name.endsWith(".bmp")
+            ) {
+
+                showImagePreview(entry);
+
+                return;
+            }
+
+
+            /*
+            * TEXT / CODE FILE
+            */
+            const url =
+                `${fileUrl}?path=${encodeURIComponent(entry.path)}`;
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        }
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                throw new Error(
+                    data.error ||
+                    "Unable to open file."
+                );
+
+            }
+
+
+            showFilePreview(data);
+
+        }
+
+        catch (errorObject) {
+
+            alert(
+                errorObject.message ||
+                "Unable to open file."
+            );
+
+        }
+
+    }
+
+
+    function showPdfPreview(entry) {
+
+        const existing =
+            document.getElementById(
+                "vl-fm-file-preview"
+            );
+
+
+        if (existing) {
+            existing.remove();
+        }
+
+
+        const preview =
+            document.createElement("section");
+
+
+        preview.id =
+            "vl-fm-file-preview";
+
+        preview.dataset.filePath =
+            entry.path;
+
+        preview.className =
+            "vl-fm-file-preview";
+
+
+        const pdfUrl =
+            `${fileContentUrl}?path=${encodeURIComponent(entry.path)}`;
+
+
+        preview.innerHTML = `
+
+            <div class="vl-fm-preview-header">
+
+                <div>
+
+                    <span class="vl-section-kicker">
+                        PDF VIEWER
+                    </span>
+
+                    <h2>
+                        ${escapeHtml(entry.name)}
+                    </h2>
+
+                    <small>
+                        ${escapeHtml(entry.path)}
+                    </small>
+
+                </div>
+
+
+                <div class="vl-fm-preview-actions">
+
+                    <a
+                        href="${pdfUrl}"
+                        target="_blank"
+                        rel="noopener"
+                        class="vl-fm-preview-save"
+                    >
+                        <i class="fas fa-up-right-from-square"></i>
+                        Open New Tab
+                    </a>
+
+
+                    <button
+                        type="button"
+                        class="vl-fm-preview-close"
+                        id="vl-fm-preview-close"
+                    >
+                        <i class="fas fa-xmark"></i>
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="vl-fm-preview-editor"
+                style="
+                    padding: 0;
+                    height: 75vh;
+                    overflow: hidden;
+                ">
+
+                <embed
+                    src="${pdfUrl}"
+                    type="application/pdf"
+                    title="${escapeHtml(entry.name)}"
+                    style="
+                        width: 100%;
+                        height: 100%;
+                        border: 0;
+                        display: block;
+                    "
+                >
+
+            </div>
+
+        `;
+
+
+        page.appendChild(preview);
+
+
+        document
+            .getElementById(
+                "vl-fm-preview-close"
+            )
+            .addEventListener(
+                "click",
+                function () {
+
+                    preview.remove();
+
+                }
+            );
+
+
+        preview.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    }
+
+    function showDocxPreview(entry) {
+
+        const existing =
+            document.getElementById(
+                "vl-fm-file-preview"
+            );
+
+        if (existing) {
+            existing.remove();
+        }
+
+        const preview =
+            document.createElement("section");
+
+        preview.id =
+            "vl-fm-file-preview";
+
+        preview.dataset.filePath =
+            entry.path;
+
+        preview.className =
+            "vl-fm-file-preview";
+
+
+        const documentUrl =
+            `${fileContentUrl}?path=${encodeURIComponent(entry.path)}`;
+
+
+        preview.innerHTML = `
+
+            <div class="vl-fm-preview-header">
+
+                <div>
+
+                    <span class="vl-section-kicker">
+                        DOCUMENT VIEWER
+                    </span>
+
+                    <h2>
+                        ${escapeHtml(entry.name)}
+                    </h2>
+
+                    <small>
+                        ${escapeHtml(entry.path)}
+                    </small>
+
+                </div>
+
+
+                <div class="vl-fm-preview-actions">
+
+                    <a
+                        href="${documentUrl}"
+                        target="_blank"
+                        rel="noopener"
+                        class="vl-fm-preview-save"
+                    >
+                        <i class="fas fa-up-right-from-square"></i>
+                        Open New Tab
+                    </a>
+
+
+                    <button
+                        type="button"
+                        class="vl-fm-preview-close"
+                        id="vl-fm-preview-close"
+                    >
+                        <i class="fas fa-xmark"></i>
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="vl-fm-preview-editor vl-fm-docx-viewer"
+                style="
+                    padding: 30px;
+                    min-height: 75vh;
+                    overflow: auto;
+                "
+            >
+
+                <div
+                    id="vl-fm-docx-loading"
+                    style="
+                        min-height: 60vh;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-direction: column;
+                        gap: 12px;
+                    "
+                >
+
+                    <i
+                        class="fas fa-spinner fa-spin"
+                        style="font-size: 28px;"
+                    ></i>
+
+                    <span>
+                        Loading document...
+                    </span>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        page.appendChild(preview);
+
+
+        document
+            .getElementById(
+                "vl-fm-preview-close"
+            )
+            .addEventListener(
+                "click",
+                function () {
+
+                    preview.remove();
+
+                }
+            );
+
+
+        /*
+        * Load DOCX renderer
+        */
+        loadDocxDocument(
+            documentUrl,
+            preview
+        );
+
+    }
+
+    async function loadDocxDocument(
+        documentUrl,
+        preview
+    ) {
+
+        try{
+
+            const response =
+                await fetch(
+                    documentUrl,
+                    {
+                        method: "GET",
+                        headers: {
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        }
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load the document."
+                );
+
+            }
+
+
+            const arrayBuffer =
+                await response.arrayBuffer();
+
+
+            const result =
+                await mammoth.convertToHtml(
+                    {
+                        arrayBuffer:
+                            arrayBuffer
+                    }
+                );
+
+
+            const viewer =
+                preview.querySelector(
+                    ".vl-fm-docx-viewer"
+                );
+
+
+            if (!viewer) {
+                return;
+            }
+
+
+            viewer.innerHTML = `
+
+                <div
+                    class="vl-fm-docx-content"
+                >
+                    ${result.value}
+                </div>
+
+            `;
+
+
+            if (
+                result.messages &&
+                result.messages.length
+            ) {
+
+                console.warn(
+                    "DOCX rendering messages:",
+                    result.messages
+                );
+
+            }
+
+        }
+
+        catch (errorObject) {
+
+            const viewer =
+                preview.querySelector(
+                    ".vl-fm-docx-viewer"
+                );
+
+
+            if (viewer) {
+
+                viewer.innerHTML = `
+
+                    <div
+                        style="
+                            min-height: 50vh;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-direction: column;
+                            gap: 15px;
+                            text-align: center;
+                        "
+                    >
+
+                        <i
+                            class="fas fa-file-circle-xmark"
+                            style="
+                                font-size: 42px;
+                            "
+                        ></i>
+
+                        <h3>
+                            Unable to preview document
+                        </h3>
+
+                        <p>
+                            ${escapeHtml(
+                                errorObject.message ||
+                                "The document could not be displayed."
+                            )}
+                        </p>
+
+                        <a
+                            href="${documentUrl}"
+                            target="_blank"
+                            rel="noopener"
+                            class="vl-fm-preview-save"
+                        >
+                            <i class="fas fa-download"></i>
+                            Open / Download Document
+                        </a>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+    }
+
+
+    function showSpreadsheetPreview(entry) {
+
+        const existingPreview =
+            document.getElementById("vl-fm-file-preview");
+
+        if (existingPreview) {
+            existingPreview.remove();
+        }
+
+        const preview =
+            document.createElement("section");
+
+        preview.id = "vl-fm-file-preview";
+        preview.className = "vl-fm-file-preview";
+        preview.dataset.filePath = entry.path;
+
+        preview.innerHTML = `
+            <div class="vl-fm-preview-header">
+
+                <div>
+                    <span class="vl-section-kicker">
+                        SPREADSHEET
+                    </span>
+
+                    <h2>
+                        <i class="fas fa-table"></i>
+                        ${escapeHtml(entry.name)}
+                    </h2>
+
+                    <small>
+                        ${escapeHtml(entry.path)}
+                    </small>
+                </div>
+
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    gap:8px;
+                ">
+
+                    <button
+                        type="button"
+                        id="vl-spreadsheet-edit"
+                        class="btn btn-sm btn-outline-primary"
+                    >
+                        <i class="fas fa-pen"></i>
+                        Edit
+                    </button>
+
+                    <button
+                        type="button"
+                        id="vl-spreadsheet-save"
+                        class="btn btn-sm btn-primary"
+                        disabled
+                    >
+                        <i class="fas fa-save"></i>
+                        Save
+                    </button>
+
+                    <button
+                        type="button"
+                        id="vl-spreadsheet-close"
+                        class="vl-fm-preview-close"
+                    >
+                        <i class="fas fa-xmark"></i>
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div
+                id="vl-spreadsheet-loading"
+                style="
+                    padding:40px;
+                    text-align:center;
+                "
+            >
+                <i class="fas fa-spinner fa-spin"></i>
+                Loading spreadsheet...
+            </div>
+
+            <div
+                id="vl-spreadsheet-container"
+                style="
+                    display:none;
+                    width:100%;
+                    overflow:auto;
+                    padding:16px;
+                "
+            >
+            </div>
+        `;
+
+        page.appendChild(preview);
+
+        const editButton =
+            document.getElementById(
+                "vl-spreadsheet-edit"
+            );
+
+        const saveButton =
+            document.getElementById(
+                "vl-spreadsheet-save"
+            );
+
+        const closeButton =
+            document.getElementById(
+                "vl-spreadsheet-close"
+            );
+
+        /*
+        * Start in VIEW mode.
+        */
+        let editing = false;
+
+        /*
+        * Edit button
+        */
+        editButton.addEventListener(
+            "click",
+            function () {
+
+                editing = !editing;
+
+                const cells =
+                    preview.querySelectorAll(
+                        ".vl-spreadsheet-cell"
+                    );
+
+                cells.forEach(function (cell) {
+
+                    cell.contentEditable =
+                        editing ? "true" : "false";
+
+                });
+
+                if (editing) {
+
+                    editButton.innerHTML = `
+                        <i class="fas fa-eye"></i>
+                        View
+                    `;
+
+                    saveButton.disabled = false;
+
+                } else {
+
+                    editButton.innerHTML = `
+                        <i class="fas fa-pen"></i>
+                        Edit
+                    `;
+
+                    saveButton.disabled = true;
+                }
+            }
+        );
+
+        /*
+        * Save button
+        */
+        
+        async function saveCurrentFile() {
+            const originalText = saveButton.innerHTML;
+
+            saveButton.disabled = true;
+            saveButton.innerHTML = `
+                <i class="fas fa-spinner fa-spin"></i>
+                Saving...
+            `;
+
+            try {
+                const table = preview.querySelector(
+                    ".vl-spreadsheet-table-wrapper table"
+                );
+
+                if (!table) {
+                    throw new Error("Spreadsheet table was not found.");
+                }
+
+                const extension = (
+                    entry.name || entry.path || ""
+                ).split(".").pop().toLowerCase();
+
+                const isExcel = ["xlsx", "xls"].includes(extension);
+
+                const payload = {
+                    path: entry.path
+                };
+
+                if (isExcel) {
+                    const workbook = preview._spreadsheetWorkbook;
+                    const sheetName = preview._activeSheetName;
+
+                    if (!workbook || !sheetName || !workbook.Sheets[sheetName]) {
+                        throw new Error("Spreadsheet workbook is not available.");
+                    }
+
+                    if (typeof XLSX === "undefined") {
+                        throw new Error("SheetJS library is not loaded.");
+                    }
+
+                    const worksheet = workbook.Sheets[sheetName];
+
+                    // Update only cells that have actually changed.
+                    table.querySelectorAll(".vl-spreadsheet-cell").forEach(cell => {
+                        const rowIndex = Number(cell.dataset.rowIndex);
+                        const columnIndex = Number(cell.dataset.columnIndex);
+
+                        if (
+                            !Number.isInteger(rowIndex) ||
+                            !Number.isInteger(columnIndex)
+                        ) {
+                            return;
+                        }
+
+                        const value = cell.innerText
+                            .replace(/\r?\n/g, " ")
+                            .trim();
+
+                        const originalValue = cell.dataset.originalValue ?? "";
+
+                        if (value === originalValue) {
+                            return;
+                        }
+
+                        const address = XLSX.utils.encode_cell({
+                            r: rowIndex,
+                            c: columnIndex
+                        });
+
+                        if (value === "") {
+                            delete worksheet[address];
+                        } else if (Number.isFinite(Number(value))) {
+                            worksheet[address] = {
+                                t: "n",
+                                v: Number(value)
+                            };
+                        } else {
+                            worksheet[address] = {
+                                t: "s",
+                                v: value
+                            };
+                        }
+                    });
+
+                    const excelData = XLSX.write(workbook, {
+                        bookType: extension === "xls" ? "biff8" : "xlsx",
+                        type: "base64"
+                    });
+
+                    payload.excel_data = excelData;
+                } else {
+                    // Preserve the existing CSV saving behavior.
+                    const rows = Array.from(table.rows).map(row =>
+                        Array.from(row.cells).map(cell =>
+                            cell.innerText.replace(/\r?\n/g, " ").trim()
+                        )
+                    );
+
+                    payload.content = rows.map(row =>
+                        row.map(value =>
+                            '"' + String(value).replace(/"/g, '""') + '"'
+                        ).join(",")
+                    ).join("\r\n");
+                }
+
+                const response = await fetch(saveFileUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCsrfToken(),
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || "Unable to save file.");
+                }
+
+                // Update original cell values after successful saving.
+                preview.querySelectorAll(".vl-spreadsheet-cell").forEach(cell => {
+                    cell.dataset.originalValue = cell.innerText
+                        .replace(/\r?\n/g, " ")
+                        .trim();
+
+                    cell.contentEditable = "false";
+                });
+
+                editing = false;
+
+                editButton.innerHTML = `
+                    <i class="fas fa-pen"></i>
+                    Edit
+                `;
+
+                saveButton.innerHTML = `
+                    <i class="fas fa-check"></i>
+                    Saved
+                `;
+
+                setTimeout(() => {
+                    saveButton.innerHTML = originalText;
+                    saveButton.disabled = true;
+                }, 1500);
+
+            } catch (errorObject) {
+                console.error("Save error:", errorObject);
+                alert(errorObject.message || "Unable to save file.");
+
+                saveButton.innerHTML = originalText;
+                saveButton.disabled = false;
+            }
+        }
+
+
+
+        /*
+        * SAVE BUTTON
+        */
+        saveButton.addEventListener(
+            "click",
+            saveCurrentFile
+        );
+
+        // textarea.addEventListener(
+        //     "keydown",
+        //     function (event) {
+
+        //         if (
+        //             (event.ctrlKey || event.metaKey) &&
+        //             event.key.toLowerCase() === "s"
+        //         ) {
+
+        //             event.preventDefault();
+
+        //             saveCurrentFile();
+        //         }
+        //     }
+        // );
+
+        /*
+        * Close button
+        */
+        closeButton.addEventListener(
+            "click",
+            function () {
+                preview.remove();
+            }
+        );
+
+        loadSpreadsheetDocument(
+            entry,
+            preview
+        );
+    }
+
+    async function loadSpreadsheetDocument(entry, preview) {
+
+        const loading =
+            preview.querySelector("#vl-spreadsheet-loading");
+
+        const container =
+            preview.querySelector("#vl-spreadsheet-container");
+
+        try {
+
+            const url =
+                `${fileContentUrl}?path=${encodeURIComponent(entry.path)}`;
+
+            const response = await fetch(url, {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(
+                    `Unable to load spreadsheet (${response.status})`
+                );
+            }
+
+            const arrayBuffer =
+                await response.arrayBuffer();
+
+            if (typeof XLSX === "undefined") {
+                throw new Error(
+                    "SheetJS library is not loaded."
+                );
+            }
+
+            const workbook = XLSX.read(arrayBuffer, {
+                type: "array"
+            });
+
+            preview._spreadsheetWorkbook = workbook;
+
+            if (!workbook.SheetNames.length) {
+                throw new Error(
+                    "The spreadsheet does not contain any sheets."
+                );
+            }
+
+            /*
+            * Use the first sheet initially.
+            */
+            const sheetName =
+                workbook.SheetNames[0];
+
+            preview._activeSheetName = sheetName;
+
+            const worksheet =
+                workbook.Sheets[sheetName];
+
+            const rows =
+                XLSX.utils.sheet_to_json(
+                    worksheet,
+                    {
+                        header: 1,
+                        defval: ""
+                    }
+                );
+
+            container.innerHTML = "";
+
+            /*
+            * Sheet tabs
+            */
+            if (workbook.SheetNames.length > 1) {
+
+                const tabs =
+                    document.createElement("div");
+
+                tabs.style.cssText = `
+                    display:flex;
+                    gap:6px;
+                    margin-bottom:12px;
+                    flex-wrap:wrap;
+                `;
+
+                workbook.SheetNames.forEach(
+                    (name, index) => {
+
+                        const button =
+                            document.createElement("button");
+
+                        button.type = "button";
+
+                        button.textContent = name;
+
+                        button.className =
+                            "btn btn-sm " +
+                            (index === 0
+                                ? "btn-primary"
+                                : "btn-outline-secondary");
+
+                        button.onclick = () => {
+
+                            preview._activeSheetName = name;
+
+                            document
+                                .querySelectorAll(
+                                    ".vl-sheet-tab"
+                                )
+                                .forEach(btn => {
+                                    btn.classList.remove(
+                                        "btn-primary"
+                                    );
+                                    btn.classList.add(
+                                        "btn-outline-secondary"
+                                    );
+                                });
+
+                            button.classList.remove(
+                                "btn-outline-secondary"
+                            );
+
+                            button.classList.add(
+                                "btn-primary"
+                            );
+
+                            renderSpreadsheetSheet(
+                                workbook,
+                                name,
+                                container
+                            );
+                        };
+
+                        button.classList.add(
+                            "vl-sheet-tab"
+                        );
+
+                        tabs.appendChild(button);
+                    }
+                );
+
+                container.appendChild(tabs);
+            }
+
+            preview._activeSheetName = sheetName;
+
+            renderSpreadsheetSheet(
+                workbook,
+                sheetName,
+                container
+            );
+
+            loading.style.display = "none";
+            container.style.display = "block";
+
+        } catch (error) {
+
+            console.error(
+                "Spreadsheet loading error:",
+                error
+            );
+
+            loading.innerHTML = `
+                <div style="
+                    color:#dc3545;
+                    font-weight:600;
+                ">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Unable to open spreadsheet
+                </div>
+
+                <div style="
+                    margin-top:8px;
+                    font-size:13px;
+                    opacity:.75;
+                ">
+                    ${escapeHtml(error.message)}
+                </div>
+            `;
+        }
+    }
+
+
+    
+    
+    function renderSpreadsheetSheet(workbook, sheetName, container) {
+        const worksheet = workbook.Sheets[sheetName];
+
+        let rows = XLSX.utils.sheet_to_json(worksheet, {
+            header: 1,
+            defval: "",
+            blankrows: false
+        });
+
+        // Remove trailing rows that contain only empty cells.
+        while (
+            rows.length > 0 &&
+            rows[rows.length - 1].every(
+                cell => String(cell ?? "").trim() === ""
+            )
+        ) {
+            rows.pop();
+        }
+
+        // Remove trailing empty columns without changing interior empty cells.
+        const maxColumns = rows.reduce(
+            (max, row) => Math.max(max, row.length),
+            0
+        );
+
+        let lastUsedColumn = -1;
+
+        for (let col = maxColumns - 1; col >= 0; col--) {
+            const hasValue = rows.some(
+                row => String(row[col] ?? "").trim() !== ""
+            );
+
+            if (hasValue) {
+                lastUsedColumn = col;
+                break;
+            }
+        }
+
+        if (lastUsedColumn >= 0) {
+            rows = rows.map(row => row.slice(0, lastUsedColumn + 1));
+        } else {
+            rows = [];
+        }
+
+        // Remove the previous table but keep sheet tabs.
+        const oldTable = container.querySelector(
+            ".vl-spreadsheet-table-wrapper"
+        );
+
+        if (oldTable) {
+            oldTable.remove();
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "vl-spreadsheet-table-wrapper";
+
+        wrapper.style.cssText = `
+            width: 100%;
+            overflow: auto;
+            max-height: 70vh;
+            border: 1px solid var(--border-color, #334155);
+            border-radius: 10px;
+        `;
+
+        const table = document.createElement("table");
+
+        table.style.cssText = `
+            width: max-content;
+            min-width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        `;
+
+        rows.forEach((row, rowIndex) => {
+            const tr = document.createElement("tr");
+
+            row.forEach((cell, columnIndex) => {
+                const cellElement = document.createElement(
+                    rowIndex === 0 ? "th" : "td"
+                );
+
+                cellElement.classList.add("vl-spreadsheet-cell");
+
+                const originalValue =
+                    cell === null || cell === undefined
+                        ? ""
+                        : String(cell);
+
+                cellElement.textContent = originalValue;
+
+                // Required by saveCurrentFile().
+                cellElement.dataset.rowIndex = rowIndex;
+                cellElement.dataset.columnIndex = columnIndex;
+                cellElement.dataset.originalValue = originalValue;
+
+                cellElement.style.cssText = `
+                    border: 1px solid var(--border-color, #334155);
+                    padding: 8px 12px;
+                    text-align: left;
+                    white-space: nowrap;
+                `;
+
+                if (rowIndex === 0) {
+                    cellElement.style.fontWeight = "700";
+                    cellElement.style.background =
+                        "var(--bs-secondary-bg, #1e293b)";
+                }
+
+                tr.appendChild(cellElement);
+            });
+
+            table.appendChild(tr);
+        });
+
+        wrapper.appendChild(table);
+        container.appendChild(wrapper);
+    }
+
+
+
+
+    function showImagePreview(entry) {
+
+        const existingPreview =
+            document.getElementById("vl-fm-file-preview");
+
+        if (existingPreview) {
+            existingPreview.remove();
+        }
+
+        const preview =
+            document.createElement("section");
+
+        preview.id = "vl-fm-file-preview";
+        preview.dataset.filePath = entry.path;
+        preview.className = "vl-fm-file-preview";
+
+        const imageUrl =
+            `${fileContentUrl}?path=${encodeURIComponent(entry.path)}`;
+
+        preview.innerHTML = `
+            <div class="vl-fm-preview-header">
+
+                <div>
+                    <span class="vl-section-kicker">
+                        IMAGE PREVIEW
+                    </span>
+
+                    <h2>
+                        ${escapeHtml(entry.name)}
+                    </h2>
+
+                    <small>
+                        ${escapeHtml(entry.path)}
+                    </small>
+                </div>
+
+                <button
+                    type="button"
+                    class="vl-fm-preview-close"
+                    id="vl-fm-image-close"
+                >
+                    <i class="fas fa-xmark"></i>
+                    Close
+                </button>
+
+            </div>
+
+            <div style="
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                min-height:420px;
+                padding:30px;
+                overflow:auto;
+            ">
+
+                <img
+                    id="vl-fm-image-preview"
+                    src="${imageUrl}"
+                    alt="${escapeHtml(entry.name)}"
+                    style="
+                        display:block;
+                        max-width:100%;
+                        max-height:70vh;
+                        width:auto;
+                        height:auto;
+                        object-fit:contain;
+                        border-radius:10px;
+                        box-shadow:0 10px 35px rgba(0,0,0,.25);
+                    "
+                >
+
+            </div>
+        `;
+
+        page.appendChild(preview);
+
+        const image =
+            document.getElementById(
+                "vl-fm-image-preview"
+            );
+
+        const closeButton =
+            document.getElementById(
+                "vl-fm-image-close"
+            );
+
+        image.addEventListener(
+            "error",
+            function () {
+
+                const container =
+                    image.parentElement;
+
+                container.innerHTML = `
+                    <div style="
+                        text-align:center;
+                        padding:40px;
+                    ">
+                        <i
+                            class="fas fa-triangle-exclamation"
+                            style="
+                                font-size:40px;
+                                margin-bottom:15px;
+                            "
+                        ></i>
+
+                        <div>
+                            Unable to display this image.
+                        </div>
+                    </div>
+                `;
+            }
+        );
+
+        closeButton.addEventListener(
+            "click",
+            function () {
+                preview.remove();
+            }
+        );
+
+        preview.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+
+
+    /* =====================================================
+       FILE PREVIEW
+       ===================================================== */
+
+    function getEditorMode(fileName) {
+
+        const name = String(fileName || "").toLowerCase();
+
+        if (name.endsWith(".py")) return "python";
+        if (name.endsWith(".js") || name.endsWith(".jsx")) return "javascript";
+        if (name.endsWith(".ts") || name.endsWith(".tsx")) return {name:"javascript", typescript:true};
+        if (name.endsWith(".java")) return "text/x-java";
+        if (name.endsWith(".c") || name.endsWith(".h")) return "text/x-csrc";
+        if (name.endsWith(".cpp") || name.endsWith(".cc") || name.endsWith(".hpp")) return "text/x-c++src";
+        if (name.endsWith(".html") || name.endsWith(".htm")) return "htmlmixed";
+        if (name.endsWith(".css")) return "css";
+        if (name.endsWith(".json")) return {name:"javascript", json:true};
+        if (name.endsWith(".xml")) return "xml";
+        if (name.endsWith(".sql")) return "text/x-sql";
+        if (name.endsWith(".sh")) return "shell";
+        if (name.endsWith(".yaml") || name.endsWith(".yml")) return "yaml";
+        if (name.endsWith(".md")) return "markdown";
+        return "text/plain";
+    }
+
+
+    function showFilePreview(data) {
+
+        const existing = document.getElementById("vl-fm-file-preview");
+        if (existing) existing.remove();
+
+        const preview = document.createElement("section");
+        preview.id = "vl-fm-file-preview";
+        preview.dataset.filePath = data.path;
+        preview.className = "vl-fm-file-preview";
+
+        preview.innerHTML = `
+            <div class="vl-fm-code-editor">
+                <div class="vl-fm-code-toolbar">
+                    <div class="vl-fm-code-file">
+                        <div class="vl-fm-code-file-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="vl-fm-code-file-info">
+                            <span class="vl-fm-code-file-name">${escapeHtml(data.name)}</span>
+                            <span class="vl-fm-code-file-path">${escapeHtml(data.path)}</span>
+                        </div>
+                        <span class="vl-fm-code-state" id="vl-fm-editor-state">Saved</span>
+                    </div>
+
+                   
+                        
+                    
+
+                    
+                    <div class="vl-fm-code-actions">
+                        <button type="button" class="vl-fm-code-btn" id="vl-fm-editor-search">
+                            <i class="fas fa-magnifying-glass"></i> Search
+                        </button>
+
+                        
+                        <label
+                            id="vl-fm-execution-mode-control"
+                            style="display:none; align-items:center; gap:6px;"
+                        >
+                            <span style="font-size:12px; white-space:nowrap;">
+                                Execution Mode
+                            </span>
+
+                            <select
+                                id="vl-fm-execution-mode"
+                                class="vl-fm-code-btn"
+                                aria-label="Execution mode"
+                            >
+                                <option value="normal" selected>Normal</option>
+                                <option value="mpi">MPI</option>
+                                <option value="openmp">OpenMP</option>
+                            </select>
+                        </label>
+
+                        <label
+                            id="vl-fm-mpi-controls"
+                            style="display:none; align-items:center; gap:6px;"
+                        >
+                            <span style="font-size:12px; white-space:nowrap;">
+                                MPI Processes
+                            </span>
+
+                            <select
+                                id="vl-fm-mpi-process-count"
+                                class="vl-fm-code-btn"
+                                aria-label="Number of MPI processes"
+                            >
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="4" selected>4</option>
+                                <option value="8">8</option>
+                            </select>
+                        </label>
+
+                        <label
+                            id="vl-fm-openmp-controls"
+                            style="display:none; align-items:center; gap:6px;"
+                        >
+                            <span style="font-size:12px; white-space:nowrap;">
+                                Threads
+                            </span>
+
+                            <select
+                                id="vl-fm-openmp-thread-count"
+                                class="vl-fm-code-btn"
+                                aria-label="Number of OpenMP threads"
+                            >
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="4" selected>4</option>
+                                <option value="8">8</option>
+                            </select>
+                        </label>
+
+
+                        <button type="button" class="vl-fm-code-btn primary" id="vl-fm-editor-run">
+                            <i class="fas fa-play"></i> Run
+                        </button>
+
+                        <button type="button" class="vl-fm-code-btn primary" id="vl-fm-preview-save">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                        <button type="button" class="vl-fm-code-btn" id="vl-fm-preview-close">
+                            <i class="fas fa-xmark"></i> Close
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="vl-fm-code-body">
+                    <textarea id="vl-fm-preview-textarea" spellcheck="false">${escapeHtml(data.content)}</textarea>
+                </div>
+
+                <div class="vl-fm-run-output" id="vl-fm-run-output">
+                    <div class="vl-fm-run-output-head">
+                        <span><i class="fas fa-terminal"></i> Program Output</span>
+                        <span class="vl-fm-run-output-status" id="vl-fm-run-status">Ready</span>
+                    </div>
+                    <pre class="vl-fm-run-output-body" id="vl-fm-run-output-body"></pre>
+                </div>
+
+                <div class="vl-fm-code-footer">
+                    <div class="vl-fm-code-shortcuts">
+                        <span><kbd>Ctrl</kbd> + <kbd>S</kbd> Save</span>
+                        <span><kbd>Ctrl</kbd> + <kbd>F</kbd> Find</span>
+                        <span><kbd>Tab</kbd> Indent</span>
+                    </div>
+                    <span id="vl-fm-editor-language">TEXT</span>
+                </div>
+            </div>
+        `;
+
+        page.appendChild(preview);
+
+        const textarea = document.getElementById("vl-fm-preview-textarea");
+        const searchButton = document.getElementById("vl-fm-editor-search");
+        const saveButton = document.getElementById("vl-fm-preview-save");
+        const closeButton = document.getElementById("vl-fm-preview-close");
+        const runButton = document.getElementById("vl-fm-editor-run");
+        const runStatus = document.getElementById("vl-fm-run-status");
+        const runOutput = document.getElementById("vl-fm-run-output-body");
+        const stateElement = document.getElementById("vl-fm-editor-state");
+        const languageElement = document.getElementById("vl-fm-editor-language");
+        
+        
+        
+        const executionModeControl =
+            document.getElementById("vl-fm-execution-mode-control");
+
+        const executionModeSelect =
+            document.getElementById("vl-fm-execution-mode");
+
+        const mpiControls =
+            document.getElementById("vl-fm-mpi-controls");
+
+        const mpiProcessCount =
+            document.getElementById("vl-fm-mpi-process-count");
+
+        const openmpControls =
+            document.getElementById("vl-fm-openmp-controls");
+
+        const openmpThreadCount =
+            document.getElementById("vl-fm-openmp-thread-count");
+
+        const isHpcLab =
+            "{{ lab.lab_type|escapejs }}" === "HPC";
+
+        function updateExecutionModeControls() {
+            if (!isHpcLab) {
+                if (executionModeControl) {
+                    executionModeControl.style.display = "none";
+                }
+
+                if (mpiControls) {
+                    mpiControls.style.display = "none";
+                }
+
+                if (openmpControls) {
+                    openmpControls.style.display = "none";
+                }
+
+                return;
+            }
+
+            if (executionModeControl) {
+                executionModeControl.style.display = "inline-flex";
+            }
+
+            const selectedMode = executionModeSelect
+                ? executionModeSelect.value
+                : "normal";
+
+            if (mpiControls) {
+                mpiControls.style.display =
+                    selectedMode === "mpi" ? "inline-flex" : "none";
+            }
+
+            if (openmpControls) {
+                openmpControls.style.display =
+                    selectedMode === "openmp" ? "inline-flex" : "none";
+            }
+        }
+
+        if (executionModeSelect) {
+            executionModeSelect.addEventListener(
+                "change",
+                updateExecutionModeControls
+            );
+        }
+
+        updateExecutionModeControls();
+
+
+
+        const mode = getEditorMode(data.name);
+        const languageName = String(data.name || "").includes(".")
+            ? String(data.name).split(".").pop().toUpperCase()
+            : "TEXT";
+        languageElement.textContent = languageName;
+
+        const editor = CodeMirror.fromTextArea(textarea, {
+            mode: mode,
+            theme: "default",
+            lineNumbers: true,
+            lineWrapping: false,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            styleActiveLine: true,
+            electricChars: true,
+            autofocus: true,
+            viewportMargin: Infinity,
+            extraKeys: {
+                "Ctrl-S": function(cm) { saveEditorFile(); },
+                "Cmd-S": function(cm) { saveEditorFile(); },
+                "Ctrl-F": function(cm) { CodeMirror.commands.find(cm); },
+                "Ctrl-H": function(cm) { CodeMirror.commands.replace(cm); }
+            }
+        });
+
+        function markDirty() {
+            stateElement.textContent = "Unsaved changes";
+            stateElement.classList.add("is-dirty");
+        }
+
+        editor.on("change", markDirty);
+
+        async function saveEditorFile() {
+            if (saveButton.disabled) return;
+
+            const originalText = saveButton.innerHTML;
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            stateElement.textContent = "Saving...";
+            stateElement.classList.remove("is-dirty");
+
+            try {
+                const response = await fetch(saveFileUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCsrfToken(),
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    body: JSON.stringify({
+                        path: data.path,
+                        content: editor.getValue()
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || "Unable to save file.");
+                }
+
+                saveButton.innerHTML = '<i class="fas fa-check"></i> Saved';
+                stateElement.textContent = "Saved";
+                stateElement.classList.remove("is-dirty");
+
+                setTimeout(function () {
+                    saveButton.innerHTML = originalText;
+                }, 1400);
+
+            } catch (errorObject) {
+                stateElement.textContent = "Save failed";
+                stateElement.classList.add("is-dirty");
+                alert(errorObject.message || "Unable to save file.");
+                saveButton.innerHTML = originalText;
+            } finally {
+                saveButton.disabled = false;
+            }
+        }
+
+        saveButton.addEventListener(
+            "click",
+            saveEditorFile
+        );
+
+        
+        let codeRunnerSocket = null;
+        let codeRunnerTerminal = null;
+        let codeRunnerRunning = false;
+
+
+        // SEARCH BUTTON
+        searchButton.addEventListener("click", function () {
+            editor.focus();
+
+            if (CodeMirror.commands.find) {
+                CodeMirror.commands.find(editor);
+            } else {
+                const searchText = prompt("Search for:");
+                
+                if (!searchText) {
+                    return;
+                }
+
+                const cursor = editor.getSearchCursor(
+                    searchText,
+                    editor.getCursor()
+                );
+
+                if (cursor.findNext()) {
+                    editor.setSelection(
+                        cursor.from(),
+                        cursor.to()
+                    );
+                } else {
+                    alert("Text not found.");
+                }
+            }
+        });
+
+
+        // CLOSE BUTTON
+        closeButton.addEventListener("click", function () {
+
+            // Stop any running program before closing
+            if (codeRunnerSocket) {
+                try {
+                    codeRunnerSocket.close();
+                } catch (error) {
+                    console.error(error);
+                }
+
+                codeRunnerSocket = null;
+                codeRunnerRunning = false;
+            }
+
+            // Ask before closing unsaved changes
+            if (stateElement.classList.contains("is-dirty")) {
+
+                const shouldClose = confirm(
+                    "You have unsaved changes. Close anyway?"
+                );
+
+                if (!shouldClose) {
+                    return;
+                }
+            }
+
+            preview.remove();
+        });
+
+        function getCodeRunnerWebSocketUrl() {
+            const protocol =
+                window.location.protocol === "https:"
+                    ? "wss:"
+                    : "ws:";
+
+            const url =
+                `${protocol}//${window.location.host}/ws/virtuallab/${labId}/run-code/`;
+
+            console.log("RUN CODE WS URL:", url);
+
+            return url;
+        }
+
+        function initializeCodeRunnerTerminal() {
+
+            const outputBody =
+                document.getElementById(
+                    "vl-fm-run-output-body"
+                );
+
+            if (
+                !outputBody ||
+                typeof Terminal === "undefined" ||
+                typeof FitAddon === "undefined"
+            ) {
+                console.error(
+                    "Run Code terminal could not be initialized."
+                );
+
+                return null;
+            }
+
+
+            /*
+            * Clear previous terminal.
+            */
+            outputBody.innerHTML = "";
+
+
+            /*
+            * Create terminal.
+            */
+            codeRunnerTerminal =
+                new Terminal({
+
+                    cursorBlink: false,
+
+                    cursorStyle: "block",
+
+                    cursorWidth: 2,
+
+                    fontSize: 15,
+
+                    lineHeight: 1.45,
+
+                    letterSpacing: 0.15,
+
+                    fontFamily:
+                        '"JetBrains Mono", "Cascadia Code", Consolas, monospace',
+
+                    scrollback: 3000,
+
+                    convertEol: true,
+
+                    allowTransparency: false,
+
+                    theme: {
+                        background: "#07101c",
+
+                        foreground: "#f1f7ff",
+
+                        cursor: "#ffffff",
+
+                        cursorAccent: "#07101c",
+
+                        selectionBackground: "#29415f",
+
+                        black: "#111827",
+
+                        red: "#ff6b6b",
+
+                        green: "#4ade80",
+
+                        yellow: "#facc15",
+
+                        blue: "#60a5fa",
+
+                        magenta: "#c084fc",
+
+                        cyan: "#22d3ee",
+
+                        white: "#f8fafc",
+
+                        brightBlack: "#64748b",
+
+                        brightRed: "#ff8585",
+
+                        brightGreen: "#6ee7a0",
+
+                        brightYellow: "#fde047",
+
+                        brightBlue: "#93c5fd",
+
+                        brightMagenta: "#d8b4fe",
+
+                        brightCyan: "#67e8f9",
+
+                        brightWhite: "#ffffff"
+                    }
+
+                });
+
+
+            /*
+            * Fit addon.
+            */
+            const fitAddon =
+                new FitAddon.FitAddon();
+
+            codeRunnerTerminal.loadAddon(
+                fitAddon
+            );
+
+
+            /*
+            * Open terminal.
+            */
+            codeRunnerTerminal.open(
+                outputBody
+            );
+
+
+            /*
+            * Calculate exact terminal size.
+            */
+            setTimeout(function () {
+
+                try {
+
+                    fitAddon.fit();
+
+                    codeRunnerTerminal.scrollToBottom();
+
+                } catch (error) {
+
+                    console.warn(
+                        "Terminal fit error:",
+                        error
+                    );
+
+                }
+
+            }, 50);
+
+
+            /*
+            * Recalculate terminal whenever
+            * the output container changes size.
+            */
+            if (
+                typeof ResizeObserver !==
+                "undefined"
+            ) {
+
+                const resizeObserver =
+                    new ResizeObserver(function () {
+
+                        try {
+
+                            fitAddon.fit();
+
+                        } catch (error) {
+
+                            console.warn(
+                                "Terminal resize error:",
+                                error
+                            );
+
+                        }
+
+                    });
+
+
+                resizeObserver.observe(
+                    outputBody
+                );
+
+
+                /*
+                * Keep observer attached to terminal.
+                */
+                codeRunnerTerminal._vlResizeObserver =
+                    resizeObserver;
+
+            }
+
+
+            /*
+            * Keyboard input.
+            */
+            codeRunnerTerminal.onData(
+                function (data) {
+
+                    if (
+                        codeRunnerSocket &&
+                        codeRunnerSocket.readyState ===
+                            WebSocket.OPEN &&
+                        codeRunnerRunning
+                    ) {
+
+                        codeRunnerSocket.send(
+                            JSON.stringify({
+                                type: "input",
+                                data: data
+                            })
+                        );
+
+                    }
+
+                }
+            );
+
+
+            return codeRunnerTerminal;
+}
+
+        function closeCodeRunnerSocket() {
+            if (codeRunnerSocket) {
+                try {
+                    codeRunnerSocket.close();
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            codeRunnerSocket = null;
+            codeRunnerRunning = false;
+        }
+
+        function runEditorFile() {
+
+            if (runButton.disabled) {
+                return;
+            }
+
+            if (!data || !data.path) {
+                alert("Please select a file first.");
+                return;
+            }
+
+            if (typeof Terminal === "undefined") {
+                alert("Terminal component is not loaded.");
+                return;
+            }
+
+            /*
+            * Close any previous runner.
+            */
+            if (codeRunnerSocket) {
+                try {
+                    codeRunnerSocket.close();
+                } catch (error) {
+                    console.warn(
+                        "Previous code runner socket close:",
+                        error
+                    );
+                }
+
+                codeRunnerSocket = null;
+            }
+
+            codeRunnerRunning = false;
+
+            /*
+            * Prepare Run button.
+            */
+            runButton.disabled = true;
+
+            runButton.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Running...';
+
+            runStatus.textContent = "Connecting...";
+
+            runStatus.className =
+                "vl-fm-run-output-status is-running";
+
+            /*
+            * Create a fresh terminal.
+            */
+            const terminal =
+                initializeCodeRunnerTerminal();
+
+            if (!terminal) {
+
+                runButton.disabled = false;
+
+                runButton.innerHTML =
+                    '<i class="fas fa-play"></i> Run';
+
+                return;
+            }
+
+            terminal.clear();
+            terminal.reset();
+
+            terminal.write(
+                "\x1b[1;36m▶ Starting program...\x1b[0m\r\n"
+            );
+
+            /*
+            * WebSocket URL.
+            */
+            const socketUrl =
+                getCodeRunnerWebSocketUrl();
+
+            console.log(
+                "CREATING NEW RUN SOCKET:",
+                socketUrl
+            );
+
+            /*
+            * IMPORTANT:
+            * Keep this socket in a local variable.
+            * This prevents an old socket's onclose
+            * event from destroying the new socket.
+            */
+            const socket =
+                new WebSocket(socketUrl);
+
+            codeRunnerSocket = socket;
+
+
+            /* =====================================================
+            SOCKET OPEN
+            ===================================================== */
+
+            socket.onopen = function () {
+
+                console.log(
+                    "RUN SOCKET OPEN"
+                );
+
+                runStatus.textContent =
+                    "Starting";
+
+                runStatus.className =
+                    "vl-fm-run-output-status is-running";
+
+                
+                                
+                socket.send(JSON.stringify({
+                    type: "start",
+                    path: data.path,
+                    content: editor.getValue(),
+
+                    execution_mode: executionModeSelect
+                        ? executionModeSelect.value
+                        : "normal",
+
+                    mpi_processes: mpiProcessCount
+                        ? Number(mpiProcessCount.value)
+                        : 4,
+
+                    openmp_threads: openmpThreadCount
+                        ? Number(openmpThreadCount.value)
+                        : 4
+                }));
+
+
+            };
+
+
+            /* =====================================================
+            SOCKET MESSAGE
+            ===================================================== */
+
+            socket.onmessage = function (event) {
+
+                let message;
+
+                try {
+
+                    message =
+                        JSON.parse(event.data);
+
+                } catch (error) {
+
+                    console.error(
+                        "Invalid Code Runner message:",
+                        error
+                    );
+
+                    return;
+                }
+
+
+                /* -------------------------------------------------
+                CONNECTED
+                ------------------------------------------------- */
+
+                if (message.type === "connected") {
+
+                    console.log(
+                        "RUN SOCKET CONNECTED"
+                    );
+
+                    return;
+                }
+
+
+                /* -------------------------------------------------
+                STARTED
+                ------------------------------------------------- */
+
+                if (message.type === "started") {
+
+                    console.log(
+                        "PROGRAM STARTED"
+                    );
+
+                    codeRunnerRunning = true;
+
+                    runStatus.textContent =
+                        "Running";
+
+                    runStatus.className =
+                        "vl-fm-run-output-status is-running";
+
+                    terminal.focus();
+
+                    return;
+                }
+
+
+                /* -------------------------------------------------
+                OUTPUT
+                ------------------------------------------------- */
+
+                if (message.type === "output") {
+
+                    if (message.data) {
+
+                        terminal.write(
+                            message.data
+                        );
+                    }
+
+                    terminal.focus();
+
+                    return;
+                }
+
+
+                /* -------------------------------------------------
+                ERROR
+                ------------------------------------------------- */
+
+                if (message.type === "error") {
+
+                    console.error(
+                        "PROGRAM ERROR:",
+                        message.message
+                    );
+
+                    codeRunnerRunning = false;
+
+                    terminal.write(
+                        "\r\n" +
+                        "\x1b[1;31mError: " +
+                        (
+                            message.message ||
+                            "Unable to run program."
+                        ) +
+                        "\x1b[0m\r\n"
+                    );
+
+                    runStatus.textContent =
+                        "Run failed";
+
+                    runStatus.className =
+                        "vl-fm-run-output-status is-error";
+
+                    runButton.disabled = false;
+
+                    runButton.innerHTML =
+                        '<i class="fas fa-play"></i> Run';
+
+                    return;
+                }
+
+
+                /* -------------------------------------------------
+                FINISHED
+                ------------------------------------------------- */
+
+                if (message.type === "finished") {
+
+                    console.log(
+                        "PROGRAM FINISHED:",
+                        message.exit_code
+                    );
+
+                    codeRunnerRunning = false;
+
+                    const exitCode =
+                        message.exit_code;
+
+                    terminal.write(
+                        "\r\n"
+                    );
+
+
+                    if (exitCode === 0) {
+
+                        terminal.write(
+                            "\x1b[1;32m" +
+                            "✓ Program completed successfully." +
+                            "\x1b[0m\r\n"
+                        );
+
+                        runStatus.textContent =
+                            "Completed";
+
+                        runStatus.className =
+                            "vl-fm-run-output-status is-success";
+
+                    } else {
+
+                        terminal.write(
+                            "\x1b[1;31m" +
+                            "✗ Program exited with code " +
+                            exitCode +
+                            "." +
+                            "\x1b[0m\r\n"
+                        );
+
+                        runStatus.textContent =
+                            "Exited with code " +
+                            exitCode;
+
+                        runStatus.className =
+                            "vl-fm-run-output-status is-error";
+                    }
+
+
+                    /*
+                    * Allow another Run.
+                    */
+                    runButton.disabled = false;
+
+                    runButton.innerHTML =
+                        '<i class="fas fa-play"></i> Run';
+
+                    /*
+                    * Do NOT set codeRunnerSocket = null here.
+                    * The socket's own onclose handler will
+                    * clean it safely.
+                    */
+
+                    return;
+                }
+            };
+
+
+            /* =====================================================
+            SOCKET ERROR
+            ===================================================== */
+
+            socket.onerror = function (error) {
+
+                console.error(
+                    "CODE RUNNER SOCKET ERROR:",
+                    error
+                );
+
+                codeRunnerRunning = false;
+
+                terminal.write(
+                    "\r\n" +
+                    "\x1b[1;31m" +
+                    "✗ WebSocket connection failed." +
+                    "\x1b[0m\r\n"
+                );
+
+                runStatus.textContent =
+                    "Connection failed";
+
+                runStatus.className =
+                    "vl-fm-run-output-status is-error";
+
+                runButton.disabled = false;
+
+                runButton.innerHTML =
+                    '<i class="fas fa-play"></i> Run';
+            };
+
+
+            /* =====================================================
+            SOCKET CLOSE
+            ===================================================== */
+
+            socket.onclose = function () {
+
+                console.log(
+                    "RUN SOCKET CLOSED"
+                );
+
+                /*
+                * VERY IMPORTANT:
+                *
+                * Only clear the global socket if this
+                * is still the current socket.
+                *
+                * An old socket must NEVER clear a
+                * newly-created socket.
+                */
+                if (codeRunnerSocket === socket) {
+
+                    codeRunnerSocket = null;
+
+                    codeRunnerRunning = false;
+                }
+
+                /*
+                * Do not show "Disconnected" after a
+                * normal successful completion.
+                */
+                if (
+                    runStatus.textContent !==
+                    "Completed" &&
+                    !runStatus.textContent.startsWith(
+                        "Exited with code"
+                    )
+                ) {
+
+                    if (
+                        runStatus.textContent !==
+                        "Run failed"
+                    ) {
+
+                        runStatus.textContent =
+                            "Disconnected";
+
+                        runStatus.className =
+                            "vl-fm-run-output-status is-error";
+                    }
+                }
+
+                /*
+                * Always make Run available again.
+                */
+                runButton.disabled = false;
+
+                runButton.innerHTML =
+                    '<i class="fas fa-play"></i> Run';
+            };
+        }
+
+        runButton.addEventListener("click", runEditorFile);
+
+        }
+        
+
+    /* =====================================================
+       HTML ESCAPE
+       ===================================================== */
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+
+    /* =====================================================
+    CSRF
+    ===================================================== */
+
+    function getCsrfToken() {
+
+        const cookie = document.cookie
+            .split("; ")
+            .find(
+                row => row.startsWith("csrftoken=")
+            );
+
+        return cookie
+            ? decodeURIComponent(
+                cookie.split("=")[1]
+            )
+            : "";
+    }
+
+
+    /* =====================================================
+       REFRESH
+       ===================================================== */
+
+    refreshButton.addEventListener(
+        "click",
+        loadWorkspace
+    );
+/* =====================================================
+       INITIAL LOAD
+       ===================================================== */
+
+    loadWorkspace();
+
+});
+
+</script>
+
+{% endblock maincontent %}

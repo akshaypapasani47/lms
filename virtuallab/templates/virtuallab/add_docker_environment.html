@@ -1,0 +1,618 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .vl-add-docker-page {
+        width: auto;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 30px;
+        padding: 38px 42px 70px;
+        min-height: calc(100vh - 150px);
+        transition: margin-left 0.3s ease, width 0.3s ease;
+    }
+
+    body:has(#side-nav.active) .vl-add-docker-page {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+    }
+
+    .vl-add-docker-header {
+        margin-bottom: 32px;
+    }
+
+    .vl-add-docker-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #00bcd4;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .vl-add-docker-eyebrow span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #00bcd4;
+        box-shadow: 0 0 12px rgba(0, 188, 212, 0.7);
+    }
+
+    .vl-add-docker-title {
+        margin: 0;
+        font-size: clamp(30px, 4vw, 48px);
+        font-weight: 800;
+        letter-spacing: -1px;
+        color: var(--text-primary, #111827);
+    }
+
+    .vl-add-docker-subtitle {
+        margin-top: 10px;
+        max-width: 760px;
+        color: var(--text-secondary, #6b7280);
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .vl-docker-form-card {
+        max-width: 1000px;
+        padding: 32px;
+        border-radius: 20px;
+        border: 1px solid rgba(0, 188, 212, 0.18);
+        background: var(--card-bg, rgba(255,255,255,0.92));
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+    }
+
+    .vl-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+    }
+
+    .vl-form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+    .vl-form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .vl-form-label {
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--text-primary, #374151);
+    }
+
+    .vl-form-required {
+        color: #ef4444;
+    }
+
+    .vl-form-control {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 15px;
+        border-radius: 11px;
+        border: 1px solid rgba(100, 116, 139, 0.25);
+        background: var(--input-bg, #f8fafc);
+        color: var(--text-primary, #111827);
+        outline: none;
+        font-size: 14px;
+        transition: 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    textarea.vl-form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .vl-form-control:focus {
+        border-color: #00bcd4;
+        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.12);
+    }
+
+    .vl-form-help {
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--text-secondary, #64748b);
+    }
+
+    .vl-selected-image {
+        margin-top: 8px;
+        padding: 10px 13px;
+        border-radius: 9px;
+        background: rgba(0, 188, 212, 0.08);
+        border: 1px solid rgba(0, 188, 212, 0.18);
+        color: #008fa3;
+        font-size: 12px;
+        font-weight: 700;
+        word-break: break-all;
+    }
+
+    .vl-form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 25px;
+        border-top: 1px solid rgba(100, 116, 139, 0.15);
+    }
+
+    .vl-btn {
+        min-height: 46px;
+        padding: 0 20px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        text-decoration: none;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .vl-btn-cancel {
+        color: var(--text-secondary, #64748b);
+        background: transparent;
+        border-color: rgba(100, 116, 139, 0.2);
+    }
+
+    .vl-btn-cancel:hover {
+        border-color: #00bcd4;
+        color: #00a0b5;
+    }
+
+    .vl-btn-save {
+        color: white;
+        background: linear-gradient(135deg, #00a8c6, #007c91);
+        box-shadow: 0 8px 22px rgba(0, 168, 198, 0.22);
+    }
+
+    .vl-btn-save:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 28px rgba(0, 168, 198, 0.3);
+    }
+
+    /* Dark theme */
+    [data-theme="dark"] .vl-add-docker-title {
+        color: #f1f5f9;
+    }
+
+    [data-theme="dark"] .vl-add-docker-subtitle {
+        color: #94a3b8;
+    }
+
+    [data-theme="dark"] .vl-docker-form-card {
+        background: rgba(15, 23, 42, 0.88);
+        border-color: rgba(34, 211, 238, 0.18);
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="dark"] .vl-form-label {
+        color: #e2e8f0;
+    }
+
+    [data-theme="dark"] .vl-form-control {
+        background: rgba(15, 23, 42, 0.8);
+        border-color: rgba(148, 163, 184, 0.2);
+        color: #f1f5f9;
+    }
+
+    [data-theme="dark"] .vl-form-help {
+        color: #94a3b8;
+    }
+
+    [data-theme="dark"] .vl-form-actions {
+        border-color: rgba(148, 163, 184, 0.12);
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+        body:has(#side-nav.active) .vl-add-docker-page {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .vl-add-docker-page {
+            margin-top: 25px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .vl-add-docker-page {
+            padding: 28px 20px 50px;
+        }
+
+        .vl-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .vl-form-group.full {
+            grid-column: auto;
+        }
+
+        .vl-docker-form-card {
+            padding: 22px;
+        }
+
+        .vl-form-actions {
+            flex-direction: column-reverse;
+            align-items: stretch;
+        }
+
+        .vl-btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .vl-add-docker-page {
+            margin-top: 20px;
+            padding: 22px 15px 40px;
+        }
+
+        .vl-docker-form-card {
+            padding: 18px;
+            border-radius: 15px;
+        }
+    }
+
+
+    /* =========================================================
+    BACK TO DOCKER ENVIRONMENTS
+    ========================================================= */
+
+    .vl-add-docker-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+
+        margin-top: 20px;
+        min-height: 42px;
+        padding: 0 15px;
+
+        border: 1px solid rgba(0, 188, 212, 0.22);
+        border-radius: 8px;
+
+        background: rgba(0, 188, 212, 0.05);
+
+        color: #008fa3;
+        text-decoration: none;
+
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .vl-add-docker-back i {
+        font-size: 11px;
+    }
+
+    .vl-add-docker-back:hover {
+        transform: translateX(-3px);
+
+        border-color: #00bcd4;
+        background: rgba(0, 188, 212, 0.09);
+
+        color: #007c91;
+
+        box-shadow: 0 8px 22px rgba(0, 188, 212, 0.12);
+    }
+
+
+    /* Dark theme */
+
+    [data-theme="dark"] .vl-add-docker-back {
+        color: #67e8f9;
+        border-color: rgba(34, 211, 238, 0.22);
+        background: rgba(34, 211, 238, 0.06);
+    }
+
+    [data-theme="dark"] .vl-add-docker-back:hover {
+        border-color: #22d3ee;
+        background: rgba(34, 211, 238, 0.1);
+        color: #a5f3fc;
+    }
+
+
+    /* Mobile */
+
+    @media (max-width: 500px) {
+        .vl-add-docker-back {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="vl-add-docker-page">
+
+    <div class="vl-add-docker-header">
+
+        <div class="vl-add-docker-eyebrow">
+            <span></span>
+            HPC / VIRTUAL LAB / DOCKER
+        </div>
+
+        <h1 class="vl-add-docker-title">
+            Add Docker Environment
+        </h1>
+
+        <div class="vl-add-docker-subtitle">
+            Register an existing Docker image as a reusable Virtual Lab
+            environment. Once registered, the environment can be assigned
+            to one or more Virtual Labs.
+        </div>
+
+        <a
+            href="{% url 'virtuallab:docker_environment_management' %}"
+            class="vl-add-docker-back"
+        >
+            <i class="fas fa-arrow-left"></i>
+            BACK TO DOCKER ENVIRONMENTS
+        </a>
+
+    </div>
+
+    <div class="vl-docker-form-card">
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="vl-form-grid">
+
+                <!-- Environment Name -->
+                <div class="vl-form-group">
+
+                    <label class="vl-form-label">
+                        Environment Name
+                        <span class="vl-form-required">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="name"
+                        class="vl-form-control"
+                        placeholder="Example: Python Programming Environment"
+                        required
+                    >
+
+                    <div class="vl-form-help">
+                        A human-readable name shown inside the LMS.
+                    </div>
+
+                </div>
+
+
+                <!-- Docker Image -->
+                <div class="vl-form-group">
+
+                    <label class="vl-form-label">
+                        Docker Image
+                        <span class="vl-form-required">*</span>
+                    </label>
+
+                    {% if selected_image %}
+
+                        <!-- Image selected through USE IMAGE -->
+                        <input
+                            type="text"
+                            class="vl-form-control"
+                            value="{{ selected_image }}"
+                            readonly
+                        >
+
+                        <input
+                            type="hidden"
+                            name="docker_image"
+                            value="{{ selected_image }}"
+                        >
+
+                        <div class="vl-selected-image">
+                            <i class="fas fa-check-circle"></i>
+                            Selected Docker image: {{ selected_image }}
+                        </div>
+
+                        <div class="vl-form-help">
+                            This image was selected from the Docker Environment Management
+                            page.
+                        </div>
+
+                    {% else %}
+
+                        <!-- Normal ADD ENVIRONMENT flow -->
+                        <select
+                            name="docker_image"
+                            class="vl-form-control"
+                            required
+                        >
+
+                            <option value="">
+                                Select Docker Image
+                            </option>
+
+                            {% for image in docker_images %}
+
+                                <option value="{{ image.tag }}">
+                                    {{ image.tag }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <div class="vl-form-help">
+                            Select one of the Docker images currently available
+                            on this machine.
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Environment Type -->
+                <div class="vl-form-group">
+
+                    <label class="vl-form-label">
+                        Environment Type
+                        <span class="vl-form-required">*</span>
+                    </label>
+
+                    <select
+                        name="environment_type"
+                        class="vl-form-control"
+                        required
+                    >
+
+                        {% for value, label in environment_type_choices %}
+
+                            <option value="{{ value }}">
+                                {{ label }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Status -->
+                <div class="vl-form-group">
+
+                    <label class="vl-form-label">
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="vl-form-control"
+                    >
+
+                        {% for value, label in status_choices %}
+
+                            <option value="{{ value }}">
+                                {{ label }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- RAM -->
+                <div class="vl-form-group">
+
+                    <label class="vl-form-label">
+                        Default RAM
+                    </label>
+
+                    <input
+                        type="number"
+                        name="default_ram"
+                        class="vl-form-control"
+                        value="2048"
+                        min="128"
+                        step="128"
+                    >
+
+                    <div class="vl-form-help">
+                        Default RAM allocation in MB.
+                    </div>
+
+                </div>
+
+
+                <!-- Storage -->
+                <div class="vl-form-group">
+
+                    <label class="vl-form-label">
+                        Default Storage
+                    </label>
+
+                    <input
+                        type="number"
+                        name="default_storage"
+                        class="vl-form-control"
+                        value="10240"
+                        min="512"
+                        step="512"
+                    >
+
+                    <div class="vl-form-help">
+                        Default workspace storage allocation in MB.
+                    </div>
+
+                </div>
+
+
+                <!-- Description -->
+                <div class="vl-form-group full">
+
+                    <label class="vl-form-label">
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="vl-form-control"
+                        placeholder="Describe the tools, languages and purpose of this environment..."
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="vl-form-actions">
+
+                <a
+                    href="{% url 'virtuallab:docker_environment_management' %}"
+                    class="vl-btn vl-btn-cancel"
+                >
+                    <i class="fas fa-arrow-left"></i>
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="vl-btn vl-btn-save"
+                >
+                    <i class="fas fa-plus"></i>
+                    Add Environment
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

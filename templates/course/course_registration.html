@@ -1,280 +1,644 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
 {% load static %}
 
-{% load crispy_forms_tags %}
+{% block title %}
+    {{ title }} | {% trans 'Course Catalog' %}
+{% endblock title %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/course_catalog.css' %}"
+>
+
+{% endblock extra_css %}
+
 
 {% block content %}
 
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'Course Registration' %}</li>
-    </ol>
-</nav>
+<div class="course-catalog-shell">
 
-<p class="title-1">{% trans 'Course Add' %} &amp; {% trans 'Drop' %}</p>
 
-{% include 'snippets/messages.html' %}
-{% for course in courses %}
-<h1>{{ course.title }}</h1>
-{% endfor %}
+    <!-- =====================================================
+         CATALOG HEADER
+         ===================================================== -->
 
-{% if current_semester %}
-{% if is_calender_on == False %}
+    <section class="catalog-header">
 
-<div class="alert bg-danger">
-    <h1 class="text-light text-center">{% trans 'Calender is off' %}</h1>
-    <h5 class="text-light text-center">{% trans 'Check the university calender' %}</h5>
-</div>
+        <div class="catalog-header-main">
 
-{% else %}
+            <div class="catalog-eyebrow">
 
-{% if courses %}
+                <span class="catalog-status-dot"></span>
 
-<form action="{% url 'course_registration' %}" method="POST">{% csrf_token %}
-    <div class="col-md-12 p-0 bg-white">
-        <p class="form-title fw-bold">{% trans 'Course Add' %}</p>
-        <div class="container">
-            <div class="d-flex justify-content-between mb-3">
-                <button title="{% trans 'Save Score' %}" type="submit" class="btn btn-primary"><i class="fa fa-plus"></i> {% trans 'Add Selected' %}</button>
+                C-DAC LMS / COURSE CATALOG
+
             </div>
 
-            <div class="table-responsive p-0 px-2 mt-2">
-                <div class="table-title"><u>{% trans 'First Semester:' %}</u></div>
-                <div class="table-shadow">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>{% trans 'Mark' %}</th>
-                                <th>{% trans 'Course Code' %}</th>
-                                <th>{% trans 'Course Title' %}</th>
-                                <th>{% trans 'Cr.Hr(s)' %}</th>
-                                <th>{% trans 'Year' %}</th>
-                                <th>{% trans 'Classification' %}</th>
-                                <th>{% trans 'Elective Group' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for course in courses %}
-                            {% if course.semester == "First" %}
-                            <tr>
-                                <th scope="row">
-                                    <input name="{{ course.pk }}" value="{{ course.courseUnit }}" type="checkbox">
-                                </th>
-                                <td>{{ course.code }}</td>
-                                <td>{{ course.title }}</td>
-                                <td>{{ course.credit }}</td>
-                                <td>{{ course.year }}</td>
-                                {% if course.is_elective %}
-                                <td>{% trans 'Elective' %}</td>
-                                {% else %}
-                                <td>{% trans 'Core' %}</td>
-                                {% endif %}
-                                <th>-</th>
-                            </tr>
-                            {% endif %}
-                            {% empty %}
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="text-danger">
-                                        {% trans 'No Course.' %}
-                                    </span>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <th></th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td><b>{% trans 'First semester Credit(s):' %}</b> {{ total_first_semester_credit }} </td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
-            <div class="table-responsive p-0 px-2 mt-2">
-                <div class="table-title"><u>{% trans 'Second Semester:' %}</u></div>
-                <div class="table-shadow">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>{% trans 'Mark' %}</th>
-                                <th>{% trans 'Course Code' %}</th>
-                                <th>{% trans 'Course Title' %}</th>
-                                <th>{% trans 'Cr.Hr(s)' %}</th>
-                                <th>{% trans 'Year' %}</th>
-                                <th>{% trans 'Classification' %}</th>
-                                <th>{% trans 'Elective Group' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for course in courses %}
-                            {% if course.semester == "Second" %}
-                            <tr>
-                                <th scope="row">
-                                    <input name="{{ course.pk }}" value="{{ course.courseUnit }}" type="checkbox">
-                                </th>
-                                <td>{{ course.code }}</td>
-                                <td>{{ course.title }}</td>
-                                <td>{{ course.credit }}</td>
-                                <td>{{ course.year }}</td>
-                                {% if course.is_elective %}
-                                <td>{% trans 'Elective' %}</td>
-                                {% else %}
-                                <td>{% trans 'Core' %}</td>
-                                {% endif %}
-                                <th>-</th>
-                            </tr>
-                            {% endif %}
-                            {% empty %}
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="text-danger">
-                                        {% trans 'No Course.' %}
-                                    </span>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <th></th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td><b>{% trans 'Second semester credit(s):' %}</b> {{ total_sec_semester_credit }} </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"></th>
-                                <td><b>{% trans 'Registerd course credit(s):' %}' <a id="units">{{ total_registered_credit }}</a></b>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td><b>{% trans 'Total credit(s):' %}</b> {{ total_sec_semester_credit|add:total_first_semester_credit }} </td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <h1>
+                Explore Available
+                <span>Courses</span>
+            </h1>
+
+
+            <p>
+                Discover structured learning programs,
+                technical courses and practical learning
+                paths available in the LMS.
+            </p>
+
         </div>
-    </div>
-</form>
-<!-- {% endif %} -->
-<br>
-<br>
 
-{% if not no_course_is_registered %}
 
-<a class="btn btn-warning" href="{% url 'course_registration_form' %}" target="_blank" title="{% trans 'Print Registration Form' %}">
-    <i class="fas fa-print"></i> {% trans 'Print Registerd Courses' %}
-</a>
+        
+        <div class="catalog-system-card">
 
-<div class="col-md-12 p-0 bg-white">
-    <p class="form-title"><b>{% trans 'Course Drop' %}</b>
-    <div class="level-wrapper">
-        <div class="info-text">{{ student.level }}</div>
-    </div>
-    </p>
-    <div class="container">
-        <form action="{% url 'course_drop' %}" method="POST">
-            {% csrf_token %}
-            <div class="d-flex justify-content-between mb-4">
-                <button title="{% trans 'Save Score' %}" type="submit" class="btn btn-primary">
-                    <i class="fa fa-times"></i> {% trans 'Drop Selected' %}
-                </button>
+            <div class="catalog-system-label">
+                LEARNING SYSTEM
             </div>
 
-            <!-- <div>
-            <a target="_blank" href="{% url 'course_registration_form' %}" class="btn btn-outline-white btn-rounded btn-sm px-2">
-                <i class="fa fa-file-pdf-o" aria-hidden="true"></i> Print Registration Form
-              </a>
-            </div> -->
+            <div class="catalog-system-value">
 
-            <div class="table-responsive p-0 px-2 mt-2">
-                <div class="table-shadow">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>{% trans 'Mark' %}</th>
-                                <th>{% trans 'Course Code' %}</th>
-                                <th>{% trans 'Course Title' %}</th>
-                                <th>{% trans 'Cr.Hr(s)' %}</th>
-                                <th>{% trans 'Year' %}</th>
-                                <th>{% trans 'Classification' %}</th>
-                                <th>{% trans 'Elective Group' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for course in registered_courses %}
-                            <tr>
-                                <th scope="row">
-                                    <input name="{{ course.pk }}" value="{{ course.courseUnit }}" type="checkbox">
-                                </th>
-                                <td>{{ course.code }}</td>
-                                <td>{{ course.title }}</td>
-                                <td>{{ course.credit }}</td>
-                                <td>{{ course.year }}</td>
-                                {% if course.is_elective %}
-                                <td>{% trans 'Elective' %}</td>
-                                {% else %}
-                                <td>{% trans 'Core' %}</td>
-                                {% endif %}
-                                <th>-</th>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="text-danger">
-                                        {% trans 'No Course.' %}
-                                    </span>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <th></th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td><b>{% trans 'Total credit(s):' %}</b> {{ total_registered_credit }} </td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <span class="catalog-system-dot"></span>
+
+                ONLINE
+
+            </div>
+
+            <div class="catalog-system-meta">
+                {{ courses|length }} COURSES AVAILABLE
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SEARCH / FILTER BAR
+         ===================================================== -->
+
+    <section class="catalog-control-panel">
+
+        <div class="catalog-search">
+
+            <i class="fas fa-search"></i>
+
+            <input
+                type="text"
+                id="course-search"
+                placeholder="Search courses by title or code..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="catalog-filter">
+
+            <label for="course-semester-filter">
+                SEMESTER
+            </label>
+
+            <select id="course-semester-filter">
+
+                <option value="all">
+                    All Semesters
+                </option>
+
+                <option value="First">
+                    First Semester
+                </option>
+
+                <option value="Second">
+                    Second Semester
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="catalog-filter">
+
+            <label for="course-type-filter">
+                TYPE
+            </label>
+
+            <select id="course-type-filter">
+
+                <option value="all">
+                    All Courses
+                </option>
+
+                <option value="core">
+                    Core
+                </option>
+
+                <option value="elective">
+                    Elective
+                </option>
+
+            </select>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         BREADCRUMB / SUMMARY
+         ===================================================== -->
+
+    <section class="catalog-summary-row">
+
+        <div>
+
+            <span class="catalog-section-kicker">
+                AVAILABLE LEARNING NODES
+            </span>
+
+            <h2>
+                Course Programs
+            </h2>
+
+        </div>
+
+
+        <div class="catalog-result-count">
+
+            SHOWING
+            <strong id="visible-course-count">
+                {{ courses|length }}
+            </strong>
+
+            COURSES
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CALENDAR STATUS
+         ===================================================== -->
+
+    {% if current_semester %}
+
+        {% if is_calender_on == False %}
+
+        <div class="catalog-alert">
+
+            <div class="catalog-alert-icon">
+                <i class="fas fa-calendar-xmark"></i>
+            </div>
+
+            <div>
+
+                <strong>
+                    {% trans 'Course enrollment is currently unavailable' %}
+                </strong>
+
+                <p>
+                    {% trans 'The university calendar is currently closed. Please check the academic calendar before enrolling.' %}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    {% endif %}
+
+
+
+    <!-- =====================================================
+        ENROLLED COURSE REGISTRY
+        Used by course_catalog.js to detect enrolled courses
+        ===================================================== -->
+
+    <div id="enrolled-course-registry" hidden>
+        {% for taken in taken_courses %}
+            <span
+                class="enrolled-course-item"
+                data-course-slug="{{ taken.course.slug }}"
+            ></span>
+        {% endfor %}
+    </div>
+    <!-- =====================================================
+         COURSE GRID
+         ===================================================== -->
+
+
+    {% if courses %}
+
+        <section
+            class="course-grid"
+            id="course-grid"
+        >
+
+            {% for course in courses %}
+
+            <article
+                class="course-card"
+                data-course-card
+                data-course-slug="{{ course.slug }}"
+                data-title="{{ course.title|lower }}"
+                data-code="{{ course.code|default:''|lower }}"
+                data-semester="{{ course.semester|default:'all' }}"
+                data-type="{% if course.is_elective %}elective{% else %}core{% endif %}"
+            >
+
+
+                <!-- TOP -->
+
+                <div class="course-card-top">
+
+                    <div class="course-node-id">
+
+                        <span class="course-node-dot"></span>
+
+                        COURSE NODE
+
+                    </div>
+
+
+                    <div class="course-code">
+
+                        {{ course.code|default:"LMS-COURSE" }}
+
+                    </div>
+
                 </div>
+
+
+
+                <!-- ICON -->
+
+                <div class="course-card-icon">
+
+                    <i class="fas fa-microchip"></i>
+
+                </div>
+
+
+
+                <!-- CONTENT -->
+
+                <div class="course-card-content">
+
+                    <div class="course-type">
+
+                        {% if course.is_elective %}
+
+                            ELECTIVE
+
+                        {% else %}
+
+                            CORE
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <h3>
+                        {{ course.title }}
+                    </h3>
+
+
+                    <div class="course-card-description">
+
+                        {% trans 'Structured technical learning program with course content, lessons, resources and assessments.' %}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DETAILS -->
+
+                <div class="course-meta-grid">
+
+
+                    <div class="course-meta-item">
+
+                        <span>
+                            SEMESTER
+                        </span>
+
+                        <strong>
+                            {{ course.semester|default:"—" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="course-meta-item">
+
+                        <span>
+                            YEAR
+                        </span>
+
+                        <strong>
+                            {{ course.year|default:"—" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="course-meta-item">
+
+                        <span>
+                            CREDITS
+                        </span>
+
+                        <strong>
+                            {{ course.credit|default:"0" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="course-meta-item">
+
+                        <span>
+                            MODE
+                        </span>
+
+                        <strong>
+                            ONLINE
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- FOOTER -->
+
+               <div class="course-card-footer">
+
+                    <!-- NOT ENROLLED STATE -->
+                    <div class="course-enroll-state">
+
+                        {% if is_calender_on == False %}
+
+                        <button
+                            type="button"
+                            class="course-enroll-btn disabled"
+                            disabled
+                        >
+                            <span>ENROLLMENT CLOSED</span>
+                            <i class="fas fa-lock"></i>
+                        </button>
+
+                        {% else %}
+
+                        <form
+                            method="POST"
+                            action="{% url 'course_registration' %}"
+                            class="course-enroll-form"
+                        >
+
+                            {% csrf_token %}
+
+                            <input
+                                type="hidden"
+                                name="{{ course.pk }}"
+                                value="{{ course.courseUnit }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="course-enroll-btn"
+                            >
+                                <span>ENROLL</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+
+                        </form>
+
+                        {% endif %}
+
+                        <div class="course-access-note">
+                            <i class="fas fa-shield-halved"></i>
+                            {% trans 'Enroll to access course content' %}
+                        </div>
+
+                    </div>
+
+
+                    <!-- ENROLLED STATE -->
+                    <div class="course-enrolled-state" hidden>
+
+                        <div class="course-enrolled-badge">
+                            <i class="fas fa-circle-check"></i>
+                            <span>ALREADY ENROLLED</span>
+                        </div>
+
+                        <a
+                            href="{% url 'course_start' course.slug %}"
+                            class="course-access-btn"
+                        >
+                            <span>ACCESS COURSE</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DECORATIVE GRID -->
+
+                <div class="course-card-grid"></div>
+
+            </article>
+
+            {% endfor %}
+
+        </section>
+
+
+        <!-- NO SEARCH RESULTS -->
+
+        <div
+            class="catalog-empty-results"
+            id="catalog-empty-results"
+            hidden
+        >
+
+            <div class="catalog-empty-icon">
+
+                <i class="fas fa-magnifying-glass"></i>
+
             </div>
-        </form>
-    </div>
+
+
+            <h3>
+                No matching courses
+            </h3>
+
+
+            <p>
+                Try changing the search text or filters.
+            </p>
+
+        </div>
+
+
+    {% else %}
+
+
+        <!-- NO COURSES -->
+
+        <section class="catalog-empty">
+
+            <div class="catalog-empty-icon">
+
+                <i class="fas fa-layer-group"></i>
+
+            </div>
+
+
+            <h2>
+                {% trans 'No courses available' %}
+            </h2>
+
+
+            <p>
+                {% trans 'There are currently no courses available for enrollment.' %}
+            </p>
+
+        </section>
+
+    {% endif %}
+
+
+
+    <!-- =====================================================
+         ENROLLMENT INFORMATION
+         ===================================================== -->
+
+    <section class="catalog-information">
+
+        <div class="catalog-info-icon">
+
+            <i class="fas fa-circle-info"></i>
+
+        </div>
+
+
+        <div class="catalog-info-content">
+
+            <span>
+                ENROLLMENT ACCESS
+            </span>
+
+            <p>
+                {% trans 'Students must enroll in a course before course lessons, learning resources and assessments become available through My Learning.' %}
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="catalog-footer">
+
+        <span>
+            C-DAC LMS
+        </span>
+
+        <span class="catalog-footer-line"></span>
+
+        <span>
+            COURSE DISCOVERY SYSTEM
+        </span>
+
+        <span class="catalog-footer-status">
+
+            <span></span>
+
+            SYSTEM READY
+
+        </span>
+
+    </footer>
+
+    <!-- =========================================================
+        MY LEARNING CTA
+        ========================================================= -->
+
+    <section class="catalog-my-learning">
+
+        <div class="catalog-my-learning-glow"></div>
+
+        <div class="catalog-my-learning-icon">
+            <i class="fas fa-layer-group"></i>
+        </div>
+
+        <div class="catalog-my-learning-content">
+
+            <span class="catalog-my-learning-kicker">
+                YOUR LEARNING JOURNEY
+            </span>
+
+            <h2>
+                Already enrolled in a course?
+            </h2>
+
+            <p>
+                Continue your learning from your enrolled courses,
+                access your course content, and keep progressing
+                through your learning path.
+            </p>
+
+        </div>
+
+        <div class="catalog-my-learning-action">
+
+            <a href="{% url 'user_course_list' %}"
+            class="catalog-my-learning-btn">
+
+                <span>
+                    GO TO MY COURSES
+                </span>
+
+                <i class="fas fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
 </div>
 
-{% endif %}
-{% endif %}
-{% endif %}
+
+
+
+<script
+    src="{% static 'js/course_catalog.js' %}"
+></script>
+
 
 {% endblock content %}

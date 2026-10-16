@@ -1,157 +1,841 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %} {% trans 'My Courses' %} | {% trans 'Learning management system' %}{% endblock title %}
 {% load static %}
+
+{% block title %}
+    {% trans 'My Courses' %} | {% trans 'Learning management system' %}
+{% endblock title %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/my_courses.css' %}"
+>
+
+{% endblock extra_css %}
+
 
 {% block content %}
 
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans 'My Courses' %}</li>
-    </ol>
-</nav>
+<div class="my-courses-page">
 
-{% if request.user.is_student %}
-    <div class="title-1">{{ student.program.title }}</div>
-    {% if student.program.summary %}
-        <p>{{ student.program.summary }}</p>
-    {% endif %}
-{% endif %}
+    <!-- =====================================================
+         PAGE HEADER
+         ===================================================== -->
 
-{% if request.user.is_lecturer %}
-    <div class="title-1">{% trans 'My Courses' %}</div>
-{% endif %}
+    <section class="my-learning-header">
 
-{% if messages %}
-    {% for message in messages %}
-        {% if message.tags == 'error' %}
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle"></i>{{ message }}
+        <div class="my-learning-header-main">
+
+            <div class="my-learning-eyebrow">
+
+                <span class="my-learning-eyebrow-dot"></span>
+
+                C-DAC LMS / MY LEARNING
+
             </div>
-        {% else %}
-            <div class="alert alert-success">
-                <i class="fas fa-check-circle"></i>{{ message }}
-            </div>
-        {% endif %}
-    {% endfor %}
-{% endif %}
 
-<!-- {% if request.user.is_student %} -->
-<div class="table-responsive p-3 mt-3">
-    <h6 class="fw-bold text-primary"><u>{% trans 'Taken Courses:' %}</u></h6>
-    <div class="table-shadow">
-        <table class="table table-light">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th> {% trans 'Course Name' %} </th>
-                    <th> {% trans 'Course Code' %} </th>
-                    <th> {% trans 'Cr.Hr' %} </th>
-                    <th> {% trans 'Year' %} </th>
-                    <th> {% trans 'Semester' %} </th>
-                    <th> {% trans 'Current Semester' %} </th>
-            </thead>
-            <tbody>
-                {% for course in taken_courses %}
-                <tr>
-                    <td>{{ forloop.counter }}.</td> 
-                    <td><a href="{% url 'course_start' course.course.slug %}">
-                        <!-- <a href="{{ course.get_absolute_url }}"> -->
-                        {{ course.course.title }}</a></td>
-                    <td>{{ course.course.code }}</td>
-                    <td>{{ course.course.credit }}</td>
-                    <td>{{ course.course.year }}</td>
-                    <td>{{ course.course.semester }}</td>
-                    <!-- <td>
-                        {% for cp in course_progress %}
-                            {% if cp.course.id == course.course.id %}
-                                <div style="background:#eee; width:100px;">
-                                    <div style="background:green; width:{{ cp.progress }}%; color:white; text-align:center;">
-                                        {{ cp.progress }}%
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </td> -->
-                    
-                    <th>
-                        {% if course.course.is_current_semester == False %}
-                        <i class="fas fa-times-circle fa-1-5x danger"></i>
-                        {% else %}
-                        <i class="fas fa-check-circle"></i>
-                        {% endif %}
-                    </th>
-                    
-                    <!-- <td>
-                        <div style="background:#eee; width:100px;">
-                            <div style="background:green; width:{{ course.progress }}%; color:white; text-align:center;">
-                                {{ course.progress }}%
-                            </div>
-                        </div>
-                    </td> -->
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-<!-- {% endif %} -->
 
-<div class="table-responsive p-3">
-    <h6 class="fw-bold text-primary"><u>{% trans 'All Courses:' %}</u></h6>
-    <div class="table-shadow">
-        <table class="table table-light">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th> {% trans 'Course Name' %} </th>
-                    <th> {% trans 'Course Code' %} </th>
-                    <th> {% trans 'Cr.Hr' %} </th>
-                    <th> {% trans 'Year' %} </th>
-                    <th> {% trans 'Semester' %} </th>
-                    <th> {% trans 'Current Semester' %} </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for course in courses %}
-                <tr>
-                    <td>{{ forloop.counter }}.</td> 
-                    <td><a href="{% url 'course_start' course.slug %}">
-                        <!-- <a href="{{ course.get_absolute_url }}"> -->
-                        {{ course.title }}</a></td>
-                    <td>{{ course.code }}</td>
-                    <td>{{ course.credit }}</td>
-                    <td>{{ course.year }}</td>
-                    <td>{{ course.semester }}</td>
-                    <th>
-                        {% if course.is_current_semester == False %}
-                        <i class="fas fa-times-circle fa-1-5x danger"></i>
-                        {% else %}
-                        <i class="fas fa-check-circle"></i>
-                        {% endif %}
-                    </th>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+            <h1>
+                My
+                <span>Courses</span>
+            </h1>
 
-{% if courses.paginator.page_range|length > 1 %}
-<div class="content-center">
-    <div class="pagination">
-        <a href="?page=1">&laquo;</a>
-        {% for i in courses.paginator.page_range %}
-            {% if i == courses.number %}
-                <a class="pagination-active" href="?page={{ i }}"><b>{{ i }}</b></a>
+
+            {% if request.user.is_student %}
+
+                {% if student.program %}
+
+                    <p>
+                        Continue learning through your enrolled
+                        <strong>{{ student.program.title }}</strong>
+                        courses.
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        Continue learning through your enrolled courses.
+                    </p>
+
+                {% endif %}
+
             {% else %}
-                <a href="?page={{ i }}">{{ i }}</a>
+
+                <p>
+                    Access your assigned courses and learning resources.
+                </p>
+
             {% endif %}
-        {% endfor %}
-        <a href="?page={{ courses.paginator.num_pages }}">&raquo;</a>
-    </div>
+
+        </div>
+
+
+        <!-- =================================================
+             HEADER STATUS
+             ================================================= -->
+
+        <div class="my-learning-status-card">
+
+            <span class="my-learning-status-label">
+                LEARNING SYSTEM
+            </span>
+
+
+            <div class="my-learning-status-value">
+
+                <span class="my-learning-live-dot"></span>
+
+                <span>
+                    ACTIVE
+                </span>
+
+            </div>
+
+
+            {% if request.user.is_student %}
+
+                <div class="my-learning-status-meta">
+                    {{ taken_courses|length }} ENROLLED
+                </div>
+
+            {% else %}
+
+                <div class="my-learning-status-meta">
+                    {{ courses|length }} ASSIGNED
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MESSAGES
+         ===================================================== -->
+
+    {% if messages %}
+
+        <div class="my-learning-messages">
+
+            {% for message in messages %}
+
+                <div
+                    class="
+                        my-learning-message
+                        {% if message.tags == 'error' %}
+                            error
+                        {% else %}
+                            success
+                        {% endif %}
+                    "
+                >
+
+                    {% if message.tags == 'error' %}
+
+                        <i class="fas fa-circle-exclamation"></i>
+
+                    {% else %}
+
+                        <i class="fas fa-circle-check"></i>
+
+                    {% endif %}
+
+
+                    <span>
+                        {{ message }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         STUDENT
+         ===================================================== -->
+
+    {% if request.user.is_student %}
+
+
+        {% if taken_courses %}
+
+            <!-- =================================================
+                 ENROLLED COURSES
+                 ================================================= -->
+
+            <section class="my-learning-courses-section">
+
+
+                <!-- =================================================
+                     SECTION HEADER
+                     ================================================= -->
+
+                <div class="my-learning-section-header">
+
+                    <div>
+
+                        <span class="my-learning-section-label">
+                            ACTIVE LEARNING NODES
+                        </span>
+
+
+                        <h2>
+                            Your Enrolled Courses
+                        </h2>
+
+
+                        {% if student.program %}
+
+                            <p>
+                                {{ student.program.title }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="my-learning-course-counter">
+
+                        <strong>
+                            {{ taken_courses|length }}
+                        </strong>
+
+
+                        <span>
+                            COURSES
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     COURSE CAROUSEL
+                     ================================================= -->
+
+                <div class="my-learning-carousel-shell">
+
+
+                    <!-- =================================================
+                         PREVIOUS
+                         ================================================= -->
+
+                    <button
+                        type="button"
+                        id="my-learning-prev"
+                        class="my-learning-carousel-btn"
+                        aria-label="Previous course"
+                    >
+
+                        <i class="fas fa-chevron-left"></i>
+
+                    </button>
+
+
+                    <!-- =================================================
+                         VIEWPORT
+                         ================================================= -->
+
+                    <div class="my-learning-carousel-viewport">
+
+                        <div
+                            id="my-learning-track"
+                            class="my-learning-carousel-track"
+                        >
+
+
+                            {% for course in taken_courses %}
+
+                                <article
+                                    class="my-learning-course-card"
+                                    data-learning-slide
+                                >
+
+
+                                    <!-- =================================
+                                         CARD TOP
+                                         ================================= -->
+
+                                    <div class="my-learning-card-top">
+
+                                        <div class="my-learning-course-status">
+
+                                            <span></span>
+
+                                            ENROLLED COURSE
+
+                                        </div>
+
+
+                                        <div class="my-learning-course-code">
+
+                                            {{ course.course.code|default:"COURSE" }}
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- =================================
+                                         CARD VISUAL
+                                         ================================= -->
+
+                                    <div class="my-learning-card-visual">
+
+                                        <div
+                                            class="my-learning-visual-ring ring-1"
+                                        ></div>
+
+
+                                        <div
+                                            class="my-learning-visual-ring ring-2"
+                                        ></div>
+
+
+                                        <div
+                                            class="my-learning-visual-core"
+                                        >
+
+                                            <i class="fas fa-microchip"></i>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- =================================
+                                         COURSE CONTENT
+                                         ================================= -->
+
+                                    <div class="my-learning-card-content">
+
+                                        {% if course.course.is_elective %}
+
+                                            <span
+                                                class="my-learning-course-type"
+                                            >
+                                                ELECTIVE COURSE
+                                            </span>
+
+                                        {% else %}
+
+                                            <span
+                                                class="my-learning-course-type"
+                                            >
+                                                CORE COURSE
+                                            </span>
+
+                                        {% endif %}
+
+
+                                        <h3>
+                                            {{ course.course.title }}
+                                        </h3>
+
+
+                                        <p>
+                                            Continue your learning journey
+                                            through lessons, modules,
+                                            resources and assessments.
+                                        </p>
+
+                                    </div>
+
+
+                                    <!-- =================================
+                                         COURSE META
+                                         ================================= -->
+
+                                    <div class="my-learning-card-meta">
+
+
+                                        <div>
+
+                                            <span>
+                                                SEMESTER
+                                            </span>
+
+
+                                            <strong>
+                                                {{ course.course.semester|default:"—" }}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <span>
+                                                YEAR
+                                            </span>
+
+
+                                            <strong>
+                                                {{ course.course.year|default:"—" }}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <span>
+                                                CREDITS
+                                            </span>
+
+
+                                            <strong>
+                                                {{ course.course.credit|default:"0" }}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <span>
+                                                STATUS
+                                            </span>
+
+
+                                            <strong
+                                                class="learning-active-status"
+                                            >
+
+                                                {% if course.course.is_current_semester %}
+
+                                                    ACTIVE
+
+                                                {% else %}
+
+                                                    ENROLLED
+
+                                                {% endif %}
+
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- =================================
+                                         CARD FOOTER
+                                         ================================= -->
+
+                                    <div class="my-learning-card-footer">
+
+                                        <div
+                                            class="my-learning-enrolled-badge"
+                                        >
+
+                                            <i
+                                                class="fas fa-circle-check"
+                                            ></i>
+
+                                            ALREADY ENROLLED
+
+                                        </div>
+
+
+                                        <a
+                                            href="{% url 'course_start' course.course.slug %}"
+                                            class="my-learning-continue-btn"
+                                        >
+
+                                            <span>
+                                                CONTINUE LEARNING
+                                            </span>
+
+
+                                            <i
+                                                class="fas fa-arrow-right"
+                                            ></i>
+
+                                        </a>
+
+                                    </div>
+
+
+                                    <!-- =================================
+                                         DECORATIVE GRID
+                                         ================================= -->
+
+                                    <div
+                                        class="my-learning-card-grid"
+                                    ></div>
+
+
+                                    <!-- =================================
+                                         CARD GLOW
+                                         ================================= -->
+
+                                    <div
+                                        class="my-learning-card-glow"
+                                    ></div>
+
+                                </article>
+
+                            {% endfor %}
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         NEXT
+                         ================================================= -->
+
+                    <button
+                        type="button"
+                        id="my-learning-next"
+                        class="my-learning-carousel-btn"
+                        aria-label="Next course"
+                    >
+
+                        <i class="fas fa-chevron-right"></i>
+
+                    </button>
+
+                </div>
+
+
+                <!-- =================================================
+                     DOTS
+                     ================================================= -->
+
+                <div
+                    id="my-learning-dots"
+                    class="my-learning-carousel-dots"
+                ></div>
+
+
+                <!-- =================================================
+                     HINT
+                     ================================================= -->
+
+                <div class="my-learning-carousel-hint">
+
+                    <span class="my-learning-hint-line"></span>
+
+
+                    <i class="fas fa-arrows-left-right"></i>
+
+
+                    <span>
+                        Browse your enrolled courses
+                    </span>
+
+
+                    <span class="my-learning-hint-line"></span>
+
+                </div>
+
+
+            </section>
+
+
+        {% else %}
+
+            <!-- =================================================
+                 EMPTY STATE
+                 ================================================= -->
+
+            <section class="my-learning-empty">
+
+                <div class="my-learning-empty-icon">
+
+                    <i class="fas fa-book-open"></i>
+
+                </div>
+
+
+                <div class="my-learning-empty-content">
+
+                    <span>
+                        LEARNING SPACE
+                    </span>
+
+
+                    <h2>
+                        No Enrolled Courses Yet
+                    </h2>
+
+
+                    <p>
+                        Explore the available courses and choose a
+                        program to start your learning journey.
+                    </p>
+
+
+                    <a
+                        href="{% url 'course_registration' %}"
+                        class="my-learning-primary-btn"
+                    >
+
+                        <span>
+                            EXPLORE AVAILABLE COURSES
+                        </span>
+
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             EXPLORE ALL AVAILABLE COURSES
+             ===================================================== -->
+
+        <section class="my-learning-explore-panel">
+
+            <div class="my-learning-explore-orbit"></div>
+
+
+            <div class="my-learning-explore-icon">
+
+                <i class="fas fa-compass"></i>
+
+            </div>
+
+
+            <div class="my-learning-explore-content">
+
+                <span>
+                    COURSE DISCOVERY
+                </span>
+
+
+                <h2>
+                    Explore More Learning Opportunities
+                </h2>
+
+
+                <p>
+                    Browse the complete course catalog and discover
+                    additional technical courses and programs available
+                    for enrollment.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'course_registration' %}"
+                class="my-learning-explore-btn"
+            >
+
+                <span>
+                    EXPLORE ALL AVAILABLE COURSES
+                </span>
+
+
+                <i class="fas fa-arrow-right"></i>
+
+            </a>
+
+        </section>
+
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         LECTURER
+         ===================================================== -->
+
+    {% if request.user.is_lecturer %}
+
+        <section class="my-learning-faculty-section">
+
+
+            <div class="my-learning-section-header">
+
+                <div>
+
+                    <span class="my-learning-section-label">
+                        FACULTY OPERATIONS
+                    </span>
+
+
+                    <h2>
+                        Assigned Courses
+                    </h2>
+
+
+                    <p>
+                        Courses currently assigned to you.
+                    </p>
+
+                </div>
+
+
+                <div class="my-learning-course-counter">
+
+                    <strong>
+                        {{ courses|length }}
+                    </strong>
+
+
+                    <span>
+                        COURSES
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="my-learning-faculty-grid">
+
+
+                {% for course in courses %}
+
+                    <article
+                        class="my-learning-faculty-card"
+                    >
+
+
+                        <div class="my-learning-faculty-top">
+
+                            <span>
+                                ASSIGNED COURSE
+                            </span>
+
+
+                            <strong>
+                                {{ course.code|default:"COURSE" }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="my-learning-faculty-icon">
+
+                            <i
+                                class="fas fa-chalkboard-user"
+                            ></i>
+
+                        </div>
+
+
+                        <h3>
+                            {{ course.title }}
+                        </h3>
+
+
+                        <p>
+
+                            {% if course.semester %}
+                                {{ course.semester }}
+                            {% endif %}
+
+
+                            {% if course.year %}
+                                · Year {{ course.year }}
+                            {% endif %}
+
+                        </p>
+
+
+                        <a
+                            href="{% url 'course_detail' course.slug %}"
+                            class="my-learning-faculty-btn"
+                        >
+
+                            <span>
+                                OPEN COURSE
+                            </span>
+
+
+                            <i
+                                class="fas fa-arrow-right"
+                            ></i>
+
+                        </a>
+
+
+                    </article>
+
+
+                {% empty %}
+
+                    <div class="my-learning-faculty-empty">
+
+                        No courses are currently assigned.
+
+                    </div>
+
+                {% endfor %}
+
+
+            </div>
+
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="my-learning-footer">
+
+        <span>
+            C-DAC LMS
+        </span>
+
+
+        <span
+            class="my-learning-footer-divider"
+        ></span>
+
+
+        <span>
+            MY LEARNING ENVIRONMENT
+        </span>
+
+
+        <span
+            class="my-learning-footer-status"
+        >
+
+            <span></span>
+
+            SYSTEM READY
+
+        </span>
+
+    </footer>
+
+
 </div>
-{% endif %}
+
+
+<script
+    src="{% static 'js/my_courses.js' %}"
+></script>
+
 
 {% endblock content %}

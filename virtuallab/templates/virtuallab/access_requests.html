@@ -1,0 +1,4613 @@
+{% extends "base.html" %}
+
+{% block title %}
+Virtual Lab Access Control | HPC E-Learning Platform
+{% endblock title %}
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   ACCESS CONTROL CENTER
+   ========================================================= */
+
+.vl-access-page {
+
+    --ac-bg: #f5f8fc;
+    --ac-surface: rgba(255,255,255,.84);
+    --ac-border: rgba(15,23,42,.09);
+    --ac-text: #0f172a;
+    --ac-muted: #64748b;
+
+    --ac-cyan: #00a8d6;
+    --ac-blue: #2563eb;
+    --ac-purple: #7c3aed;
+    --ac-green: #16a34a;
+    --ac-red: #dc2626;
+
+    min-height: calc(100vh - 100px);
+
+    padding: 36px 42px 60px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    color: var(--ac-text);
+}
+
+
+[data-theme="dark"] .vl-access-page {
+
+    --ac-bg: #030914;
+    --ac-surface: rgba(8,20,37,.82);
+    --ac-border: rgba(0,217,255,.12);
+
+    --ac-text: #e8f4ff;
+    --ac-muted: #91a6bd;
+
+    --ac-cyan: #00d9ff;
+    --ac-blue: #3b82f6;
+    --ac-purple: #8b5cf6;
+    --ac-green: #22c55e;
+    --ac-red: #f87171;
+}
+
+
+/* =========================================================
+   BACKGROUND GRID
+   ========================================================= */
+
+.vl-access-page::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            rgba(0,217,255,.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0,217,255,.025) 1px,
+            transparent 1px
+        );
+
+    background-size: 42px 42px;
+}
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.vl-access-container {
+
+    width: min(1450px, 100%);
+
+    margin: 0 auto;
+
+    position: relative;
+
+    z-index: 1;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.vl-access-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 28px;
+}
+
+
+.vl-access-eyebrow {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 10px;
+
+    color: var(--ac-cyan);
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+
+.vl-access-status-dot {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--ac-green);
+
+    box-shadow:
+        0 0 0 4px rgba(34,197,94,.10),
+        0 0 12px rgba(34,197,94,.55);
+
+    animation: accessPulse 2s infinite;
+}
+
+
+@keyframes accessPulse {
+
+    0%,100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: .55;
+        transform: scale(.75);
+    }
+
+}
+
+
+.vl-access-title {
+
+    margin: 0;
+
+    font-size: clamp(2rem,4vw,3.5rem);
+
+    font-weight: 800;
+
+    letter-spacing: -1.8px;
+
+    line-height: 1.05;
+}
+
+
+.vl-access-title span {
+
+    background:
+        linear-gradient(
+            100deg,
+            var(--ac-cyan),
+            var(--ac-blue),
+            var(--ac-purple)
+        );
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    color: transparent;
+}
+
+
+.vl-access-description {
+
+    max-width: 720px;
+
+    margin: 13px 0 0;
+
+    color: var(--ac-muted);
+
+    font-size: 12px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   HEADER STATUS
+   ========================================================= */
+
+.vl-access-system-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 11px 14px;
+
+    border: 1px solid var(--ac-border);
+
+    border-radius: 9px;
+
+    background: var(--ac-surface);
+
+    backdrop-filter: blur(14px);
+
+    font-size: 8px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    color: var(--ac-green);
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+   ========================================================= */
+
+.vl-access-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+
+.vl-access-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    min-height: 38px;
+    padding: 0 13px;
+
+    border: 1px solid var(--ac-border);
+    border-radius: 9px;
+
+    background: var(--ac-surface);
+
+    color: var(--ac-muted);
+
+    text-decoration: none;
+
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1px;
+
+    backdrop-filter: blur(14px);
+
+    transition:
+        color .25s ease,
+        border-color .25s ease,
+        background .25s ease,
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+
+.vl-access-back i {
+    color: var(--ac-cyan);
+    transition: transform .25s ease;
+}
+
+
+.vl-access-back:hover {
+    color: var(--ac-text);
+
+    border-color: var(--ac-cyan);
+
+    background: rgba(0,217,255,.05);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 24px rgba(0,217,255,.08);
+}
+
+
+.vl-access-back:hover i {
+    transform: translateX(-3px);
+}
+
+
+/* =========================================================
+   METRICS
+   ========================================================= */
+
+.vl-access-metrics {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+
+.vl-access-metric {
+
+    padding: 17px 19px;
+
+    border: 1px solid var(--ac-border);
+
+    border-radius: 12px;
+
+    background: var(--ac-surface);
+
+    backdrop-filter: blur(16px);
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+.vl-access-metric::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 100px;
+    height: 100px;
+
+    right: -60px;
+    bottom: -60px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0,217,255,.10),
+            transparent 70%
+        );
+}
+
+
+.vl-access-metric-label {
+
+    display: block;
+
+    color: var(--ac-muted);
+
+    font-size: 7px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.4px;
+
+    margin-bottom: 6px;
+}
+
+
+.vl-access-metric-value {
+
+    color: var(--ac-text);
+
+    font-size: 24px;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   REQUEST PANEL
+   ========================================================= */
+
+.vl-request-panel {
+
+    border: 1px solid var(--ac-border);
+
+    border-radius: 16px;
+
+    background: var(--ac-surface);
+
+    backdrop-filter: blur(18px);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   PANEL HEADER
+   ========================================================= */
+
+.vl-request-panel-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 17px 20px;
+
+    border-bottom: 1px solid var(--ac-border);
+}
+
+
+.vl-request-panel-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+
+.vl-request-panel-title i {
+
+    color: var(--ac-cyan);
+}
+
+
+.vl-request-count {
+
+    min-width: 24px;
+
+    height: 24px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 6px;
+
+    background: rgba(0,217,255,.08);
+
+    border: 1px solid rgba(0,217,255,.16);
+
+    color: var(--ac-cyan);
+
+    font-size: 9px;
+
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   REQUEST ROW
+   ========================================================= */
+
+.vl-request-row {
+
+    display: grid;
+
+    grid-template-columns:
+        1.4fr
+        1.2fr
+        .8fr
+        1fr
+        auto;
+
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 17px 20px;
+
+    border-bottom: 1px solid var(--ac-border);
+
+    transition:
+        background .25s ease;
+}
+
+
+.vl-request-row:last-child {
+
+    border-bottom: none;
+}
+
+
+.vl-request-row:hover {
+
+    background:
+        rgba(0,217,255,.025);
+}
+
+
+/* =========================================================
+   STUDENT
+   ========================================================= */
+
+.vl-request-student {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 0;
+}
+
+
+.vl-request-avatar {
+
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background:
+        rgba(0,217,255,.07);
+
+    border: 1px solid rgba(0,217,255,.15);
+
+    color: var(--ac-cyan);
+
+    font-size: 12px;
+}
+
+
+.vl-request-student-name {
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.vl-request-student-username {
+
+    margin-top: 3px;
+
+    color: var(--ac-muted);
+
+    font-size: 7px;
+
+    letter-spacing: .4px;
+}
+
+
+/* =========================================================
+   LAB
+   ========================================================= */
+
+.vl-request-lab-name {
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+.vl-request-lab-type {
+
+    margin-top: 3px;
+
+    color: var(--ac-muted);
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: .8px;
+}
+
+
+/* =========================================================
+   REQUESTED
+   ========================================================= */
+
+.vl-request-time {
+
+    color: var(--ac-muted);
+
+    font-size: 8px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.vl-request-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    width: fit-content;
+
+    padding: 5px 8px;
+
+    border-radius: 5px;
+
+    border: 1px solid rgba(234,88,12,.16);
+
+    background: rgba(234,88,12,.06);
+
+    color: #ea580c;
+
+    font-size: 7px;
+
+    font-weight: 900;
+
+    letter-spacing: .8px;
+}
+
+
+/* =========================================================
+   PREVIOUS REJECTION STATUS
+   ========================================================= */
+
+.vl-access-request-status-cell {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 7px;
+
+    min-width: 0;
+}
+
+
+.vl-previous-rejection-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 5px 9px;
+
+    border: 1px solid rgba(245, 158, 11, .28);
+
+    border-radius: 999px;
+
+    background: rgba(245, 158, 11, .07);
+
+    color: #d97706;
+
+    font-size: 8px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    white-space: nowrap;
+}
+
+
+.vl-previous-rejection-badge i {
+
+    font-size: 8px;
+}
+
+
+.vl-previous-rejection-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    border: 1px solid var(--ac-border);
+
+    border-radius: 8px;
+
+    background: rgba(0, 217, 255, .035);
+
+    color: var(--ac-cyan);
+
+    font-family: inherit;
+
+    font-size: 8px;
+
+    font-weight: 900;
+
+    letter-spacing: .8px;
+
+    cursor: pointer;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.vl-previous-rejection-button:hover {
+
+    border-color: var(--ac-cyan);
+
+    background: rgba(0, 217, 255, .08);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 0 18px rgba(0, 217, 255, .08);
+}
+
+
+.vl-previous-rejection-button i {
+
+    font-size: 9px;
+}
+
+
+/* LIGHT THEME */
+
+[data-theme="light"] .vl-previous-rejection-badge {
+
+    color: #b45309;
+
+    background: rgba(245, 158, 11, .08);
+
+    border-color: rgba(180, 83, 9, .20);
+}
+
+
+/* MOBILE */
+
+@media (max-width: 760px) {
+
+    .vl-access-request-status-cell {
+
+        align-items: flex-start;
+    }
+
+    .vl-previous-rejection-button {
+
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.vl-request-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+.vl-request-action {
+
+    border-radius: 6px;
+
+    padding: 8px 11px;
+
+    font-size: 7px;
+
+    font-weight: 900;
+
+    letter-spacing: .7px;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+}
+
+
+.vl-request-action:hover {
+
+    transform: translateY(-1px);
+}
+
+
+.vl-request-approve {
+
+    border: 1px solid rgba(22,163,74,.25);
+
+    background: rgba(22,163,74,.07);
+
+    color: var(--ac-green);
+}
+
+
+.vl-request-approve:hover {
+
+    color: white;
+
+    background: var(--ac-green);
+
+    border-color: var(--ac-green);
+}
+
+
+.vl-request-reject {
+
+    border: 1px solid rgba(220,38,38,.20);
+
+    background: rgba(220,38,38,.05);
+
+    color: var(--ac-red);
+}
+
+
+.vl-request-reject:hover {
+
+    color: white;
+
+    background: var(--ac-red);
+
+    border-color: var(--ac-red);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.vl-request-empty {
+
+    padding: 70px 30px;
+
+    text-align: center;
+}
+
+
+.vl-request-empty-icon {
+
+    width: 55px;
+    height: 55px;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    border: 1px solid var(--ac-border);
+
+    background: rgba(0,217,255,.04);
+
+    color: var(--ac-cyan);
+
+    font-size: 20px;
+}
+
+
+.vl-request-empty h3 {
+
+    margin: 0 0 7px;
+
+    font-size: 17px;
+
+    font-weight: 800;
+}
+
+
+.vl-request-empty p {
+
+    margin: 0;
+
+    color: var(--ac-muted);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .vl-request-row {
+
+        grid-template-columns:
+            1.4fr
+            1fr
+            auto;
+    }
+
+    .vl-request-time,
+    .vl-request-status {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .vl-access-page {
+
+        padding: 25px 18px 45px;
+    }
+
+    .vl-access-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .vl-access-header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .vl-access-metrics {
+
+        grid-template-columns: 1fr;
+    }
+
+    .vl-request-row {
+
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+    }
+
+    .vl-request-time,
+    .vl-request-status {
+
+        display: block;
+    }
+
+    .vl-request-actions {
+
+        width: 100%;
+    }
+
+    .vl-request-action {
+
+        flex: 1;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .vl-access-page {
+
+        padding: 20px 12px 35px;
+    }
+
+}
+
+
+/* =========================================================
+   COMPUTE ENVIRONMENT MONITOR
+   ========================================================= */
+
+.vl-environment-panel {
+    margin-top: 24px;
+    border: 1px solid var(--vl-border);
+    border-radius: 18px;
+    background: var(--vl-surface);
+    overflow: hidden;
+}
+
+.vl-environment-panel-header {
+    min-height: 70px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--vl-border);
+}
+
+.vl-environment-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--vl-text);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.vl-environment-panel-title > i {
+    color: var(--vl-accent);
+}
+
+.vl-environment-count {
+    min-width: 24px;
+    height: 24px;
+    padding: 0 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: var(--vl-surface-strong);
+    border: 1px solid var(--vl-border);
+    color: var(--vl-accent);
+    font-size: 9px;
+}
+
+.vl-environment-panel-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--vl-muted);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.vl-environment-table {
+    width: 100%;
+}
+
+.vl-environment-table-head,
+.vl-environment-row {
+    display: grid;
+    grid-template-columns: 1.25fr 1.2fr 1.4fr 0.8fr;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 20px;
+}
+
+.vl-environment-table-head {
+    background: var(--vl-surface-strong);
+    border-bottom: 1px solid var(--vl-border);
+    color: var(--vl-muted);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+}
+
+.vl-environment-row {
+    min-height: 78px;
+    border-bottom: 1px solid var(--vl-border);
+    transition: background 0.25s ease;
+}
+
+.vl-environment-row:last-child {
+    border-bottom: 0;
+}
+
+.vl-environment-row:hover {
+    background: var(--vl-surface-strong);
+}
+
+.vl-environment-student,
+.vl-environment-workspace {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.vl-environment-avatar,
+.vl-environment-workspace-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--vl-border);
+    border-radius: 9px;
+    background: var(--vl-surface-strong);
+    color: var(--vl-accent);
+}
+
+.vl-environment-student strong,
+.vl-environment-lab strong,
+.vl-environment-workspace strong {
+    display: block;
+    color: var(--vl-text);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.vl-environment-student small,
+.vl-environment-lab small,
+.vl-environment-workspace small {
+    display: block;
+    margin-top: 3px;
+    color: var(--vl-muted);
+    font-size: 8px;
+}
+
+.vl-environment-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--vl-text);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+}
+
+.vl-environment-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--vl-muted);
+    box-shadow: 0 0 8px currentColor;
+}
+
+.vl-environment-status-dot.status-provisioning {
+    color: #f59e0b;
+    background: #f59e0b;
+}
+
+.vl-environment-status-dot.status-ready {
+    color: #22c55e;
+    background: #22c55e;
+}
+
+.vl-environment-status-dot.status-running {
+    color: var(--vl-accent);
+    background: var(--vl-accent);
+}
+
+.vl-environment-status-dot.status-stopped {
+    color: #94a3b8;
+    background: #94a3b8;
+}
+
+.vl-environment-status-dot.status-error {
+    color: #ef4444;
+    background: #ef4444;
+}
+
+.vl-environment-empty {
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    color: var(--vl-muted);
+}
+
+.vl-environment-empty i {
+    margin-bottom: 5px;
+    color: var(--vl-accent);
+    font-size: 22px;
+}
+
+.vl-environment-empty strong {
+    color: var(--vl-text);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.vl-environment-empty span {
+    font-size: 8px;
+}
+
+@media (max-width: 900px) {
+    .vl-environment-table-head {
+        display: none;
+    }
+
+    .vl-environment-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+}
+
+@media (max-width: 600px) {
+    .vl-environment-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .vl-environment-row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px;
+    }
+
+    .vl-environment-status {
+        justify-self: flex-start;
+    }
+}
+
+
+/* =========================================================
+   ACCESS CONTROL — SYSTEM OVERVIEW
+   ========================================================= */
+
+.vl-access-dashboard {
+    margin-bottom: 28px;
+}
+
+.vl-access-dashboard-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 18px;
+}
+
+.vl-access-section-index {
+    margin-bottom: 7px;
+    color: var(--ac-cyan);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+}
+
+.vl-access-dashboard-header h2 {
+    margin: 0;
+    color: var(--ac-text);
+    font-size: clamp(22px, 2.4vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.8px;
+}
+
+.vl-access-dashboard-header h2 span {
+    color: var(--ac-cyan);
+}
+
+.vl-access-dashboard-header p {
+    max-width: 620px;
+    margin: 8px 0 0;
+    color: var(--ac-muted);
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.vl-access-live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 0 12px;
+    flex-shrink: 0;
+    border: 1px solid var(--ac-border);
+    border-radius: 8px;
+    background: var(--ac-surface);
+    color: var(--ac-muted);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1.1px;
+    backdrop-filter: blur(14px);
+}
+
+.vl-access-live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ac-cyan);
+    box-shadow: 0 0 10px var(--ac-cyan);
+    animation: vlAccessLivePulse 2s ease-in-out infinite;
+}
+
+@keyframes vlAccessLivePulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.45;
+        transform: scale(0.75);
+    }
+}
+
+
+/* =========================================================
+   STAT GRID
+   ========================================================= */
+
+.vl-access-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.vl-access-stat-card {
+    position: relative;
+    min-height: 158px;
+    padding: 17px;
+    overflow: hidden;
+    border: 1px solid var(--ac-border);
+    border-radius: 14px;
+    background:
+        linear-gradient(
+            145deg,
+            var(--ac-surface),
+            rgba(255, 255, 255, 0.015)
+        );
+    backdrop-filter: blur(18px);
+    transition:
+        transform 0.28s ease,
+        border-color 0.28s ease,
+        box-shadow 0.28s ease;
+}
+
+.vl-access-stat-card::before {
+    content: "";
+    position: absolute;
+    top: -55px;
+    right: -55px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: var(--ac-cyan);
+    opacity: 0.035;
+    filter: blur(22px);
+    pointer-events: none;
+}
+
+.vl-access-stat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(0, 217, 255, 0.35);
+    box-shadow:
+        0 14px 35px rgba(0, 0, 0, 0.14),
+        0 0 25px rgba(0, 217, 255, 0.035);
+}
+
+.vl-access-stat-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.vl-access-stat-label {
+    color: var(--ac-muted);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1.3px;
+}
+
+.vl-access-stat-icon {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid var(--ac-border);
+    border-radius: 9px;
+    background: var(--ac-surface);
+    color: var(--ac-cyan);
+    font-size: 12px;
+}
+
+.vl-access-stat-value {
+    margin-top: 20px;
+    color: var(--ac-text);
+    font-size: clamp(30px, 3vw, 42px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -1.5px;
+}
+
+.vl-access-stat-bottom {
+    position: absolute;
+    right: 17px;
+    bottom: 15px;
+    left: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--ac-muted);
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+}
+
+.vl-access-stat-bottom i {
+    color: var(--ac-cyan);
+    font-size: 9px;
+}
+
+.vl-access-stat-alert {
+    color: #f59e0b;
+}
+
+.vl-access-stat-ok {
+    color: #22c55e;
+}
+
+
+/* =========================================================
+   CARD ACCENTS
+   ========================================================= */
+
+.vl-access-stat-card.stat-pending {
+    border-top-color: rgba(245, 158, 11, 0.55);
+}
+
+.vl-access-stat-card.stat-pending .vl-access-stat-icon {
+    color: #f59e0b;
+}
+
+.vl-access-stat-card.stat-approved {
+    border-top-color: rgba(34, 197, 94, 0.55);
+}
+
+.vl-access-stat-card.stat-approved .vl-access-stat-icon {
+    color: #22c55e;
+}
+
+.vl-access-stat-card.stat-rejected {
+    border-top-color: rgba(239, 68, 68, 0.45);
+}
+
+.vl-access-stat-card.stat-rejected .vl-access-stat-icon {
+    color: #ef4444;
+}
+
+
+/* =========================================================
+   LIGHT THEME REFINEMENT
+   ========================================================= */
+
+[data-theme="light"] .vl-access-stat-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.94),
+            rgba(242, 247, 252, 0.88)
+        );
+    box-shadow:
+        0 8px 25px rgba(15, 23, 42, 0.045);
+}
+
+[data-theme="light"] .vl-access-stat-card:hover {
+    box-shadow:
+        0 15px 32px rgba(15, 23, 42, 0.08),
+        0 0 22px rgba(0, 140, 210, 0.06);
+}
+
+[data-theme="light"] .vl-access-stat-icon {
+    background: rgba(0, 140, 210, 0.045);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1150px) {
+
+    .vl-access-stat-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 760px) {
+
+    .vl-access-dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .vl-access-live-indicator {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .vl-access-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .vl-access-stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .vl-access-stat-card {
+        min-height: 145px;
+    }
+
+}
+
+
+/* =========================================================
+   LAB-WISE ACCESS OVERVIEW
+   ========================================================= */
+
+.vl-lab-overview {
+    margin-bottom: 28px;
+}
+
+.vl-lab-overview-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 18px;
+}
+
+.vl-lab-overview-header h2 {
+    margin: 0;
+    color: var(--ac-text);
+    font-size: clamp(22px, 2.4vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.8px;
+}
+
+.vl-lab-overview-header h2 span {
+    color: var(--ac-cyan);
+}
+
+.vl-lab-overview-header p {
+    max-width: 650px;
+    margin: 8px 0 0;
+    color: var(--ac-muted);
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.vl-lab-overview-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 150px;
+    padding: 9px 12px;
+    border: 1px solid var(--ac-border);
+    border-radius: 10px;
+    background: var(--ac-surface);
+}
+
+.vl-lab-overview-meta-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--ac-border);
+    border-radius: 8px;
+    color: var(--ac-cyan);
+    background: var(--ac-surface);
+}
+
+.vl-lab-overview-meta strong {
+    display: block;
+    color: var(--ac-text);
+    font-size: 16px;
+    line-height: 1;
+}
+
+.vl-lab-overview-meta small {
+    display: block;
+    margin-top: 4px;
+    color: var(--ac-muted);
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+}
+
+
+/* =========================================================
+   LAB GRID
+   ========================================================= */
+
+.vl-lab-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.vl-lab-card {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--ac-border);
+    border-radius: 16px;
+    background:
+        linear-gradient(
+            145deg,
+            var(--ac-surface),
+            rgba(255, 255, 255, 0.012)
+        );
+    backdrop-filter: blur(18px);
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.vl-lab-card::before {
+    content: "";
+    position: absolute;
+    top: -80px;
+    right: -70px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: var(--ac-cyan);
+    opacity: 0.025;
+    filter: blur(30px);
+    pointer-events: none;
+}
+
+.vl-lab-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 217, 255, 0.35);
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.16),
+        0 0 28px rgba(0, 217, 255, 0.04);
+}
+
+
+/* =========================================================
+   LAB HEADER
+   ========================================================= */
+
+.vl-lab-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 17px 17px 13px;
+}
+
+.vl-lab-card-identity {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.vl-lab-card-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 10px;
+    background: rgba(0, 217, 255, 0.035);
+    color: var(--ac-cyan);
+    font-size: 14px;
+}
+
+.vl-lab-card-name {
+    min-width: 0;
+}
+
+.vl-lab-card-name h3 {
+    margin: 0;
+    overflow: hidden;
+    color: var(--ac-text);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vl-lab-card-name span {
+    display: block;
+    margin-top: 4px;
+    color: var(--ac-muted);
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.vl-lab-card-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    color: #22c55e;
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: 0.6px;
+}
+
+.vl-lab-card-status span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+}
+
+
+/* =========================================================
+   TECHNOLOGY
+   ========================================================= */
+
+.vl-lab-card-technology {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 17px 13px;
+    padding: 6px 8px;
+    border: 1px solid var(--ac-border);
+    border-radius: 7px;
+    background: var(--ac-surface);
+    color: var(--ac-muted);
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.vl-lab-card-technology i {
+    color: var(--ac-cyan);
+}
+
+
+/* =========================================================
+   ACCESS STATISTICS
+   ========================================================= */
+
+.vl-lab-card-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0 17px;
+    border: 1px solid var(--ac-border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.vl-lab-stat {
+    min-width: 0;
+    padding: 12px 10px;
+    background: rgba(255, 255, 255, 0.012);
+}
+
+.vl-lab-stat + .vl-lab-stat {
+    border-left: 1px solid var(--ac-border);
+}
+
+.vl-lab-stat-label {
+    display: block;
+    color: var(--ac-muted);
+    font-size: 6.5px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+}
+
+.vl-lab-stat strong {
+    display: block;
+    margin-top: 7px;
+    color: var(--ac-text);
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.vl-lab-stat-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 7px;
+    font-size: 6px;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+}
+
+.vl-lab-stat-indicator i {
+    font-size: 7px;
+}
+
+.vl-lab-stat.approved .vl-lab-stat-indicator {
+    color: #22c55e;
+}
+
+.vl-lab-stat.pending .vl-lab-stat-indicator {
+    color: #f59e0b;
+}
+
+.vl-lab-stat.rejected .vl-lab-stat-indicator {
+    color: #ef4444;
+}
+
+
+/* =========================================================
+   ENVIRONMENT SUMMARY
+   ========================================================= */
+
+.vl-lab-environment-summary {
+    margin: 15px 17px 0;
+}
+
+.vl-lab-environment-label,
+.vl-lab-environment-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.vl-lab-environment-label {
+    color: var(--ac-muted);
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: 0.7px;
+}
+
+.vl-lab-environment-label span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.vl-lab-environment-label i {
+    color: var(--ac-cyan);
+}
+
+.vl-lab-environment-label strong {
+    color: var(--ac-text);
+    font-size: 10px;
+}
+
+.vl-lab-environment-bar {
+    height: 4px;
+    margin-top: 9px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: var(--ac-border);
+}
+
+.vl-lab-environment-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--ac-cyan);
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.35);
+    transition: width 0.5s ease;
+}
+
+.vl-lab-environment-footer {
+    margin-top: 6px;
+    color: var(--ac-muted);
+    font-size: 6px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+}
+
+
+/* =========================================================
+   CARD FOOTER
+   ========================================================= */
+
+.vl-lab-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 12px 17px;
+    border-top: 1px solid var(--ac-border);
+}
+
+.vl-lab-card-footer > span {
+    color: var(--ac-muted);
+    font-size: 6.5px;
+    font-weight: 900;
+    letter-spacing: 0.7px;
+}
+
+.vl-lab-details-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 7px 9px;
+
+    border: 1px solid var(--ac-border);
+    border-radius: 7px;
+
+    background: var(--ac-surface);
+    color: var(--ac-cyan);
+
+    font-size: 6.5px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+
+    text-decoration: none;
+
+    opacity: 1;
+    cursor: pointer;
+
+    transition:
+        color 0.22s ease,
+        border-color 0.22s ease,
+        background 0.22s ease,
+        transform 0.22s ease,
+        box-shadow 0.22s ease;
+}
+
+.vl-lab-details-button i {
+    font-size: 7px;
+    transition: transform 0.22s ease;
+}
+
+.vl-lab-details-button:hover {
+    color: var(--ac-text);
+    border-color: var(--ac-cyan);
+    background: rgba(0, 217, 255, 0.05);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 20px rgba(0, 217, 255, 0.06);
+}
+
+.vl-lab-details-button:hover i {
+    transform: translateX(3px);
+}
+
+.vl-lab-details-button:focus-visible {
+    outline: 2px solid var(--ac-cyan);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.vl-lab-empty {
+    grid-column: 1 / -1;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px dashed var(--ac-border);
+    border-radius: 14px;
+    color: var(--ac-muted);
+    text-align: center;
+}
+
+.vl-lab-empty-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+    border: 1px solid var(--ac-border);
+    border-radius: 12px;
+    color: var(--ac-cyan);
+}
+
+.vl-lab-empty strong {
+    color: var(--ac-text);
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+.vl-lab-empty span {
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+[data-theme="light"] .vl-lab-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.96),
+            rgba(242, 247, 252, 0.9)
+        );
+    box-shadow:
+        0 8px 26px rgba(15, 23, 42, 0.045);
+}
+
+[data-theme="light"] .vl-lab-card:hover {
+    box-shadow:
+        0 16px 34px rgba(15, 23, 42, 0.08),
+        0 0 22px rgba(0, 140, 210, 0.05);
+}
+
+[data-theme="light"] .vl-lab-card-icon {
+    background: rgba(0, 140, 210, 0.045);
+}
+
+[data-theme="light"] .vl-lab-stat {
+    background: rgba(15, 23, 42, 0.012);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .vl-lab-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 760px) {
+
+    .vl-lab-overview-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .vl-lab-overview-meta {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 560px) {
+
+    .vl-lab-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .vl-lab-card-header {
+        flex-direction: column;
+    }
+
+    .vl-lab-card-status {
+        margin-left: 51px;
+    }
+
+}
+
+@media (max-width: 400px) {
+
+    .vl-lab-card-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .vl-lab-stat + .vl-lab-stat {
+        border-top: 1px solid var(--ac-border);
+        border-left: 0;
+    }
+
+}
+
+/* =========================================================
+   ACCESS CONTROL — REJECTION MODAL
+   SYNCED WITH ACCESS CONTROL CENTER UI
+   ========================================================= */
+
+.vl-access-reject-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.vl-access-reject-modal.active {
+    display: flex;
+}
+
+
+/* ---------------------------------------------------------
+   BACKDROP
+   --------------------------------------------------------- */
+
+.vl-access-reject-backdrop {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(3, 9, 20, 0.72);
+
+    backdrop-filter: blur(7px);
+}
+
+[data-theme="light"] .vl-access-reject-backdrop {
+    background: rgba(15, 23, 42, 0.34);
+}
+
+
+/* ---------------------------------------------------------
+   MODAL CARD
+   --------------------------------------------------------- */
+
+.vl-access-reject-card {
+    position: relative;
+    z-index: 1;
+
+    width: min(470px, 100%);
+
+    overflow: hidden;
+
+    border: 1px solid var(--ac-border);
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            var(--ac-surface),
+            rgba(0, 217, 255, 0.018)
+        );
+
+    box-shadow:
+        0 26px 70px rgba(0, 0, 0, 0.28);
+
+    backdrop-filter: blur(22px);
+
+    animation: accessRejectModalIn 0.22s ease;
+}
+
+[data-theme="light"] .vl-access-reject-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.97),
+            rgba(244, 248, 252, 0.96)
+        );
+
+    box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.14);
+}
+
+@keyframes accessRejectModalIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   TOP ROW
+   --------------------------------------------------------- */
+
+.vl-access-reject-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 18px;
+
+    border-bottom: 1px solid var(--ac-border);
+}
+
+
+/* ---------------------------------------------------------
+   WARNING ICON
+   --------------------------------------------------------- */
+
+.vl-access-reject-icon {
+    width: 38px;
+    height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(220, 38, 38, 0.20);
+    border-radius: 9px;
+
+    background: rgba(220, 38, 38, 0.045);
+
+    color: var(--ac-red);
+
+    font-size: 13px;
+}
+
+
+/* ---------------------------------------------------------
+   CLOSE
+   --------------------------------------------------------- */
+
+.vl-access-reject-close {
+    width: 29px;
+    height: 29px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--ac-border);
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: var(--ac-muted);
+
+    cursor: pointer;
+
+    transition:
+        color .2s ease,
+        border-color .2s ease,
+        background .2s ease,
+        transform .2s ease;
+}
+
+.vl-access-reject-close:hover {
+    color: var(--ac-text);
+    border-color: var(--ac-red);
+    background: rgba(220, 38, 38, .04);
+
+    transform: rotate(4deg);
+}
+
+
+/* ---------------------------------------------------------
+   BODY
+   --------------------------------------------------------- */
+
+.vl-access-reject-body {
+    padding: 19px 18px 18px;
+}
+
+
+.vl-access-reject-eyebrow {
+    margin-bottom: 6px;
+
+    color: var(--ac-red);
+
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+
+.vl-access-reject-body h3 {
+    margin: 0;
+
+    color: var(--ac-text);
+
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+
+    letter-spacing: -.3px;
+}
+
+
+.vl-access-reject-body > p {
+    margin: 8px 0 17px;
+
+    color: var(--ac-muted);
+
+    font-size: 8.5px;
+    line-height: 1.65;
+}
+
+.vl-access-reject-body > p strong {
+    color: var(--ac-text);
+    font-weight: 800;
+}
+
+
+/* ---------------------------------------------------------
+   TEXTAREA
+   --------------------------------------------------------- */
+
+.vl-access-reject-body label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--ac-muted);
+
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+
+.vl-access-reject-body textarea {
+    width: 100%;
+    min-height: 92px;
+
+    box-sizing: border-box;
+
+    padding: 10px 11px;
+
+    resize: vertical;
+
+    border: 1px solid var(--ac-border);
+    border-radius: 8px;
+
+    outline: none;
+
+    background: rgba(255, 255, 255, 0.012);
+
+    color: var(--ac-text);
+
+    font-family: inherit;
+    font-size: 8px;
+    line-height: 1.6;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+[data-theme="light"] .vl-access-reject-body textarea {
+    background: rgba(15, 23, 42, 0.018);
+}
+
+.vl-access-reject-body textarea::placeholder {
+    color: var(--ac-muted);
+}
+
+.vl-access-reject-body textarea:focus {
+    border-color: rgba(220, 38, 38, 0.38);
+
+    background:
+        rgba(220, 38, 38, 0.015);
+
+    box-shadow:
+        0 0 0 3px rgba(220, 38, 38, 0.045);
+}
+
+
+/* ---------------------------------------------------------
+   META
+   --------------------------------------------------------- */
+
+.vl-access-reject-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 6px;
+
+    color: var(--ac-muted);
+
+    font-size: 6px;
+    line-height: 1.4;
+}
+
+
+/* ---------------------------------------------------------
+   ACTIONS
+   --------------------------------------------------------- */
+
+.vl-access-reject-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 17px;
+}
+
+
+.vl-access-reject-cancel,
+.vl-access-reject-confirm {
+    min-height: 32px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    padding: 0 11px;
+
+    border-radius: 6px;
+
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: .65px;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        box-shadow .2s ease;
+}
+
+
+/* CANCEL */
+
+.vl-access-reject-cancel {
+    border: 1px solid var(--ac-border);
+
+    background: transparent;
+
+    color: var(--ac-muted);
+}
+
+.vl-access-reject-cancel:hover {
+    transform: translateY(-1px);
+
+    border-color: var(--ac-cyan);
+
+    color: var(--ac-text);
+
+    background: rgba(0, 217, 255, 0.025);
+}
+
+
+/* CONFIRM */
+
+.vl-access-reject-confirm {
+    border: 1px solid rgba(220, 38, 38, 0.20);
+
+    background: rgba(220, 38, 38, 0.05);
+
+    color: var(--ac-red);
+}
+
+.vl-access-reject-confirm:hover {
+    transform: translateY(-1px);
+
+    border-color: var(--ac-red);
+
+    background: var(--ac-red);
+
+    color: #ffffff;
+
+    box-shadow:
+        0 7px 18px rgba(220, 38, 38, 0.10);
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT THEME REFINEMENT
+   --------------------------------------------------------- */
+
+[data-theme="light"] .vl-access-reject-confirm {
+    background: rgba(220, 38, 38, 0.035);
+}
+
+[data-theme="light"] .vl-access-reject-confirm:hover {
+    background: var(--ac-red);
+    color: #ffffff;
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 520px) {
+
+    .vl-access-reject-modal {
+        padding: 14px;
+    }
+
+    .vl-access-reject-card {
+        width: 100%;
+        border-radius: 14px;
+    }
+
+    .vl-access-reject-header {
+        padding: 14px 15px;
+    }
+
+    .vl-access-reject-body {
+        padding: 17px 15px 15px;
+    }
+
+    .vl-access-reject-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .vl-access-reject-cancel,
+    .vl-access-reject-confirm {
+        width: 100%;
+    }
+}
+/* =========================================================
+   PREVIOUS REJECTION DETAILS MODAL
+   ========================================================= */
+
+.vl-access-previous-rejection-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 99999;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+}
+
+
+.vl-access-previous-rejection-modal.is-open {
+
+    display: flex;
+}
+
+
+.vl-access-previous-rejection-backdrop {
+
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(2, 8, 18, .72);
+
+    backdrop-filter: blur(10px);
+}
+
+
+.vl-access-previous-rejection-card {
+
+    position: relative;
+
+    z-index: 1;
+
+    width: min(650px, 100%);
+
+    max-height: calc(100vh - 40px);
+
+    overflow-y: auto;
+
+    padding: 26px;
+
+    border: 1px solid var(--ac-border);
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(8, 20, 37, .97),
+            rgba(7, 17, 31, .95)
+        );
+
+    color: var(--ac-text);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, .35),
+        0 0 40px rgba(0, 217, 255, .06);
+}
+
+
+.vl-access-previous-rejection-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+.vl-access-previous-rejection-eyebrow {
+
+    margin-bottom: 7px;
+
+    color: var(--ac-cyan);
+
+    font-size: 8px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+
+.vl-access-previous-rejection-header h2 {
+
+    margin: 0;
+
+    font-size: 24px;
+
+    font-weight: 800;
+}
+
+
+.vl-access-previous-rejection-close {
+
+    width: 36px;
+
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid var(--ac-border);
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, .025);
+
+    color: var(--ac-muted);
+
+    cursor: pointer;
+
+    transition:
+        color .2s ease,
+        border-color .2s ease,
+        background .2s ease;
+}
+
+
+.vl-access-previous-rejection-close:hover {
+
+    color: var(--ac-red);
+
+    border-color: rgba(248, 113, 113, .35);
+
+    background: rgba(248, 113, 113, .06);
+}
+
+
+.vl-access-previous-rejection-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 18px;
+
+    padding: 7px 10px;
+
+    border: 1px solid rgba(245, 158, 11, .28);
+
+    border-radius: 999px;
+
+    background: rgba(245, 158, 11, .07);
+
+    color: #f59e0b;
+
+    font-size: 8px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+
+.vl-access-previous-rejection-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-bottom: 18px;
+}
+
+
+.vl-access-previous-rejection-grid > div {
+
+    padding: 12px 13px;
+
+    border: 1px solid var(--ac-border);
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, .018);
+}
+
+
+.vl-access-previous-rejection-grid span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--ac-muted);
+
+    font-size: 7px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.1px;
+}
+
+
+.vl-access-previous-rejection-grid strong {
+
+    display: block;
+
+    color: var(--ac-text);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    word-break: break-word;
+}
+
+
+.vl-access-previous-rejection-reason {
+
+    padding: 15px;
+
+    border: 1px solid rgba(248, 113, 113, .16);
+
+    border-radius: 12px;
+
+    background: rgba(248, 113, 113, .035);
+}
+
+
+.vl-access-previous-rejection-reason-label {
+
+    margin-bottom: 8px;
+
+    color: var(--ac-red);
+
+    font-size: 8px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.4px;
+}
+
+
+.vl-access-previous-rejection-reason-text {
+
+    color: var(--ac-text);
+
+    font-size: 12px;
+
+    line-height: 1.65;
+
+    white-space: pre-wrap;
+}
+
+
+.vl-access-previous-rejection-footer {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: 20px;
+}
+
+
+.vl-access-previous-rejection-done {
+
+    padding: 9px 18px;
+
+    border: 1px solid var(--ac-border);
+
+    border-radius: 9px;
+
+    background: rgba(0, 217, 255, .06);
+
+    color: var(--ac-cyan);
+
+    font-family: inherit;
+
+    font-size: 8px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease;
+}
+
+
+.vl-access-previous-rejection-done:hover {
+
+    background: rgba(0, 217, 255, .11);
+
+    border-color: var(--ac-cyan);
+}
+
+
+/* LIGHT THEME */
+
+[data-theme="light"] .vl-access-previous-rejection-card {
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, .98),
+            rgba(244, 248, 252, .97)
+        );
+
+    box-shadow:
+        0 30px 70px rgba(15, 23, 42, .18);
+}
+
+
+[data-theme="light"] .vl-access-previous-rejection-grid > div {
+
+    background: rgba(15, 23, 42, .018);
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .vl-access-previous-rejection-card {
+
+        padding: 20px;
+    }
+
+
+    .vl-access-previous-rejection-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================================================
+   ACCESS CONTROL - READABILITY + ADMIN NAVIGATION
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   ADMIN NAVIGATION
+   --------------------------------------------------------- */
+
+.vl-access-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.vl-access-header-actions .vl-access-back {
+    min-height: 44px;
+    padding: 0 16px;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.08),
+            rgba(255,255,255,.025)
+        );
+}
+
+/* Lab Management */
+
+.vl-access-header-actions .vl-access-back:first-child {
+    border-color: rgba(0, 168, 214, .28);
+}
+
+.vl-access-header-actions .vl-access-back:first-child i {
+    color: var(--ac-cyan);
+}
+
+/* Docker Environment */
+
+.vl-access-header-actions .vl-access-back:last-child {
+    border-color: rgba(124, 58, 237, .25);
+}
+
+.vl-access-header-actions .vl-access-back:last-child i {
+    color: var(--ac-purple);
+}
+
+/* Hover */
+
+.vl-access-header-actions .vl-access-back:hover {
+    transform: translateY(-2px);
+}
+
+.vl-access-header-actions .vl-access-back:first-child:hover {
+    border-color: var(--ac-cyan);
+    background: rgba(0, 217, 255, .07);
+    box-shadow: 0 8px 22px rgba(0, 217, 255, .08);
+}
+
+.vl-access-header-actions .vl-access-back:last-child:hover {
+    border-color: var(--ac-purple);
+    background: rgba(124, 58, 237, .07);
+    box-shadow: 0 8px 22px rgba(124, 58, 237, .08);
+}
+
+
+/* ---------------------------------------------------------
+   SLIGHTLY LARGER / CLEARER TYPOGRAPHY
+   --------------------------------------------------------- */
+
+.vl-access-description {
+    font-size: 13px;
+}
+
+.vl-access-system-status {
+    font-size: 9px;
+}
+
+.vl-access-metric-label {
+    font-size: 8px;
+}
+
+.vl-access-metric-value {
+    font-size: 26px;
+}
+
+.vl-request-panel-title {
+    font-size: 12px;
+}
+
+.vl-request-count {
+    font-size: 10px;
+}
+
+.vl-request-student-name {
+    font-size: 11px;
+}
+
+.vl-request-student-username {
+    font-size: 8px;
+}
+
+.vl-request-lab-name {
+    font-size: 11px;
+}
+
+.vl-request-lab-type {
+    font-size: 8px;
+}
+
+.vl-request-time {
+    font-size: 9px;
+}
+
+.vl-request-status {
+    font-size: 8px;
+}
+
+.vl-request-action {
+    font-size: 8px;
+}
+
+.vl-previous-rejection-badge {
+    font-size: 9px;
+}
+
+.vl-previous-rejection-button {
+    font-size: 9px;
+}
+
+
+/* ---------------------------------------------------------
+   ENVIRONMENT MONITOR
+   --------------------------------------------------------- */
+
+.vl-environment-panel-title {
+    font-size: 12px;
+}
+
+.vl-environment-panel-status {
+    font-size: 9px;
+}
+
+.vl-environment-table-head {
+    font-size: 9px;
+}
+
+.vl-environment-student strong,
+.vl-environment-lab strong,
+.vl-environment-workspace strong {
+    font-size: 12px;
+}
+
+.vl-environment-student small,
+.vl-environment-lab small,
+.vl-environment-workspace small {
+    font-size: 9px;
+}
+
+.vl-environment-status {
+    font-size: 9px;
+}
+
+
+/* ---------------------------------------------------------
+   LAB OVERVIEW
+   --------------------------------------------------------- */
+
+.vl-access-dashboard-header p,
+.vl-lab-overview-header p {
+    font-size: 11px;
+}
+
+.vl-access-section-index {
+    font-size: 9px;
+}
+
+.vl-access-stat-label {
+    font-size: 9px;
+}
+
+.vl-access-stat-bottom {
+    font-size: 8px;
+}
+
+.vl-lab-card-name h3 {
+    font-size: 13px;
+}
+
+.vl-lab-card-name span {
+    font-size: 8px;
+}
+
+.vl-lab-card-status {
+    font-size: 8px;
+}
+
+.vl-lab-card-technology {
+    font-size: 8px;
+}
+
+.vl-lab-stat-label {
+    font-size: 7px;
+}
+
+.vl-lab-stat-indicator {
+    font-size: 7px;
+}
+
+.vl-lab-environment-label {
+    font-size: 8px;
+}
+
+.vl-lab-environment-label strong {
+    font-size: 11px;
+}
+
+.vl-lab-environment-footer {
+    font-size: 7px;
+}
+
+.vl-lab-card-footer > span {
+    font-size: 7px;
+}
+
+.vl-lab-details-button {
+    font-size: 7px;
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT THEME - STRONGER TEXT CONTRAST
+   --------------------------------------------------------- */
+
+[data-theme="light"] .vl-access-page {
+    --ac-text: #17212b;
+    --ac-muted: #536273;
+    --ac-border: rgba(15, 23, 42, .13);
+}
+
+[data-theme="light"] .vl-access-description,
+[data-theme="light"] .vl-access-dashboard-header p,
+[data-theme="light"] .vl-lab-overview-header p {
+    color: #4b5b6b;
+}
+
+[data-theme="light"] .vl-request-student-username,
+[data-theme="light"] .vl-request-lab-type,
+[data-theme="light"] .vl-request-time,
+[data-theme="light"] .vl-environment-student small,
+[data-theme="light"] .vl-environment-lab small,
+[data-theme="light"] .vl-environment-workspace small {
+    color: #596979;
+}
+
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 760px) {
+
+    .vl-access-header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .vl-access-header-actions .vl-access-back {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .vl-access-header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .vl-access-header-actions .vl-access-back {
+        width: 100%;
+    }
+}
+
+</style>
+
+{% endblock extra_css %}
+
+
+{% block content %}
+
+<div class="vl-access-page">
+
+    <div class="vl-access-container">
+
+
+
+       
+
+
+        <!-- =================================================
+             HEADER
+             ================================================= -->
+
+        <div class="vl-access-header">
+
+            <div>
+
+                <div class="vl-access-eyebrow">
+
+                    <span class="vl-access-status-dot"></span>
+
+                    HPC ACCESS CONTROL CENTER
+
+                </div>
+
+
+                <h1 class="vl-access-title">
+
+                    Virtual Lab <span>Requests.</span>
+
+                </h1>
+
+
+                <p class="vl-access-description">
+
+                    Review student access requests and authorize
+                    isolated computing environments across the
+                    HPC learning infrastructure.
+
+                </p>
+
+            </div>
+
+
+            <div class="vl-access-header-actions">
+
+
+                <div class="vl-access-header-actions">
+
+                    {% if request.GET.from == "overview" %}
+                    <a
+                        href="{% url 'virtuallab:lab_manager_overview' lab.id %}"
+                        class="vl-access-back"
+                    >
+                        <i class="fas fa-arrow-left"></i>
+                        LAB OVERVIEW
+                    </a>
+                    {% endif %}
+
+                    <a
+                        href="{% url 'virtuallab:lab_management' %}"
+                        class="vl-access-back"
+                    >
+                        <i class="fas fa-layer-group"></i>
+                        LAB MANAGEMENT
+                    </a>
+
+                    <a
+                        href="{% url 'virtuallab:docker_environment_management' %}"
+                        class="vl-access-back"
+                    >
+                        <i class="fab fa-docker"></i>
+                        DOCKER ENVIRONMENTS
+                    </a>
+
+                </div>
+
+                <a
+                    href="{% url 'virtuallab:lab_catalog' %}"
+                    class="vl-access-back"
+                >
+                    <i class="fas fa-arrow-left"></i>
+                    <span>LAB CATALOG</span>
+                </a>
+
+
+                <div class="vl-access-system-status">
+
+                    <span class="vl-access-status-dot"></span>
+
+                    ACCESS CONTROL ONLINE
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             METRICS
+             ================================================= -->
+
+        <div class="vl-access-dashboard">
+
+            <div class="vl-access-dashboard-header">
+                <div>
+                    <div class="vl-access-section-index">01 / SYSTEM OVERVIEW</div>
+                    <h2>Access <span>Intelligence.</span></h2>
+                    <p>
+                        Real-time visibility into virtual laboratory access,
+                        approvals, and computing environment allocation.
+                    </p>
+                </div>
+
+                <div class="vl-access-live-indicator">
+                    <span class="vl-access-live-dot"></span>
+                    LIVE ACCESS DATA
+                </div>
+            </div>
+
+
+            <div class="vl-access-stat-grid">
+
+                <!-- TOTAL LABS -->
+                <div class="vl-access-stat-card stat-labs">
+
+                    <div class="vl-access-stat-top">
+                        <span class="vl-access-stat-label">
+                            VIRTUAL LABS
+                        </span>
+
+                        <span class="vl-access-stat-icon">
+                            <i class="fas fa-server"></i>
+                        </span>
+                    </div>
+
+                    <div class="vl-access-stat-value">
+                        {{ total_labs }}
+                    </div>
+
+                    <div class="vl-access-stat-bottom">
+                        <span>AVAILABLE LAB CONFIGURATIONS</span>
+                        <i class="fas fa-arrow-up-right"></i>
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL REQUESTS -->
+                <div class="vl-access-stat-card stat-requests">
+
+                    <div class="vl-access-stat-top">
+                        <span class="vl-access-stat-label">
+                            TOTAL REQUESTS
+                        </span>
+
+                        <span class="vl-access-stat-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </span>
+                    </div>
+
+                    <div class="vl-access-stat-value">
+                        {{ total_requests }}
+                    </div>
+
+                    <div class="vl-access-stat-bottom">
+                        <span>ALL ACCESS REQUESTS</span>
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+
+                </div>
+
+
+                <!-- PENDING -->
+                <div class="vl-access-stat-card stat-pending">
+
+                    <div class="vl-access-stat-top">
+                        <span class="vl-access-stat-label">
+                            PENDING
+                        </span>
+
+                        <span class="vl-access-stat-icon">
+                            <i class="fas fa-hourglass-half"></i>
+                        </span>
+                    </div>
+
+                    <div class="vl-access-stat-value">
+                        {{ pending_count }}
+                    </div>
+
+                    <div class="vl-access-stat-bottom">
+                        <span>REQUIRES REVIEW</span>
+                        {% if pending_count > 0 %}
+                            <span class="vl-access-stat-alert">ACTION</span>
+                        {% else %}
+                            <span class="vl-access-stat-ok">CLEAR</span>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+
+                <!-- APPROVED -->
+                <div class="vl-access-stat-card stat-approved">
+
+                    <div class="vl-access-stat-top">
+                        <span class="vl-access-stat-label">
+                            APPROVED
+                        </span>
+
+                        <span class="vl-access-stat-icon">
+                            <i class="fas fa-user-check"></i>
+                        </span>
+                    </div>
+
+                    <div class="vl-access-stat-value">
+                        {{ approved_count }}
+                    </div>
+
+                    <div class="vl-access-stat-bottom">
+                        <span>AUTHORIZED STUDENTS</span>
+                        <span class="vl-access-stat-ok">ACTIVE ACCESS</span>
+                    </div>
+
+                </div>
+
+
+                <!-- REJECTED -->
+                <div class="vl-access-stat-card stat-rejected">
+
+                    <div class="vl-access-stat-top">
+                        <span class="vl-access-stat-label">
+                            REJECTED
+                        </span>
+
+                        <span class="vl-access-stat-icon">
+                            <i class="fas fa-user-xmark"></i>
+                        </span>
+                    </div>
+
+                    <div class="vl-access-stat-value">
+                        {{ rejected_count }}
+                    </div>
+
+                    <div class="vl-access-stat-bottom">
+                        <span>DECLINED REQUESTS</span>
+                        <span>HISTORICAL</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- =========================================================
+            LAB-WISE ACCESS OVERVIEW
+            ========================================================= -->
+
+        <div class="vl-lab-overview">
+
+            <div class="vl-lab-overview-header">
+
+                <div>
+                    <div class="vl-access-section-index">
+                        02 / LAB INFRASTRUCTURE
+                    </div>
+
+                    <h2>
+                        Laboratory <span>Access Matrix.</span>
+                    </h2>
+
+                    <p>
+                        Monitor student access, authorization activity,
+                        and compute environment allocation across every
+                        virtual laboratory.
+                    </p>
+                </div>
+
+                <div class="vl-lab-overview-meta">
+                    <span class="vl-lab-overview-meta-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </span>
+
+                    <div>
+                        <strong>{{ total_labs }}</strong>
+                        <small>LAB CONFIGURATIONS</small>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="vl-lab-grid">
+
+                {% for item in labs %}
+
+                <div class="vl-lab-card">
+
+                    <!-- CARD HEADER -->
+
+                    <div class="vl-lab-card-header">
+
+                        <div class="vl-lab-card-identity">
+
+                            <div class="vl-lab-card-icon">
+                                {% if item.lab_type == "PROGRAMMING" %}
+                                    <i class="fas fa-code"></i>
+                                {% elif item.lab_type == "AI" %}
+                                    <i class="fas fa-brain"></i>
+                                {% elif item.lab_type == "BIG_DATA" %}
+                                    <i class="fas fa-database"></i>
+                                {% elif item.lab_type == "QUANTUM" %}
+                                    <i class="fas fa-atom"></i>
+                                {% elif item.lab_type == "HPC" %}
+                                    <i class="fas fa-server"></i>
+                                {% elif item.lab_type == "CYBER_SECURITY" %}
+                                    <i class="fas fa-shield-halved"></i>
+                                {% elif item.lab_type == "CLOUD" %}
+                                    <i class="fas fa-cloud"></i>
+                                {% else %}
+                                    <i class="fas fa-microchip"></i>
+                                {% endif %}
+                            </div>
+
+                            <div class="vl-lab-card-name">
+
+                                <h3>
+                                    {{ item.name }}
+                                </h3>
+
+                                <span>
+                                    {{ item.get_lab_type_display|upper }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="vl-lab-card-status">
+                            <span></span>
+                            {{ item.get_status_display|upper }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- TECHNOLOGY -->
+
+                    {% if item.technology %}
+
+                    <div class="vl-lab-card-technology">
+
+                        <i class="fas fa-microchip"></i>
+
+                        <span>
+                            {{ item.technology }}
+                        </span>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <!-- ACCESS STATISTICS -->
+
+                    <div class="vl-lab-card-stats">
+
+                        <div class="vl-lab-stat approved">
+
+                            <span class="vl-lab-stat-label">
+                                APPROVED
+                            </span>
+
+                            <strong>
+                                {{ item.approved_requests }}
+                            </strong>
+
+                            <span class="vl-lab-stat-indicator">
+                                <i class="fas fa-check"></i>
+                                AUTHORIZED
+                            </span>
+
+                        </div>
+
+
+                        <div class="vl-lab-stat pending">
+
+                            <span class="vl-lab-stat-label">
+                                PENDING
+                            </span>
+
+                            <strong>
+                                {{ item.pending_requests }}
+                            </strong>
+
+                            <span class="vl-lab-stat-indicator">
+                                <i class="fas fa-clock"></i>
+                                REVIEW
+                            </span>
+
+                        </div>
+
+
+                        <div class="vl-lab-stat rejected">
+
+                            <span class="vl-lab-stat-label">
+                                REJECTED
+                            </span>
+
+                            <strong>
+                                {{ item.rejected_requests }}
+                            </strong>
+
+                            <span class="vl-lab-stat-indicator">
+                                <i class="fas fa-xmark"></i>
+                                DECLINED
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ENVIRONMENT SUMMARY -->
+
+                    <div class="vl-lab-environment-summary">
+
+                        <div class="vl-lab-environment-label">
+                            <span>
+                                <i class="fas fa-cubes"></i>
+                                COMPUTE ENVIRONMENTS
+                            </span>
+
+                            <strong>
+                                {{ item.total_environments }}
+                            </strong>
+                        </div>
+
+                        <div class="vl-lab-environment-bar">
+
+                            {% if item.total_environments > 0 %}
+
+                                {% widthratio item.running_environments item.total_environments 100 as running_percent %}
+
+                                <span
+                                    style=" width: {{ running_percent }}%; "
+                                ></span>
+
+                            {% else %}
+
+                                <span style="width: 0%;"></span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <div class="vl-lab-environment-footer">
+                            <span>
+                                {{ item.running_environments }} RUNNING
+                            </span>
+
+                            <span>
+                                {{ item.total_environments }} TOTAL
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- CARD FOOTER -->
+
+                    <div class="vl-lab-card-footer">
+
+                        <span>
+                            {{ item.total_requests }} TOTAL REQUESTS
+                        </span>
+
+                        <a
+                            href="{% url 'virtuallab:lab_access_details' item.pk %}"
+                            class="vl-lab-details-button"
+                        >
+                            VIEW ACCESS DETAILS
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+                {% empty %}
+
+                <div class="vl-lab-empty">
+
+                    <div class="vl-lab-empty-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+
+                    <strong>
+                        NO VIRTUAL LABORATORIES
+                    </strong>
+
+                    <span>
+                        No laboratory configurations are currently available.
+                    </span>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             REQUEST TABLE
+             ================================================= -->
+
+        <div class="vl-request-panel">
+
+
+            <div class="vl-request-panel-header">
+
+                <div class="vl-request-panel-title">
+
+                    <i class="fas fa-user-clock"></i>
+
+                    ACCESS REQUEST QUEUE
+
+                    <span class="vl-request-count">
+                        {{ requests|length }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            {% for access_request in requests %}
+
+                <div class="vl-request-row">
+
+
+                    <!-- STUDENT -->
+
+                    <div class="vl-request-student">
+
+                        <div class="vl-request-avatar">
+
+                            <i class="fas fa-user"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="vl-request-student-name">
+
+                                {{ access_request.student.get_full_name|default:access_request.student.username }}
+
+                            </div>
+
+
+                            <div class="vl-request-student-username">
+
+                                @{{ access_request.student.username }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LAB -->
+
+                    <div>
+
+                        <div class="vl-request-lab-name">
+
+                            {{ access_request.lab.name }}
+
+                        </div>
+
+
+                        <div class="vl-request-lab-type">
+
+                            {{ access_request.lab.lab_type }}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TIME -->
+
+                    <div class="vl-request-time">
+
+                        {{ access_request.requested_at|date:"d M Y" }}
+
+                        <br>
+
+                        {{ access_request.requested_at|time:"H:i" }}
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="vl-access-request-status-cell">
+
+                        <span class="vl-request-status">
+                            PENDING
+                        </span>
+
+                        {% if access_request.has_previous_rejection %}
+
+                            <span class="vl-previous-rejection-badge">
+                                <i class="fas fa-clock-rotate-left"></i>
+                                PREVIOUSLY REJECTED
+                            </span>
+
+                            <button
+                                type="button"
+                                class="vl-previous-rejection-button"
+                                data-access-previous-rejection
+                                data-student-name="{{ access_request.student.get_full_name|default:access_request.student.username }}"
+                                data-username="{{ access_request.student.username }}"
+                                data-lab-name="{{ access_request.lab.name }}"
+                                data-rejection-reason="{{ access_request.previous_rejection_reason|default:'No reason recorded.' }}"
+                                data-rejected-date="{% if access_request.previous_rejection_requested_at %}{{ access_request.previous_rejection_requested_at|date:'d M Y' }} {{ access_request.previous_rejection_requested_at|time:'H:i' }}{% else %}—{% endif %}"
+                                data-reviewed-date="{% if access_request.previous_rejection_reviewed_at %}{{ access_request.previous_rejection_reviewed_at|date:'d M Y' }} {{ access_request.previous_rejection_reviewed_at|time:'H:i' }}{% else %}—{% endif %}"
+                                data-reviewed-by="{{ access_request.previous_rejection_reviewer|default:'—' }}"
+                            >
+                                <i class="fas fa-eye"></i>
+                                VIEW PREVIOUS REASON
+                            </button>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="vl-request-actions">
+
+
+                        <form
+                            method="post"
+                            action="{% url 'virtuallab:approve_access_request' access_request.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="vl-request-action vl-request-approve"
+                            >
+
+                                <i class="fas fa-check"></i>
+
+                                APPROVE
+
+                            </button>
+
+                        </form>
+
+
+                        <button
+                            type="button"
+                            class="vl-request-action vl-request-reject vl-open-access-reject-modal"
+                            data-reject-url="{% url 'virtuallab:reject_access_request' access_request.id %}"
+                            data-student-name="{{ access_request.student.get_full_name|default:access_request.student.username }}"
+                        >
+                            <i class="fas fa-times"></i>
+                            REJECT
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            {% empty %}
+
+                <div class="vl-request-empty">
+
+                    <div class="vl-request-empty-icon">
+
+                        <i class="fas fa-check-circle"></i>
+
+                    </div>
+
+
+                    <h3>
+                        No Pending Requests
+                    </h3>
+
+
+                    <p>
+                        All Virtual Lab access requests have been reviewed.
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+
+        </div>
+
+        <div class="vl-environment-panel">
+
+            <div class="vl-environment-panel-header">
+                <div class="vl-environment-panel-title">
+                    <i class="fas fa-microchip"></i>
+                    COMPUTE ENVIRONMENTS
+                    <span class="vl-environment-count">
+                        {{ environments|length }}
+                    </span>
+                </div>
+
+                <div class="vl-environment-panel-status">
+                    <span class="vl-access-status-dot"></span>
+                    ENVIRONMENT MONITOR
+                </div>
+            </div>
+
+            <div class="vl-environment-table">
+
+                <div class="vl-environment-table-head">
+                    <span>STUDENT</span>
+                    <span>LABORATORY</span>
+                    <span>ENVIRONMENT</span>
+                    <span>STATUS</span>
+                </div>
+
+                {% for environment in environments %}
+
+                <div class="vl-environment-row">
+
+                    <div class="vl-environment-student">
+                        <div class="vl-environment-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+
+                        <div>
+                            <strong>
+                                {{ environment.student.get_full_name|default:environment.student.username }}
+                            </strong>
+                            <small>
+                                {{ environment.student.username }}
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="vl-environment-lab">
+                        <strong>{{ environment.lab.name }}</strong>
+                        <small>{{ environment.lab.get_lab_type_display }}</small>
+                    </div>
+
+                    <div class="vl-environment-workspace">
+                        <span class="vl-environment-workspace-icon">
+                            <i class="fas fa-folder-open"></i>
+                        </span>
+
+                        <div>
+                            <strong>
+                                {% if environment.container_name %}
+                                    {{ environment.container_name }}
+                                {% else %}
+                                    Workspace
+                                {% endif %}
+                            </strong>
+
+                            <small>
+                                {% if environment.workspace_path %}
+                                    {{ environment.workspace_path }}
+                                {% else %}
+                                    Environment provisioning
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="vl-environment-status">
+                        <span class="vl-environment-status-dot status-{{ environment.status|lower }}"></span>
+                        <span>{{ environment.get_status_display|upper }}</span>
+                    </div>
+
+                </div>
+
+                {% empty %}
+
+                <div class="vl-environment-empty">
+                    <i class="fas fa-server"></i>
+                    <strong>NO COMPUTE ENVIRONMENTS</strong>
+                    <span>
+                        Approved student environments will appear here.
+                    </span>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- =========================================================
+     ACCESS CONTROL REJECTION MODAL
+     ========================================================= -->
+
+<div
+    id="vl-access-reject-modal"
+    class="vl-access-reject-modal"
+    aria-hidden="true"
+>
+
+    <div class="vl-access-reject-backdrop"></div>
+
+    <div
+        class="vl-access-reject-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vl-access-reject-title"
+    >
+
+        <div class="vl-access-reject-header">
+
+            <div class="vl-access-reject-icon">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
+
+            <button
+                type="button"
+                class="vl-access-reject-close"
+                id="vl-access-reject-close"
+                aria-label="Close"
+            >
+                <i class="fas fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <div class="vl-access-reject-body">
+
+            <div class="vl-access-reject-eyebrow">
+                ACCESS DECISION
+            </div>
+
+            <h3 id="vl-access-reject-title">
+                Reject Access Request
+            </h3>
+
+            <p>
+                You are about to reject the Virtual Lab access request
+                for <strong id="vl-access-reject-student">student</strong>.
+            </p>
+
+
+            <form
+                method="post"
+                id="vl-access-reject-form"
+            >
+
+                {% csrf_token %}
+
+                <label for="vl-access-reject-reason">
+                    REJECTION REASON
+                </label>
+
+                <textarea
+                    id="vl-access-reject-reason"
+                    name="reason"
+                    rows="4"
+                    maxlength="500"
+                    placeholder="Enter the reason for rejecting this access request..."
+                    required
+                ></textarea>
+
+                <div class="vl-access-reject-meta">
+
+                    <span>
+                        Reason will be recorded with the decision.
+                    </span>
+
+                    <span id="vl-access-reject-count">
+                        0 / 500
+                    </span>
+
+                </div>
+
+
+                <div class="vl-access-reject-actions">
+
+                    <button
+                        type="button"
+                        class="vl-access-reject-cancel"
+                        id="vl-access-reject-cancel"
+                    >
+                        CANCEL
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="vl-access-reject-confirm"
+                    >
+                        <i class="fas fa-xmark"></i>
+                        CONFIRM REJECTION
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================================
+     PREVIOUS REJECTION DETAILS MODAL
+     ========================================================= -->
+
+<div
+    id="vl-access-previous-rejection-modal"
+    class="vl-access-previous-rejection-modal"
+    aria-hidden="true"
+>
+
+    <div
+        class="vl-access-previous-rejection-backdrop"
+        data-close-access-previous-rejection
+    ></div>
+
+
+    <div
+        class="vl-access-previous-rejection-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vl-access-previous-rejection-title"
+    >
+
+        <!-- HEADER -->
+
+        <div class="vl-access-previous-rejection-header">
+
+            <div>
+
+                <div class="vl-access-previous-rejection-eyebrow">
+                    ACCESS REVIEW HISTORY
+                </div>
+
+                <h2 id="vl-access-previous-rejection-title">
+                    Previous Rejection
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="vl-access-previous-rejection-close"
+                data-close-access-previous-rejection
+                aria-label="Close"
+            >
+                <i class="fas fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div class="vl-access-previous-rejection-status">
+
+            <i class="fas fa-clock-rotate-left"></i>
+
+            PREVIOUSLY REJECTED
+
+        </div>
+
+
+        <!-- REQUEST INFORMATION -->
+
+        <div class="vl-access-previous-rejection-grid">
+
+            <div>
+
+                <span>STUDENT</span>
+
+                <strong id="access-previous-rejection-student">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>USERNAME</span>
+
+                <strong id="access-previous-rejection-username">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>LABORATORY</span>
+
+                <strong id="access-previous-rejection-lab">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>REJECTED DATE</span>
+
+                <strong id="access-previous-rejection-date">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>REVIEWED DATE</span>
+
+                <strong id="access-previous-rejection-reviewed">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>REVIEWED BY</span>
+
+                <strong id="access-previous-rejection-reviewer">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- REASON -->
+
+        <div class="vl-access-previous-rejection-reason">
+
+            <div class="vl-access-previous-rejection-reason-label">
+                REJECTION REASON
+            </div>
+
+            <div
+                id="access-previous-rejection-reason-text"
+                class="vl-access-previous-rejection-reason-text"
+            >
+                No reason recorded.
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="vl-access-previous-rejection-footer">
+
+            <button
+                type="button"
+                class="vl-access-previous-rejection-done"
+                data-close-access-previous-rejection
+            >
+                CLOSE
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+(function () {
+    "use strict";
+
+    const modal = document.getElementById(
+        "vl-access-reject-modal"
+    );
+
+    const form = document.getElementById(
+        "vl-access-reject-form"
+    );
+
+    const studentName = document.getElementById(
+        "vl-access-reject-student"
+    );
+
+    const reason = document.getElementById(
+        "vl-access-reject-reason"
+    );
+
+    const characterCount = document.getElementById(
+        "vl-access-reject-count"
+    );
+
+    const closeButton = document.getElementById(
+        "vl-access-reject-close"
+    );
+
+    const cancelButton = document.getElementById(
+        "vl-access-reject-cancel"
+    );
+
+    if (
+        !modal ||
+        !form ||
+        !studentName ||
+        !reason ||
+        !characterCount
+    ) {
+        return;
+    }
+
+
+    function openRejectModal(button) {
+
+        form.action =
+            button.dataset.rejectUrl || "";
+
+        studentName.textContent =
+            button.dataset.studentName || "this student";
+
+        reason.value = "";
+
+        characterCount.textContent =
+            "0 / 500";
+
+        modal.classList.add("active");
+
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.style.overflow =
+            "hidden";
+
+        window.setTimeout(function () {
+            reason.focus();
+        }, 80);
+    }
+
+
+    function closeRejectModal() {
+
+        modal.classList.remove("active");
+
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        document.body.style.overflow =
+            "";
+    }
+
+
+    document.querySelectorAll(
+        ".vl-open-access-reject-modal"
+    ).forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+                openRejectModal(button);
+            }
+        );
+
+    });
+
+
+    reason.addEventListener(
+        "input",
+        function () {
+
+            characterCount.textContent =
+                reason.value.length + " / 500";
+
+        }
+    );
+
+
+    closeButton.addEventListener(
+        "click",
+        closeRejectModal
+    );
+
+
+    cancelButton.addEventListener(
+        "click",
+        closeRejectModal
+    );
+
+
+    modal.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target === modal ||
+                event.target.classList.contains(
+                    "vl-access-reject-backdrop"
+                )
+            ) {
+                closeRejectModal();
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape" &&
+                modal.classList.contains("active")
+            ) {
+                closeRejectModal();
+            }
+
+        }
+    );
+
+})();
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const modal = document.getElementById(
+        "vl-access-previous-rejection-modal"
+    );
+
+    if (!modal) {
+        return;
+    }
+
+
+    const studentElement = document.getElementById(
+        "access-previous-rejection-student"
+    );
+
+    const usernameElement = document.getElementById(
+        "access-previous-rejection-username"
+    );
+
+    const labElement = document.getElementById(
+        "access-previous-rejection-lab"
+    );
+
+    const rejectedDateElement = document.getElementById(
+        "access-previous-rejection-date"
+    );
+
+    const reviewedDateElement = document.getElementById(
+        "access-previous-rejection-reviewed"
+    );
+
+    const reviewerElement = document.getElementById(
+        "access-previous-rejection-reviewer"
+    );
+
+    const reasonElement = document.getElementById(
+        "access-previous-rejection-reason-text"
+    );
+
+
+    function openPreviousRejection(button) {
+
+        studentElement.textContent =
+            button.dataset.studentName || "—";
+
+        usernameElement.textContent =
+            button.dataset.username || "—";
+
+        labElement.textContent =
+            button.dataset.labName || "—";
+
+        rejectedDateElement.textContent =
+            button.dataset.rejectedDate || "—";
+
+        reviewedDateElement.textContent =
+            button.dataset.reviewedDate || "—";
+
+        reviewerElement.textContent =
+            button.dataset.reviewedBy || "—";
+
+        reasonElement.textContent =
+            button.dataset.rejectionReason || "No reason recorded.";
+
+
+        modal.classList.add("is-open");
+
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.style.overflow = "hidden";
+    }
+
+
+    function closePreviousRejection() {
+
+        modal.classList.remove("is-open");
+
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        document.body.style.overflow = "";
+    }
+
+
+    document
+        .querySelectorAll("[data-access-previous-rejection]")
+        .forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+                    openPreviousRejection(button);
+                }
+            );
+
+        });
+
+
+    modal
+        .querySelectorAll(
+            "[data-close-access-previous-rejection]"
+        )
+        .forEach(function (element) {
+
+            element.addEventListener(
+                "click",
+                closePreviousRejection
+            );
+
+        });
+
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape" &&
+                modal.classList.contains("is-open")
+            ) {
+                closePreviousRejection();
+            }
+
+        }
+    );
+
+});
+</script>
+
+{% endblock content %}

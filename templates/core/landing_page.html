@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% load static %}
 
@@ -79,44 +78,71 @@ HPC E-Learning Platform
 
     <div class="carousel-inner">
 
-        
         <div class="carousel-item active">
             <img src="{% static 'img/cdac_banner.png' %}"
-                 class="d-block w-100 slider-img">
+                 class="d-block w-100 slider-img"
+                 alt="CDAC Banner">
         </div>
 
-        <div class="carousel-item ">
+        <div class="carousel-item">
             <img src="{% static 'img/banner7.JPG' %}"
-                 class="d-block w-100 slider-img">
+                 class="d-block w-100 slider-img"
+                 alt="Banner">
         </div>
 
-        <div class="carousel-item ">
+        <div class="carousel-item">
             <img src="{% static 'img/baner5.JPG' %}"
-                 class="d-block w-100 slider-img">
+                 class="d-block w-100 slider-img"
+                 alt="Banner">
         </div>
 
-        <div class="carousel-item ">
+        <div class="carousel-item">
             <img src="{% static 'img/banner1.jpg' %}"
-                 class="d-block w-100 slider-img">
+                 class="d-block w-100 slider-img"
+                 alt="Banner">
         </div>
 
         <div class="carousel-item">
             <img src="{% static 'img/banner2.JPG' %}"
-                 class="d-block w-100 slider-img">
+                 class="d-block w-100 slider-img"
+                 alt="Banner">
         </div>
 
         <div class="carousel-item">
             <img src="{% static 'img/banner3.jpg' %}"
-                 class="d-block w-100 slider-img">
+                 class="d-block w-100 slider-img"
+                 alt="Banner">
         </div>
 
         <div class="carousel-item">
             <img src="{% static 'img/banner4.jpg' %}"
-                 class="d-block w-100 slider-img">
+                 class="d-block w-100 slider-img"
+                 alt="Banner">
         </div>
 
     </div>
 
+
+    <!-- CAPTION MUST BE INSIDE CAROUSEL -->
+    <div class="carousel-caption d-flex flex-column justify-content-center h-100">
+
+        <h1 class="display-3 fw-bold">
+            HPC E-Learning Platform
+        </h1>
+
+        <p class="lead">
+            Empowering Learners with High Performance Computing,
+            Emerging Technologies and Hands-on Virtual Labs
+        </p>
+
+        <a href="{% url 'register' %}"
+           class="btn btn-warning mt-2 py-2 fw-semibold rounded-pill">
+            Start Learning
+        </a>
+
+    </div>
+
+    <!-- PREVIOUS BUTTON -->
     <button class="carousel-control-prev"
             type="button"
             data-bs-target="#lmsSlider"
@@ -126,6 +152,7 @@ HPC E-Learning Platform
 
     </button>
 
+    <!-- NEXT BUTTON -->
     <button class="carousel-control-next"
             type="button"
             data-bs-target="#lmsSlider"
@@ -135,22 +162,6 @@ HPC E-Learning Platform
 
     </button>
 
-</div>
-
-<div class="carousel-caption d-flex flex-column justify-content-center h-100">
-    <h1 class="display-3 fw-bold">
-        HPC E-Learning Platform
-    </h1>
-
-    <p class="lead">
-        Empowering Learners with High Performance Computing, Emerging Technologies and Hands-on Virtual Labs
-    </p>
-
-    <a href="{% url 'register' %}"
-        class="btn btn-warning mt-2 py-2 fw-semibold rounded-pill"
-        style="width:180px;">
-        Start Learning
-    </a>
 </div>
 
 <!-- ================= WELCOME ================= -->
@@ -286,7 +297,6 @@ HPC E-Learning Platform
     </div>
 
 </section>
-
 
 <!-- ================= PROGRAMS OFFERED ================= -->
 
@@ -1011,10 +1021,11 @@ header img:hover{
     font-size:28px;
 }
 .feature-card{
-    background:#fff;
+    background: var(--lms-card-bg);
+    color: var(--lms-text);
     padding:30px;
     border-radius:15px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    box-shadow: var(--lms-shadow);
     transition:.3s;
     height:100%;
 }
@@ -1035,16 +1046,17 @@ header img:hover{
 }
 
 .feature-card p{
-    color:#666;
+    color: var(--lms-text-secondary);
 }
 .program-card{
-    background:#fff;
+    background: var(--lms-card-bg);
+    color: var(--lms-text);
     border-radius:15px;
     padding:30px;
     text-align:center;
     height:100%;
     transition:.3s;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    box-shadow: var(--lms-shadow);
 }
 
 .program-card:hover{
@@ -1063,7 +1075,7 @@ header img:hover{
 }
 
 .program-card p{
-    color:#666;
+    color: var(--lms-text-secondary);
 }
 .journey-card{
     padding:20px;
@@ -1156,10 +1168,10 @@ body{
     margin: 0;
 }
 
-.card{
-    border:0;
-    border-top:5px solid #0d6efd;
-    transition:.3s;
+[data-theme="dark"] .card {
+    background-color: var(--lms-card-bg);
+    color: var(--lms-text);
+    border-color: var(--lms-border);
 }
 
 .card:hover{
@@ -1217,6 +1229,309 @@ body{
         font-size:1rem;
     }
 }
+
+
+/* =========================================================
+   LANDING PAGE - DARK MODE
+   ========================================================= */
+
+[data-theme="dark"] .feature-card {
+
+    background: var(--lms-card-bg);
+    color: var(--lms-text);
+
+    box-shadow: var(--lms-shadow);
+}
+
+[data-theme="dark"] .feature-card p {
+
+    color: var(--lms-text-secondary);
+}
+
+
+[data-theme="dark"] .program-card {
+
+    background: var(--lms-card-bg);
+    color: var(--lms-text);
+
+    box-shadow: var(--lms-shadow);
+}
+
+[data-theme="dark"] .program-card p {
+
+    color: var(--lms-text-secondary);
+}
+
+
+/* Banner text must remain white */
+
+.carousel-caption,
+.carousel-caption h1,
+.carousel-caption p {
+
+    color: #ffffff;
+}
+
+/* =========================================================
+   RESPONSIVE LMS HERO / IMAGE CAROUSEL
+   ========================================================= */
+
+#lmsSlider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Carousel images */
+#lmsSlider .slider-img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Dark overlay over images so text remains readable */
+#lmsSlider::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Keep carousel controls above overlay */
+#lmsSlider .carousel-control-prev,
+#lmsSlider .carousel-control-next {
+    z-index: 3;
+}
+
+/* Caption */
+#lmsSlider .carousel-caption {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+
+    width: 100%;
+    padding: 40px 12%;
+    text-align: center;
+
+    color: #ffffff;
+}
+
+/* Caption heading */
+#lmsSlider .carousel-caption h1 {
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+/* Caption paragraph */
+#lmsSlider .carousel-caption p {
+    max-width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+/* Start Learning button */
+#lmsSlider .carousel-caption .btn {
+    width: 180px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* =========================================================
+   LARGE DESKTOP / TV
+   ========================================================= */
+
+@media (min-width: 1600px) {
+
+    #lmsSlider .slider-img {
+        height: 600px;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding-left: 15%;
+        padding-right: 15%;
+    }
+
+    #lmsSlider .carousel-caption h1 {
+        font-size: 4rem;
+    }
+
+    #lmsSlider .carousel-caption p {
+        font-size: 1.3rem;
+        max-width: 1000px;
+    }
+}
+
+
+/* =========================================================
+   LAPTOP / DESKTOP
+   ========================================================= */
+
+@media (min-width: 992px) and (max-width: 1599.98px) {
+
+    #lmsSlider .slider-img {
+        height: 500px;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+    #lmsSlider .slider-img {
+        height: 400px;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding: 30px 8%;
+    }
+
+    #lmsSlider .carousel-caption h1 {
+        font-size: 2.7rem;
+    }
+
+    #lmsSlider .carousel-caption p {
+        font-size: 1rem;
+        max-width: 700px;
+    }
+
+    #lmsSlider .carousel-caption .btn {
+        width: 170px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    #lmsSlider .slider-img {
+        height: 330px;
+        object-fit: cover;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding: 20px 45px;
+    }
+
+    #lmsSlider .carousel-caption h1 {
+        font-size: 1.9rem;
+        line-height: 1.15;
+        margin-bottom: 10px;
+    }
+
+    #lmsSlider .carousel-caption p {
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin-bottom: 8px;
+    }
+
+    #lmsSlider .carousel-caption .btn {
+        width: 150px;
+        font-size: 0.85rem;
+        padding-top: 7px !important;
+        padding-bottom: 7px !important;
+    }
+
+    #lmsSlider .carousel-control-prev,
+    #lmsSlider .carousel-control-next {
+        width: 10%;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 575.98px) {
+
+    #lmsSlider .slider-img {
+        height: 280px;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding: 15px 40px;
+    }
+
+    #lmsSlider .carousel-caption h1 {
+        font-size: 1.45rem;
+        margin-bottom: 7px;
+    }
+
+    #lmsSlider .carousel-caption p {
+        font-size: 0.72rem;
+        line-height: 1.3;
+        max-width: 330px;
+    }
+
+    #lmsSlider .carousel-caption .btn {
+        width: 135px;
+        font-size: 0.75rem;
+        padding: 6px 10px !important;
+    }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    #lmsSlider .slider-img {
+        height: 240px;
+    }
+
+    #lmsSlider .slider-img {
+        width: 100%;
+        object-fit: cover;
+    }
+
+    #lmsSlider {
+        position: relative;
+    }
+
+    #lmsSlider .carousel-caption {
+        padding: 10px 35px;
+    }
+
+    #lmsSlider .carousel-caption h1 {
+        font-size: 1.25rem;
+    }
+
+    #lmsSlider .carousel-caption p {
+        font-size: 0.68rem;
+        line-height: 1.25;
+    }
+
+    #lmsSlider .carousel-caption .btn {
+        width: 125px;
+        font-size: 0.7rem;
+    }
+
+    .carousel-caption {
+        position: absolute;
+        inset: 0;
+    }
+
+}
+
+</style>
 
 </style>
 

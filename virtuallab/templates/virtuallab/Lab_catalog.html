@@ -1,0 +1,1665 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Virtual Labs | HPC E-Learning Platform
+{% endblock title %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/virtual_lab.css' %}"
+>
+
+{% endblock extra_css %}
+
+
+{% block content %}
+
+<!-- =========================================================
+     HPC VIRTUAL LAB PLATFORM
+     ========================================================= -->
+
+<div class="vl-page">
+
+
+    <!-- =====================================================
+         01. COMPUTE HERO
+         ===================================================== -->
+
+    <section class="vl-compute-hero">
+
+        <div class="vl-hero-glow vl-hero-glow-one"></div>
+        <div class="vl-hero-glow vl-hero-glow-two"></div>
+
+
+        <!-- HERO CONTENT -->
+
+        <div class="vl-hero-content">
+
+            <div class="vl-hero-eyebrow">
+
+                <span class="vl-hero-status"></span>
+
+                HPC VIRTUAL COMPUTE ENVIRONMENT
+
+            </div>
+
+
+            <h1 class="vl-hero-title">
+
+                Enter the
+
+                <span>Compute Era.</span>
+
+            </h1>
+
+
+            <p class="vl-hero-description">
+
+                Access isolated virtual computing environments
+                designed for programming, artificial intelligence,
+                big data, high-performance computing and emerging
+                technologies.
+
+            </p>
+
+
+            <div class="vl-hero-capabilities">
+
+                <span class="vl-hero-capability">
+                    ISOLATED COMPUTE
+                </span>
+
+                <span class="vl-hero-capability">
+                    REAL-TIME EXECUTION
+                </span>
+
+                <span class="vl-hero-capability">
+                    LINUX ENVIRONMENT
+                </span>
+
+                <span class="vl-hero-capability">
+                    HPC READY
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+            HPC COMPUTE UNIVERSE
+            ===================================================== -->
+
+        <div class="vlx-compute-universe">
+
+            <div class="vlx-universe-grid"></div>
+
+            <div class="vlx-scan-line"></div>
+
+            <!-- DATA PARTICLES -->
+
+            <span class="vlx-particle vlx-particle-1"></span>
+            <span class="vlx-particle vlx-particle-2"></span>
+            <span class="vlx-particle vlx-particle-3"></span>
+            <span class="vlx-particle vlx-particle-4"></span>
+            <span class="vlx-particle vlx-particle-5"></span>
+            <span class="vlx-particle vlx-particle-6"></span>
+            <span class="vlx-particle vlx-particle-7"></span>
+            <span class="vlx-particle vlx-particle-8"></span>
+
+
+            <!-- CONNECTION LINES -->
+
+            <div class="vlx-connection vlx-connection-1"></div>
+            <div class="vlx-connection vlx-connection-2"></div>
+            <div class="vlx-connection vlx-connection-3"></div>
+            <div class="vlx-connection vlx-connection-4"></div>
+
+
+            <!-- OUTER ORBIT -->
+
+            <div class="vlx-orbit vlx-orbit-outer">
+
+                <div class="vlx-node vlx-node-cpu">
+
+                    <div class="vlx-node-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+
+                    <div class="vlx-node-label">
+                        CPU
+                    </div>
+
+                </div>
+
+                <div class="vlx-node vlx-node-memory">
+
+                    <div class="vlx-node-icon">
+                        <i class="fas fa-memory"></i>
+                    </div>
+
+                    <div class="vlx-node-label">
+                        MEMORY
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- INNER ORBIT -->
+
+            <div class="vlx-orbit vlx-orbit-inner">
+
+                <div class="vlx-node vlx-node-linux">
+
+                    <div class="vlx-node-icon">
+                        <i class="fab fa-linux"></i>
+                    </div>
+
+                    <div class="vlx-node-label">
+                        LINUX
+                    </div>
+
+                </div>
+
+                <div class="vlx-node vlx-node-docker">
+
+                    <div class="vlx-node-icon">
+                        <i class="fab fa-docker"></i>
+                    </div>
+
+                    <div class="vlx-node-label">
+                        DOCKER
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CORE -->
+
+            <div class="vlx-core">
+
+                <div class="vlx-core-halo"></div>
+
+                <div class="vlx-core-ring vlx-core-ring-1"></div>
+                <div class="vlx-core-ring vlx-core-ring-2"></div>
+                <div class="vlx-core-ring vlx-core-ring-3"></div>
+
+                <div class="vlx-core-chip">
+
+                    <span class="vlx-core-chip-top">
+                        HPC
+                    </span>
+
+                    <strong>
+                        COMPUTE
+                    </strong>
+
+                    <small>
+                        CORE / 01
+                    </small>
+
+                    <div class="vlx-core-pulse"></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- TELEMETRY PANEL -->
+
+            <div class="vlx-telemetry">
+
+                <div class="vlx-telemetry-header">
+
+                    <span>
+                        <i class="fas fa-wave-square"></i>
+                        NODE TELEMETRY
+                    </span>
+
+                    <span class="vlx-live-status">
+                        <i></i>
+                        LIVE
+                    </span>
+
+                </div>
+
+
+                <div class="vlx-telemetry-grid">
+
+                    <div class="vlx-telemetry-item">
+
+                        <span>
+                            CPU
+                        </span>
+
+                        <strong data-vlx-value="cpu">
+                            48%
+                        </strong>
+
+                        <div class="vlx-meter">
+                            <span data-vlx-meter="cpu"></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="vlx-telemetry-item">
+
+                        <span>
+                            MEMORY
+                        </span>
+
+                        <strong data-vlx-value="ram">
+                            62%
+                        </strong>
+
+                        <div class="vlx-meter">
+                            <span data-vlx-meter="ram"></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="vlx-telemetry-item">
+
+                        <span>
+                            STORAGE
+                        </span>
+
+                        <strong>
+                            READY
+                        </strong>
+
+                        <div class="vlx-meter">
+                            <span
+                                class="vlx-meter-static"
+                            ></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- NODE IDENTIFIER -->
+
+            <div class="vlx-node-identifier">
+
+                <span>
+                    NODE
+                </span>
+
+                <strong>
+                    HPC-01
+                </strong>
+
+                <small>
+                    ISOLATED COMPUTE FABRIC
+                </small>
+
+            </div>
+
+
+            <!-- LOWER SYSTEM BAR -->
+
+            <div class="vlx-system-bar">
+
+                <span>
+                    <i class="fas fa-shield-halved"></i>
+                    SANDBOXED
+                </span>
+
+                <span>
+                    <i class="fas fa-bolt"></i>
+                    LOW LATENCY
+                </span>
+
+                <span>
+                    <i class="fas fa-terminal"></i>
+                    EXECUTION READY
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- SCROLL -->
+
+        <div class="vl-hero-scroll">
+
+            EXPLORE LABS
+
+            <span class="vl-scroll-line"></span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         02. HOW IT WORKS
+         ===================================================== -->
+
+    <section class="vl-process-section">
+
+
+        <div class="vl-section-heading">
+
+            <div class="vl-section-index">
+                01 / COMPUTE ACCESS
+            </div>
+
+            <h2>
+                From Request
+                <span>to Compute.</span>
+            </h2>
+
+            <p>
+                Every virtual laboratory follows a controlled
+                compute lifecycle designed for secure and
+                isolated practical learning.
+            </p>
+
+        </div>
+
+
+        <div class="vl-process-grid">
+
+
+            <!-- STEP 1 -->
+
+            <article class="vl-process-card">
+
+                <div class="vl-process-number">
+                    01
+                </div>
+
+                <div class="vl-process-icon">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+
+                <div class="vl-process-code">
+                    ACCESS.REQUEST
+                </div>
+
+                <h3>
+                    Request Access
+                </h3>
+
+                <p>
+                    Select the laboratory you want to use
+                    and submit an access request.
+                </p>
+
+            </article>
+
+
+            <!-- STEP 2 -->
+
+            <article class="vl-process-card">
+
+                <div class="vl-process-number">
+                    02
+                </div>
+
+                <div class="vl-process-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+
+                <div class="vl-process-code">
+                    ACCESS.REVIEW
+                </div>
+
+                <h3>
+                    Access Review
+                </h3>
+
+                <p>
+                    Your request is reviewed by the authorized
+                    laboratory manager.
+                </p>
+
+            </article>
+
+
+            <!-- STEP 3 -->
+
+            <article class="vl-process-card">
+
+                <div class="vl-process-number">
+                    03
+                </div>
+
+                <div class="vl-process-icon">
+                    <i class="fas fa-cube"></i>
+                </div>
+
+                <div class="vl-process-code">
+                    ENV.PROVISION
+                </div>
+
+                <h3>
+                    Environment Provisioned
+                </h3>
+
+                <p>
+                    Your isolated computing environment
+                    becomes available after approval.
+                </p>
+
+            </article>
+
+
+            <!-- STEP 4 -->
+
+            <article class="vl-process-card">
+
+                <div class="vl-process-number">
+                    04
+                </div>
+
+                <div class="vl-process-icon">
+                    <i class="fas fa-terminal"></i>
+                </div>
+
+                <div class="vl-process-code">
+                    SESSION.OPEN
+                </div>
+
+                <h3>
+                    Start Computing
+                </h3>
+
+                <p>
+                    Open the laboratory and begin working
+                    inside your compute environment.
+                </p>
+
+            </article>
+
+
+        </div>
+
+
+        <div class="vl-process-line">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         03. AVAILABLE COMPUTE
+         ===================================================== -->
+
+    <section
+        class="vl-featured-section"
+        id="available-labs"
+    >
+
+
+        <div class="vl-featured-header">
+
+            <div>
+
+                <div class="vl-section-index">
+                    02 / AVAILABLE COMPUTE
+                </div>
+
+                <h2>
+                    Choose Your
+                    <span>Compute Environment.</span>
+                </h2>
+
+                <p>
+                    Explore the active virtual laboratories
+                    available on the HPC learning platform.
+                </p>
+
+            </div>
+
+
+            <div class="vl-featured-actions">
+
+                {% if request.user.is_lecturer or request.user.is_superuser %}
+
+                <a
+                    href="{% url 'virtuallab:access_requests' %}"
+                    class="vl-access-control-btn"
+                >
+
+                    <span class="vl-access-control-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </span>
+
+                    <span class="vl-access-control-text">
+
+                        <small>MANAGEMENT</small>
+
+                        ACCESS CONTROL
+
+                    </span>
+
+                    <span class="vl-access-control-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{% url 'virtuallab:lab_management' %}"
+                    class="vl-access-control-btn"
+                >
+                    <span class="vl-access-control-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </span>
+
+                    <span class="vl-access-control-text">
+                        <small>ADMINISTRATION</small>
+                        LAB MANAGEMENT
+                    </span>
+
+                    <span class="vl-access-control-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+                </a>
+
+                {% endif %}
+
+
+                <div class="vl-slider-controls">
+
+                    <button
+                        type="button"
+                        class="vl-slider-button"
+                        id="vl-slider-prev"
+                        aria-label="Previous laboratory"
+                    >
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="vl-slider-button"
+                        id="vl-slider-next"
+                        aria-label="Next laboratory"
+                    >
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% if labs %}
+
+        <div class="vl-lab-slider-wrapper">
+
+
+            <div
+                class="vl-lab-slider"
+                id="vl-lab-slider"
+            >
+
+
+                {% for item in labs %}
+
+                <article
+                    class="vl-featured-card"
+                    data-lab-index="{{ forloop.counter0 }}"
+                >
+
+
+                    <!-- CARD TOP -->
+
+                    <div class="vl-featured-card-top">
+
+                        <div class="vl-featured-number">
+                            {{ forloop.counter|stringformat:"02d" }}
+                        </div>
+
+
+                        <div class="vl-featured-type">
+
+                            {% if item.lab.lab_type == "PROGRAMMING" %}
+                                PROGRAMMING CORE
+
+                            {% elif item.lab.lab_type == "AI" %}
+                                AI COMPUTE
+
+                            {% elif item.lab.lab_type == "BIG_DATA" %}
+                                DATA COMPUTE
+
+                            {% elif item.lab.lab_type == "QUANTUM" %}
+                                QUANTUM CORE
+
+                            {% elif item.lab.lab_type == "HPC" %}
+                                HPC COMPUTE
+
+                            {% else %}
+                                COMPUTE NODE
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <!-- =================================================
+                        COMPUTE NODE VISUAL
+                        ================================================= -->
+
+                    <div
+                        class="vlx-lab-node-visual"
+                        data-lab-node="{{ forloop.counter }}"
+                    >
+
+                        <div class="vlx-lab-node-grid"></div>
+
+                        <div class="vlx-lab-node-ring vlx-lab-node-ring-one"></div>
+                        <div class="vlx-lab-node-ring vlx-lab-node-ring-two"></div>
+
+                        <div class="vlx-lab-node-lines">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                        <div class="vlx-lab-node-core">
+
+                            <div class="vlx-lab-node-core-light"></div>
+
+                            {% if item.lab.lab_type == "PROGRAMMING" %}
+
+                                <i class="fas fa-code"></i>
+
+                            {% elif item.lab.lab_type == "AI" %}
+
+                                <i class="fas fa-brain"></i>
+
+                            {% elif item.lab.lab_type == "BIG_DATA" %}
+
+                                <i class="fas fa-database"></i>
+
+                            {% elif item.lab.lab_type == "QUANTUM" %}
+
+                                <i class="fas fa-atom"></i>
+
+                            {% elif item.lab.lab_type == "HPC" %}
+
+                                <i class="fas fa-microchip"></i>
+
+                            {% elif item.lab.lab_type == "CYBER_SECURITY" %}
+
+                                <i class="fas fa-shield-halved"></i>
+
+                            {% elif item.lab.lab_type == "CLOUD" %}
+
+                                <i class="fas fa-cloud"></i>
+
+                            {% else %}
+
+                                <i class="fas fa-server"></i>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="vlx-node-metric vlx-node-metric-left">
+
+                            <span>CPU</span>
+
+                            <strong>48%</strong>
+
+                            <i></i>
+
+                        </div>
+
+
+                        <div class="vlx-node-metric vlx-node-metric-right">
+
+                            <span>RAM</span>
+
+                            <strong>62%</strong>
+
+                            <i></i>
+
+                        </div>
+
+
+                        <div class="vlx-node-metric vlx-node-metric-bottom">
+
+                            <span>RUNTIME</span>
+
+                            <strong>READY</strong>
+
+                        </div>
+
+
+                        <div class="vlx-node-code">
+                            NODE / {{ forloop.counter|stringformat:"02d" }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- CARD ICON -->
+
+                    <div class="vl-featured-icon">
+
+                        {% if item.lab.lab_type == "PROGRAMMING" %}
+
+                            <i class="fas fa-code"></i>
+
+                        {% elif item.lab.lab_type == "AI" %}
+
+                            <i class="fas fa-brain"></i>
+
+                        {% elif item.lab.lab_type == "BIG_DATA" %}
+
+                            <i class="fas fa-database"></i>
+
+                        {% elif item.lab.lab_type == "QUANTUM" %}
+
+                            <i class="fas fa-atom"></i>
+
+                        {% elif item.lab.lab_type == "HPC" %}
+
+                            <i class="fas fa-microchip"></i>
+
+                        {% else %}
+
+                            <i class="fas fa-server"></i>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- CARD TITLE -->
+
+                    <div class="vl-featured-label">
+                        {{ item.lab.lab_type }}
+                    </div>
+
+
+                    <h3>
+                        {{ item.lab.name }}
+                    </h3>
+
+
+                    <p class="vl-featured-description">
+
+                        {% if item.lab.description %}
+
+                            {{ item.lab.description }}
+
+                        {% else %}
+
+                            Isolated virtual computing
+                            environment for practical
+                            experimentation and learning.
+
+                        {% endif %}
+
+                    </p>
+
+
+                    <!-- TECHNOLOGIES -->
+
+                    <div class="vl-featured-tech">
+
+                        {% if item.lab.lab_type == "PROGRAMMING" %}
+
+                            <span>PYTHON</span>
+                            <span>JAVA</span>
+                            <span>C++</span>
+                            <span>LINUX</span>
+
+                        {% elif item.lab.lab_type == "AI" %}
+
+                            <span>ML</span>
+                            <span>PYTORCH</span>
+                            <span>GPU</span>
+                            <span>DL</span>
+
+                        {% elif item.lab.lab_type == "BIG_DATA" %}
+
+                            <span>SPARK</span>
+                            <span>HADOOP</span>
+                            <span>PYSPARK</span>
+
+                        {% elif item.lab.lab_type == "QUANTUM" %}
+
+                            <span>QISKIT</span>
+                            <span>QUANTUM</span>
+                            <span>SIMULATION</span>
+
+                        {% elif item.lab.lab_type == "HPC" %}
+
+                            <span>LINUX</span>
+                            <span>MPI</span>
+                            <span>CLUSTER</span>
+                            <span>HPC</span>
+
+                        {% else %}
+
+                            <span>LINUX</span>
+                            <span>COMPUTE</span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- CARD FOOTER -->
+
+                    <div class="vl-featured-footer">
+
+
+                        {% if item.status == "ACCESS_GRANTED" %}
+
+                            <div class="vl-access-state granted">
+
+                                <span></span>
+
+                                ACCESS GRANTED
+
+                            </div>
+
+
+                            <a
+                                href="{% url 'virtuallab:lab_overview' item.lab.id %}"
+                                class="vl-compute-action open"
+                            >
+                                OPEN LAB
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+
+
+                            {% if request.user.is_lecturer or request.user.is_superuser %}
+
+                                <a
+                                    href="{% url 'virtuallab:manage_lab_resources' item.lab.id %}"
+                                    class="vl-compute-action"
+                                >
+                                    RESOURCES
+                                    <i class="fas fa-folder-open"></i>
+                                </a>
+
+                            {% endif %}
+
+
+                        {% elif item.status == "REQUEST_PENDING" %}
+
+                            <div class="vl-access-state pending">
+
+                                <span></span>
+
+                                REQUEST PENDING
+
+                            </div>
+
+
+                            <span class="vl-compute-action disabled">
+                                UNDER REVIEW
+                            </span>
+
+
+                        {% elif item.status == "REQUEST_REJECTED" %}
+
+                            <div class="vl-access-state rejected">
+
+                                <span></span>
+
+                                REQUEST REJECTED
+
+                            </div>
+
+
+                            <form
+                                method="post"
+                                action="{% url 'virtuallab:request_lab_access' item.lab.id %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="vl-compute-action"
+                                >
+                                    REQUEST AGAIN
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+
+                            </form>
+
+
+                        {% elif item.status == "REQUEST_CANCELLED" %}
+
+                            <div class="vl-access-state">
+
+                                <span></span>
+
+                                REQUEST CANCELLED
+
+                            </div>
+
+
+                            <form
+                                method="post"
+                                action="{% url 'virtuallab:request_lab_access' item.lab.id %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="vl-compute-action"
+                                >
+                                    REQUEST ACCESS
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+
+                            </form>
+
+
+                        {% else %}
+
+
+                            {% if request.user.is_authenticated and request.user.is_student %}
+
+                                <div class="vl-access-state available">
+
+                                    <span></span>
+
+                                    AVAILABLE
+
+                                </div>
+
+
+                                <form
+                                    method="post"
+                                    action="{% url 'virtuallab:request_lab_access' item.lab.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="vl-compute-action"
+                                    >
+                                        REQUEST ACCESS
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+
+                                </form>
+
+
+                            {% else %}
+
+                                {% if request.user.is_authenticated and request.user.is_student %}
+
+                                    <div class="vl-access-state available">
+
+                                        <span></span>
+
+                                        AVAILABLE
+
+                                    </div>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'virtuallab:request_lab_access' item.lab.id %}"
+                                    >
+
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="vl-compute-action"
+                                        >
+                                            REQUEST ACCESS
+                                            <i class="fas fa-arrow-right"></i>
+                                        </button>
+
+                                    </form>
+
+                                {% else %}
+
+                                    <div class="vl-access-state available">
+
+                                        <span></span>
+
+                                        AVAILABLE
+
+                                    </div>
+
+                                    {% if request.user.is_lecturer or request.user.is_superuser %}
+
+                                        <a
+                                            href="{% url 'virtuallab:lab_management' %}"
+                                            class="vl-compute-action"
+                                        >
+                                            MANAGEMENT
+                                            <i class="fas fa-arrow-right"></i>
+                                        </a>
+
+                                    {% endif %}
+
+                                {% endif %}
+
+                            {% endif %}
+
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                </article>
+
+                {% endfor %}
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- SLIDER INDICATORS -->
+
+        <div
+            class="vl-slider-indicators"
+            id="vl-slider-indicators"
+        >
+
+            {% for item in labs %}
+
+                <button
+                    type="button"
+                    class="vl-slider-indicator {% if forloop.first %}active{% endif %}"
+                    data-slide="{{ forloop.counter0 }}"
+                    aria-label="Go to laboratory {{ forloop.counter }}"
+                ></button>
+
+            {% endfor %}
+
+        </div>
+
+
+        {% else %}
+
+
+        <div class="vl-empty-state">
+
+            <div class="vl-empty-icon">
+                <i class="fas fa-server"></i>
+            </div>
+
+            <div class="vl-section-index">
+                COMPUTE REGISTRY
+            </div>
+
+            <h3>
+                No Virtual Labs Available
+            </h3>
+
+            <p>
+                There are currently no active virtual laboratory
+                environments available on the platform.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         04. ALL VIRTUAL LABS
+         ===================================================== -->
+
+    <section class="vl-all-section">
+
+
+        <div class="vl-all-header">
+
+            <div>
+
+                <div class="vl-section-index">
+                    03 / COMPUTE REGISTRY
+                </div>
+
+                <h2>
+                    All Virtual
+                    <span>Laboratories.</span>
+                </h2>
+
+            </div>
+
+
+            <div class="vl-lab-count">
+
+                <span>
+                    ACTIVE NODES
+                </span>
+
+                <strong>
+                    {{ labs|length|stringformat:"02d" }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        {% if labs %}
+
+        <div class="vl-all-grid">
+
+
+            {% for item in labs %}
+
+            <article class="vl-lab-card">
+
+
+                <div class="vl-lab-card-line"></div>
+
+
+                <div class="vl-lab-card-top">
+
+
+                    <div class="vl-lab-icon">
+
+                        {% if item.lab.lab_type == "PROGRAMMING" %}
+
+                            <i class="fas fa-code"></i>
+
+                        {% elif item.lab.lab_type == "AI" %}
+
+                            <i class="fas fa-brain"></i>
+
+                        {% elif item.lab.lab_type == "BIG_DATA" %}
+
+                            <i class="fas fa-database"></i>
+
+                        {% elif item.lab.lab_type == "QUANTUM" %}
+
+                            <i class="fas fa-atom"></i>
+
+                        {% elif item.lab.lab_type == "HPC" %}
+
+                            <i class="fas fa-microchip"></i>
+
+                        {% else %}
+
+                            <i class="fas fa-server"></i>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <span class="vl-lab-type">
+                        {{ item.lab.lab_type }}
+                    </span>
+
+
+                </div>
+
+
+                <div class="vl-lab-code">
+                    NODE / {{ forloop.counter|stringformat:"03d" }}
+                </div>
+
+
+                <h3>
+                    {{ item.lab.name }}
+                </h3>
+
+
+                <p>
+
+                    {% if item.lab.description %}
+
+                        {{ item.lab.description }}
+
+                    {% else %}
+
+                        Isolated virtual computing
+                        environment for practical
+                        experimentation and learning.
+
+                    {% endif %}
+
+                </p>
+
+
+                <div class="vl-lab-meta">
+
+                    <span>
+                        <i class="fas fa-circle"></i>
+                        ISOLATED
+                    </span>
+
+                    <span>
+                        <i class="fas fa-shield-alt"></i>
+                        SECURE
+                    </span>
+
+                    <span>
+                        <i class="fas fa-terminal"></i>
+                        LINUX
+                    </span>
+
+                </div>
+
+
+                <div class="vl-lab-card-footer">
+
+
+                    {% if item.status == "ACCESS_GRANTED" %}
+
+                        <span class="vl-mini-status granted">
+                            ACCESS GRANTED
+                        </span>
+
+
+                        <a
+                            href="{% url 'virtuallab:lab_overview' item.lab.id %}"
+                            class="vl-mini-action"
+                        >
+                            OPEN
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+
+
+                    {% elif item.status == "REQUEST_PENDING" %}
+
+                        <span class="vl-mini-status pending">
+                            PENDING
+                        </span>
+
+
+                        <span class="vl-mini-action disabled">
+                            REVIEW
+                        </span>
+
+
+                    {% elif item.status == "REQUEST_REJECTED" %}
+
+                        <span class="vl-mini-status rejected">
+                            REJECTED
+                        </span>
+
+
+                        <form
+                            method="post"
+                            action="{% url 'virtuallab:request_lab_access' item.lab.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="vl-mini-action"
+                            >
+                                REQUEST AGAIN
+                            </button>
+
+                        </form>
+
+
+                    {% elif item.status == "REQUEST_CANCELLED" %}
+
+                        <span class="vl-mini-status">
+                            CANCELLED
+                        </span>
+
+
+                        <form
+                            method="post"
+                            action="{% url 'virtuallab:request_lab_access' item.lab.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="vl-mini-action"
+                            >
+                                REQUEST ACCESS
+                            </button>
+
+                        </form>
+
+
+                    {% else %}
+
+
+                        {% if request.user.is_authenticated and request.user.is_student %}
+
+                            <span class="vl-mini-status available">
+                                AVAILABLE
+                            </span>
+
+
+                            <form
+                                method="post"
+                                action="{% url 'virtuallab:request_lab_access' item.lab.id %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="vl-mini-action"
+                                >
+                                    REQUEST ACCESS
+                                </button>
+
+                            </form>
+
+
+                        {% else %}
+
+                            <span class="vl-mini-status available">
+                                AVAILABLE
+                            </span>
+
+
+                            <span class="vl-mini-action disabled">
+                                MANAGEMENT
+                            </span>
+
+                        {% endif %}
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </article>
+
+            {% endfor %}
+
+
+        </div>
+
+
+        {% else %}
+
+
+        <div class="vl-empty-state">
+
+            <div class="vl-empty-icon">
+                <i class="fas fa-server"></i>
+            </div>
+
+            <h3>
+                No Virtual Labs Available
+            </h3>
+
+            <p>
+                There are currently no active virtual laboratory
+                environments available on the platform.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         05. COMPUTE INFRASTRUCTURE
+         ===================================================== -->
+
+    <section class="vl-infrastructure-section">
+
+
+        <div class="vl-infrastructure-grid">
+
+
+            <div class="vl-infrastructure-content">
+
+                <div class="vl-section-index">
+                    04 / INFRASTRUCTURE
+                </div>
+
+                <h2>
+                    Built for
+                    <span>Practical Compute.</span>
+                </h2>
+
+                <p>
+                    Virtual laboratories provide controlled
+                    environments where students can experiment
+                    with real technologies without affecting
+                    the underlying host system.
+                </p>
+
+            </div>
+
+
+            <div class="vl-infrastructure-stats">
+
+
+                <div class="vl-infra-item">
+
+                    <span class="vl-infra-value">
+                        01
+                    </span>
+
+                    <span class="vl-infra-label">
+                        ISOLATED ENVIRONMENT
+                    </span>
+
+                </div>
+
+
+                <div class="vl-infra-item">
+
+                    <span class="vl-infra-value">
+                        02
+                    </span>
+
+                    <span class="vl-infra-label">
+                        CONTROLLED ACCESS
+                    </span>
+
+                </div>
+
+
+                <div class="vl-infra-item">
+
+                    <span class="vl-infra-value">
+                        03
+                    </span>
+
+                    <span class="vl-infra-label">
+                        PRACTICAL EXECUTION
+                    </span>
+
+                </div>
+
+
+                <div class="vl-infra-item">
+
+                    <span class="vl-infra-value">
+                        04
+                    </span>
+
+                    <span class="vl-infra-label">
+                        HPC WORKLOADS
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <div class="vl-infrastructure-terminal">
+
+
+            <div class="vl-terminal-header">
+
+                <div class="vl-terminal-dots">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </div>
+
+                <span>
+                    HPC / VIRTUAL-LAB / SYSTEM
+                </span>
+
+            </div>
+
+
+            <div class="vl-terminal-body">
+
+                <div>
+                    <span class="terminal-green">
+                        SYSTEM
+                    </span>
+                    &nbsp;
+                    virtual compute environment detected
+                </div>
+
+                <div>
+                    <span class="terminal-blue">
+                        ACCESS
+                    </span>
+                    &nbsp;
+                    role-based authorization enabled
+                </div>
+
+                <div>
+                    <span class="terminal-purple">
+                        WORKSPACE
+                    </span>
+                    &nbsp;
+                    isolated execution environment ready
+                </div>
+
+                <div>
+                    <span class="terminal-green">
+                        STATUS
+                    </span>
+                    &nbsp;
+                    platform operational
+                </div>
+
+                <div class="terminal-cursor">
+                    _
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         06. FINAL CTA
+         ===================================================== -->
+
+    <section class="vl-final-section">
+
+
+        <div class="vl-final-grid"></div>
+
+
+        <div class="vl-final-content">
+
+            <div class="vl-section-index">
+                05 / COMPUTE ACCESS
+            </div>
+
+            <h2>
+                Your Next
+                <span>Compute Session.</span>
+            </h2>
+
+            <p>
+                Select a laboratory, request access and
+                move from theory into practical execution.
+            </p>
+
+
+            <a
+                href="#available-labs"
+                class="vl-final-button"
+            >
+                EXPLORE VIRTUAL LABS
+
+                <i class="fas fa-arrow-down"></i>
+
+            </a>
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+
+{% endblock content %}
+
+
+
+{% block js %}
+
+<script src="{% static 'js/virtual_lab.js' %}"></script>
+
+{% endblock js %}

@@ -1,0 +1,614 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .vl-edit-page {
+        width: auto;
+        max-width: none;
+        margin: 30px 0 0;
+        padding: 10px 42px 70px;
+        min-height: calc(100vh - 150px);
+        box-sizing: border-box;
+        transition: margin-left .3s ease, width .3s ease;
+    }
+
+    body:has(#side-nav.active) .vl-edit-page {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+    }
+
+    .vl-edit-header {
+        margin-bottom: 30px;
+    }
+
+    .vl-edit-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        color: #00a8c6;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .vl-edit-eyebrow span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #00bcd4;
+        box-shadow: 0 0 12px rgba(0,188,212,.7);
+    }
+
+    .vl-edit-title {
+        margin: 0;
+        color: var(--text-primary, #111827);
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .vl-edit-subtitle {
+        margin-top: 9px;
+        color: var(--text-secondary, #64748b);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .vl-edit-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .vl-edit-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 38px;
+        padding: 0 13px;
+        border: 1px solid rgba(0,217,255,.18);
+        border-radius: 9px;
+        background: rgba(0,217,255,.035);
+        color: #9ba8b5;
+        text-decoration: none;
+        font-size: 8px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        transition: .25s ease;
+    }
+
+    .vl-edit-back i {
+        color: #00d9ff;
+    }
+
+    .vl-edit-back:hover {
+        color: #e5edf2;
+        border-color: rgba(0,217,255,.45);
+        background: rgba(0,217,255,.07);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .vl-edit-form-card {
+        max-width: 1100px;
+        border: 1px solid rgba(100,116,139,.14);
+        border-radius: 16px;
+        background: var(--card-bg, rgba(255,255,255,.92));
+        box-shadow: 0 14px 40px rgba(0,0,0,.05);
+        overflow: hidden;
+    }
+
+    .vl-edit-form-header {
+        padding: 15px 18px;
+        border-bottom: 1px solid rgba(100,116,139,.12);
+    }
+
+    .vl-edit-form-header h2 {
+        margin: 0;
+        color: var(--text-primary, #111827);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .vl-edit-form-body {
+        padding: 20px 18px;
+    }
+    .vl-edit-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .vl-edit-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .vl-edit-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .vl-edit-group label {
+        color: var(--text-secondary, #64748b);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .vl-edit-control {
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 13px;
+        box-sizing: border-box;
+        border: 1px solid rgba(100,116,139,.18);
+        border-radius: 9px;
+        outline: none;
+        background: rgba(100,116,139,.035);
+        color: var(--text-primary, #111827);
+        font-size: 12px;
+        transition: .2s ease;
+    }
+
+    textarea.vl-edit-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .vl-edit-control:focus {
+        border-color: rgba(0,188,212,.55);
+        box-shadow: 0 0 0 3px rgba(0,188,212,.08);
+    }
+
+    .vl-edit-help {
+        color: var(--text-secondary, #64748b);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .vl-edit-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 22px;
+        border-top: 1px solid rgba(100,116,139,.12);
+    }
+
+    .vl-edit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 42px;
+        padding: 0 18px;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: .25s ease;
+    }
+
+    .vl-edit-cancel {
+        border: 1px solid rgba(100,116,139,.18);
+        background: rgba(100,116,139,.035);
+        color: var(--text-secondary, #64748b);
+    }
+
+    .vl-edit-save {
+        border: 1px solid rgba(0,217,255,.4);
+        background: rgba(0,217,255,.08);
+        color: #00a8c6;
+    }
+
+    .vl-edit-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .vl-edit-save:hover {
+        border-color: #00d9ff;
+        background: rgba(0,217,255,.14);
+        color: #008fa3;
+    }
+
+    [data-theme="dark"] .vl-edit-title,
+    [data-theme="dark"] .vl-edit-form-header h2,
+    [data-theme="dark"] .vl-edit-control {
+        color: #e2e8f0;
+    }
+
+    [data-theme="dark"] .vl-edit-form-card {
+        background: rgba(15,23,42,.88);
+        border-color: rgba(148,163,184,.13);
+        box-shadow: 0 18px 45px rgba(0,0,0,.22);
+    }
+
+    [data-theme="dark"] .vl-edit-form-header,
+    [data-theme="dark"] .vl-edit-actions {
+        border-color: rgba(148,163,184,.11);
+    }
+
+    [data-theme="dark"] .vl-edit-control {
+        background: rgba(148,163,184,.035);
+        border-color: rgba(148,163,184,.14);
+    }
+
+    [data-theme="dark"] .vl-edit-back {
+        color: #67e8f9;
+        border-color: rgba(34,211,238,.22);
+        background: rgba(34,211,238,.05);
+    }
+
+    @media (max-width: 1100px) {
+        body:has(#side-nav.active) .vl-edit-page {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .vl-edit-page {
+            padding: 28px 20px 50px;
+        }
+
+        .vl-edit-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .vl-edit-group.full {
+            grid-column: auto;
+        }
+
+        .vl-edit-navigation {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .vl-edit-back {
+            width: 100%;
+        }
+
+        .vl-edit-actions {
+            flex-direction: column;
+        }
+
+        .vl-edit-btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .vl-edit-page {
+            margin-top: 20px;
+            padding: 22px 15px 40px;
+        }
+    }
+    .vl-edit-navigation-left,
+    .vl-edit-navigation-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+
+<div class="vl-edit-page">
+
+    <div class="vl-edit-navigation">
+
+        <div class="vl-edit-navigation-left">
+
+            <a
+                href="{% url 'virtuallab:lab_manager_overview' lab.id %}"
+                class="vl-edit-back"
+            >
+                <i class="fas fa-arrow-left"></i>
+                LAB OVERVIEW
+            </a>
+
+        </div>
+
+        <div class="vl-edit-navigation-right">
+
+            <a
+                href="{% url 'virtuallab:lab_management' %}"
+                class="vl-edit-back"
+            >
+                <i class="fas fa-server"></i>
+                LAB MANAGEMENT
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="vl-edit-header">
+
+        <div class="vl-edit-eyebrow">
+            <span></span>
+            HPC / VIRTUAL LAB / CONFIGURATION
+        </div>
+
+        <h1 class="vl-edit-title">
+            Edit Virtual Lab
+        </h1>
+
+        <div class="vl-edit-subtitle">
+            Update the configuration and resource allocation for
+            {{ lab.name }}.
+        </div>
+
+    </div>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <div class="vl-edit-form-card">
+
+            <div class="vl-edit-form-header">
+                <h2>
+                    <i class="fas fa-sliders-h"></i>
+                    Lab Configuration
+                </h2>
+            </div>
+
+            <div class="vl-edit-form-body">
+
+                <div class="vl-edit-grid">
+
+                    <div class="vl-edit-group">
+
+                        <label for="name">
+                            Lab Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="vl-edit-control"
+                            value="{{ lab.name }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="vl-edit-group">
+
+                        <label for="lab_type">
+                            Lab Type
+                        </label>
+
+                        <select
+                            id="lab_type"
+                            name="lab_type"
+                            class="vl-edit-control"
+                            required
+                        >
+
+                            {% for value, label in lab_type_choices %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if lab.lab_type == value %}selected{% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="vl-edit-group full">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            class="vl-edit-control"
+                            required
+                        >{{ lab.description }}</textarea>
+
+                    </div>
+
+
+                    <div class="vl-edit-group">
+
+                        <label for="technology">
+                            Technology
+                        </label>
+
+                        <input
+                            type="text"
+                            id="technology"
+                            name="technology"
+                            class="vl-edit-control"
+                            value="{{ lab.technology }}"
+                        >
+
+                    </div>
+
+
+                    <div class="vl-edit-group">
+
+                        <label for="status">
+                            Status
+                        </label>
+
+                        <select
+                            id="status"
+                            name="status"
+                            class="vl-edit-control"
+                            required
+                        >
+
+                            <option
+                                value="ACTIVE"
+                                {% if lab.status == "ACTIVE" %}selected{% endif %}
+                            >
+                                Active
+                            </option>
+
+                            <option
+                                value="INACTIVE"
+                                {% if lab.status == "INACTIVE" %}selected{% endif %}
+                            >
+                                Inactive
+                            </option>
+
+                            <option
+                                value="DRAFT"
+                                {% if lab.status == "DRAFT" %}selected{% endif %}
+                            >
+                                Draft
+                            </option>
+
+                            <option
+                                value="ARCHIVED"
+                                {% if lab.status == "ARCHIVED" %}selected{% endif %}
+                            >
+                                Archived
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="vl-edit-group full">
+
+                        <label for="docker_environment">
+                            Docker Environment
+                        </label>
+
+                        <select
+                            id="docker_environment"
+                            name="docker_environment"
+                            class="vl-edit-control"
+                        >
+
+                            <option value="">
+                                No Docker Environment
+                            </option>
+
+                            {% for environment in environments %}
+
+                                <option
+                                    value="{{ environment.id }}"
+                                    {% if lab.docker_environment_id == environment.id %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ environment.name }}
+                                    — {{ environment.docker_image }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <div class="vl-edit-help">
+                            Select the Docker environment used when
+                            student containers are provisioned.
+                        </div>
+
+                    </div>
+
+
+                    <div class="vl-edit-group">
+
+                        <label for="allocated_ram">
+                            RAM Allocation
+                        </label>
+
+                        <input
+                            type="number"
+                            id="allocated_ram"
+                            name="allocated_ram"
+                            class="vl-edit-control"
+                            value="{{ lab.allocated_ram }}"
+                            min="256"
+                            step="256"
+                            required
+                        >
+
+                        <div class="vl-edit-help">
+                            Value in MB.
+                        </div>
+
+                    </div>
+
+
+                    <div class="vl-edit-group">
+
+                        <label for="allocated_storage">
+                            Storage Allocation
+                        </label>
+
+                        <input
+                            type="number"
+                            id="allocated_storage"
+                            name="allocated_storage"
+                            class="vl-edit-control"
+                            value="{{ lab.allocated_storage }}"
+                            min="1024"
+                            step="1024"
+                            required
+                        >
+
+                        <div class="vl-edit-help">
+                            Value in MB.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="vl-edit-actions">
+
+                    <a
+                        href="{% url 'virtuallab:lab_manager_overview' lab.id %}"
+                        class="vl-edit-btn vl-edit-cancel"
+                    >
+                        CANCEL
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="vl-edit-btn vl-edit-save"
+                    >
+                        <i class="fas fa-save"></i>
+                        SAVE CHANGES
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

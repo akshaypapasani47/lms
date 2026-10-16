@@ -45,22 +45,23 @@
                     </div>
 
                     <div class="text-muted">
-
                         {{ questions.count }}
                         Questions
-
                     </div>
 
                     {% if assessment.duration_minutes %}
 
                         <div class="mt-2">
 
-                            <span class="badge bg-warning text-dark">
-
+                            <span
+                                id="assessment-timer"
+                                class="badge bg-warning text-dark"
+                                style="font-size: 16px;"
+                            >
                                 ⏱
-                                {{ assessment.duration_minutes }}
-                                minutes
-
+                                <span id="timer-display">
+                                    Loading...
+                                </span>
                             </span>
 
                         </div>
@@ -956,10 +957,232 @@
 
 </style>
 
+<!-- ====================================================== -->
+<!-- ASSESSMENT TIMER -->
+<!-- ====================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const timerDisplay =
+        document.getElementById("timer-display");
+
+    const timerBadge =
+        document.getElementById("assessment-timer");
+
+    const assessmentForm =
+        document.getElementById("assessment-form");
+
+
+    if (!timerDisplay || !timerBadge) {
+        return;
+    }
+
+
+    /*
+     * Timer end time comes from Django.
+     *
+     * It is calculated from:
+     *
+     * submission.started_at
+     * +
+     * assessment.duration_minutes
+     */
+    const timerEnd =
+        new Date("{{ timer_end|date:'c' }}").getTime();
+
+
+    if (isNaN(timerEnd)) {
+
+        timerDisplay.textContent =
+            "Timer unavailable";
+
+        return;
+    }
+
+
+    /*
+     * Prevent automatic submission
+     * from happening more than once.
+     */
+    let autoSubmitted = false;
+
+
+    function updateAssessmentTimer() {
+
+        const now =
+            new Date().getTime();
+
+        const remaining =
+            timerEnd - now;
+
+
+        /*
+         * ======================================================
+         * TIME OVER
+         * ======================================================
+         */
+        if (remaining <= 0) {
+
+            timerDisplay.textContent =
+                "00:00";
+
+
+            timerBadge.classList.remove(
+                "bg-warning",
+                "text-dark"
+            );
+
+
+            timerBadge.classList.add(
+                "bg-danger"
+            );
+
+
+            clearInterval(timerInterval);
+
+
+            /*
+             * ==================================================
+             * AUTOMATIC SUBMISSION
+             * ==================================================
+             */
+            if (
+                !autoSubmitted &&
+                assessmentForm
+            ) {
+
+                autoSubmitted = true;
+
+
+                /*
+                 * Create the same POST action used
+                 * by the normal Submit Assessment button.
+                 *
+                 * This ensures Django receives:
+                 *
+                 * action = submit
+                 */
+                const submitAction =
+                    document.createElement("input");
+
+                submitAction.type = "hidden";
+
+                submitAction.name = "action";
+
+                submitAction.value = "submit";
+
+
+                assessmentForm.appendChild(
+                    submitAction
+                );
+
+
+                /*
+                 * requestSubmit() triggers the form's
+                 * normal submit event.
+                 *
+                 * This is important because Monaco's
+                 * existing submit listener will first
+                 * copy the current code into the hidden
+                 * textarea before the form is submitted.
+                 */
+                assessmentForm.requestSubmit();
+
+
+            }
+
+            return;
+        }
+
+
+        /*
+         * ======================================================
+         * CONVERT MILLISECONDS TO MINUTES AND SECONDS
+         * ======================================================
+         */
+        const totalSeconds =
+            Math.floor(
+                remaining / 1000
+            );
+
+
+        const minutes =
+            Math.floor(
+                totalSeconds / 60
+            );
+
+
+        const seconds =
+            totalSeconds % 60;
+
+
+        const formattedMinutes =
+            String(minutes).padStart(
+                2,
+                "0"
+            );
+
+
+        const formattedSeconds =
+            String(seconds).padStart(
+                2,
+                "0"
+            );
+
+
+        timerDisplay.textContent =
+            formattedMinutes +
+            ":" +
+            formattedSeconds;
+
+
+        /*
+         * ======================================================
+         * CHANGE APPEARANCE WHEN LESS THAN 5 MINUTES REMAIN
+         * ======================================================
+         */
+        if (totalSeconds <= 300) {
+
+            timerBadge.classList.remove(
+                "bg-warning",
+                "text-dark"
+            );
+
+
+            timerBadge.classList.add(
+                "bg-danger"
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Show timer immediately.
+     */
+    updateAssessmentTimer();
+
+
+    /*
+     * Update every second.
+     */
+    const timerInterval =
+        setInterval(
+            updateAssessmentTimer,
+            1000
+        );
+
+});
+
+</script>
 
 <!-- ====================================================== -->
 <!-- MONACO -->
 <!-- ====================================================== -->
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
 

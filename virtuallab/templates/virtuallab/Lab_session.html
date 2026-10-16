@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ lab.name }} | Virtual Lab
+{% endblock title %}
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/virtual_lab.css' %}"
+>
+
+{% endblock extra_css %}
+
+{% block maincontent %}
+
+<div class="vl-home-page">
+
+<!-- =====================================================
+     SESSION HEADER
+     ===================================================== -->
+
+<header class="vl-home-header">
+
+    <div class="vl-home-brand">
+
+        <div class="vl-home-brand-icon">
+            <i class="fas fa-microchip"></i>
+        </div>
+
+        <div>
+
+            <div class="vl-home-eyebrow">
+                HPC VIRTUAL COMPUTE
+            </div>
+
+            <h1>
+                {{ lab.name }}
+            </h1>
+
+        </div>
+
+    </div>
+
+
+    <div class="vl-home-session-status">
+
+        <span class="vl-session-status-dot"></span>
+
+        <div>
+
+            <strong>
+                SESSION ACTIVE
+            </strong>
+
+            <small>
+                SESSION #{{ session.id }}
+            </small>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     ENVIRONMENT STATUS
+     ===================================================== -->
+
+<section class="vl-home-status">
+
+    <div class="vl-home-status-main">
+
+        <div class="vl-home-status-icon">
+            <i class="fas fa-server"></i>
+        </div>
+
+        <div>
+
+            <span class="vl-home-status-label">
+                COMPUTE ENVIRONMENT
+            </span>
+
+            <strong>
+                Docker Environment Ready
+            </strong>
+
+            <p>
+                Your isolated Virtual Lab environment is
+                running and ready for practical work.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="vl-home-status-meta">
+
+        <div>
+            <span>ENVIRONMENT</span>
+
+            <strong>
+                {{ environment.get_status_display }}
+            </strong>
+        </div>
+
+        <div>
+            <span>MEMORY</span>
+
+            <strong>
+                {{ lab.allocated_ram }} MB
+            </strong>
+        </div>
+
+        <div>
+            <span>STORAGE</span>
+
+            <strong>
+                {{ lab.allocated_storage }} MB
+            </strong>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     LAB MODULES
+     ===================================================== -->
+
+<section class="vl-home-modules">
+
+    <div class="vl-home-section-heading">
+
+        <div>
+
+            <span class="vl-section-kicker">
+                VIRTUAL LAB
+            </span>
+
+            <h2>
+                Workspace
+            </h2>
+
+        </div>
+
+        <p>
+            Select a workspace module to continue.
+        </p>
+
+    </div>
+
+
+    <div class="vl-home-module-grid">
+
+
+        <!-- =================================================
+            FILE MANAGER
+            ================================================= -->
+
+        <a
+            href="{% url 'virtuallab:file_manager' lab.id %}"
+            class="vl-home-module-card"
+        >
+
+            <div class="vl-home-module-icon">
+                <i class="fas fa-folder-tree"></i>
+            </div>
+
+            <div class="vl-home-module-content">
+
+                <span class="vl-home-module-number">
+                    01
+                </span>
+
+                <h3>
+                    File Manager
+                </h3>
+
+                <p>
+                    Browse, create, upload, download and
+                    manage files in your workspace.
+                </p>
+
+            </div>
+
+            <span class="vl-home-module-arrow">
+                →
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+            TERMINAL
+            ================================================= -->
+
+        <a
+            href="{% url 'virtuallab:terminal' lab.id %}"
+            class="vl-home-module-card"
+        >
+
+            <div class="vl-home-module-icon">
+                <i class="fas fa-terminal"></i>
+            </div>
+
+            <div class="vl-home-module-content">
+
+                <span class="vl-home-module-number">
+                    02
+                </span>
+
+                <h3>
+                    Terminal
+                </h3>
+
+                <p>
+                    Access the Linux shell inside your
+                    isolated Docker environment.
+                </p>
+
+            </div>
+
+            <span class="vl-home-module-arrow">
+                →
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+            ASSIGNMENTS
+            ================================================= -->
+
+        <a
+            href="{% url 'virtuallab:lab_assignments' lab.id %}"
+            class="vl-home-module-card"
+        >
+
+            <div class="vl-home-module-icon">
+                <i class="fas fa-tasks"></i>
+            </div>
+
+            <div class="vl-home-module-content">
+
+                <span class="vl-home-module-number">
+                    03
+                </span>
+
+                <h3>
+                    Assignments
+                </h3>
+
+                <p>
+                    View and complete your assigned assessments.
+                </p>
+
+            </div>
+
+            <span class="vl-home-module-arrow">
+                →
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+            LAB RESOURCES
+            ================================================= -->
+
+        <a href="{% url 'virtuallab:lab_resources' lab.id %}"
+            class="vl-home-module-card">
+
+            <div class="vl-home-module-icon">
+                <i class="fas fa-folder-open"></i>
+            </div>
+
+            <div class="vl-home-module-content">
+                <h3>Lab Resources</h3>
+                <p>
+                    Manage datasets, reference files, documents,
+                    code samples and other lab resources.
+                </p>
+            </div>
+
+            <span class="vl-home-module-arrow">
+                →
+            </span>
+
+        </a>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     LAB INFORMATION
+     ===================================================== -->
+
+<section class="vl-home-information">
+
+    <div>
+
+        <span class="vl-section-kicker">
+            LAB INFORMATION
+        </span>
+
+        <h2>
+            {{ lab.name }}
+        </h2>
+
+        {% if lab.description %}
+
+            <p>
+                {{ lab.description }}
+            </p>
+
+        {% else %}
+
+            <p>
+                Virtual laboratory environment for
+                practical learning and experimentation.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="vl-home-info-grid">
+
+        <div>
+
+            <span>
+                TECHNOLOGY
+            </span>
+
+            <strong>
+
+                {% if lab.technology %}
+                    {{ lab.technology }}
+                {% else %}
+                    General Compute
+                {% endif %}
+
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                CONTAINER
+            </span>
+
+            <strong>
+                Docker
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                WORKSPACE
+            </span>
+
+            <strong>
+                /workspace
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                SESSION
+            </span>
+
+            <strong>
+                #{{ session.id }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     BACK TO OVERVIEW
+     ===================================================== -->
+
+<div class="vl-home-footer">
+
+    <a
+        href="{% url 'virtuallab:lab_overview' lab.id %}"
+    >
+
+        <i class="fas fa-arrow-left"></i>
+
+        Back to Lab Overview
+
+    </a>
+
+</div>
+
+
+</div>
+
+{% endblock maincontent %}

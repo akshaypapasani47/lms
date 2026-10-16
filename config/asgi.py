@@ -20,6 +20,7 @@ from channels.routing import (
 
 from channels.auth import AuthMiddlewareStack
 import virtual_lab_v2.routing
+import virtuallab.routing
 from programming_lab.routing import (
     websocket_urlpatterns as programming_websocket_urlpatterns
 )
@@ -34,6 +35,8 @@ application = ProtocolTypeRouter({
                 virtual_lab_v2.routing.websocket_urlpatterns
                 +
                 programming_websocket_urlpatterns
+                + 
+                virtuallab.routing.websocket_urlpatterns
             )
         )
 })

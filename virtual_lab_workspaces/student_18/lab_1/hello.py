@@ -1,0 +1,12 @@
+print("Hello Virtual Lab")
+print("Running inside Docker!")
+x = int(input("enter a number: "))
+print(x + 10)
+
+name = input("Enter your name: ")
+age = int(input("Enter your age: "))
+print('something')
+print(f"Hello {name}")
+print(f"You are {age} years old")
+print('wehfb')
+print(10222)

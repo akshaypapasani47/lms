@@ -1,0 +1,594 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ lab.name }} | Terminal
+{% endblock title %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/virtual_lab.css' %}">
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css"
+>
+
+<style>
+    .vl-terminal-page {
+        width: 100%;
+        min-height: calc(100vh - 80px);
+        padding: 22px;
+        background:
+            radial-gradient(circle at 85% 8%, rgba(0, 217, 255, .055), transparent 28%),
+            radial-gradient(circle at 10% 90%, rgba(99, 102, 241, .045), transparent 25%);
+    }
+
+    .vl-terminal-page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 18px;
+    }
+
+    .vl-terminal-page-title {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .vl-terminal-page-icon {
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: rgba(0, 217, 255, .10);
+        border: 1px solid rgba(0, 217, 255, .20);
+        color: #00d9ff;
+    }
+
+    .vl-terminal-page-title h1 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 650;
+        letter-spacing: -.015em;
+    }
+
+    .vl-terminal-page-title small {
+        display: block;
+        margin-top: 5px;
+        opacity: .62;
+        font-size: .82rem;
+        letter-spacing: .01em;
+    }
+
+    .vl-terminal-page-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .vl-terminal-page-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(148, 163, 184, .16);
+        background: rgba(15, 23, 42, .34);
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+        transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    .vl-terminal-page-btn:hover {
+        border-color: rgba(0, 217, 255, .42);
+        background: rgba(0, 217, 255, .055);
+        transform: translateY(-1px);
+    }
+
+    .vl-terminal-page-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: rgba(34, 197, 94, .08);
+        border: 1px solid rgba(34, 197, 94, .18);
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .04em;
+    }
+
+    .vl-terminal-page-status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 10px rgba(34, 197, 94, .65);
+    }
+
+    .vl-terminal-panel-standalone {
+        margin-top: 0;
+        height: calc(100vh - 205px);
+        min-height: 430px;
+        overflow: hidden;
+        border-radius: 14px;
+        box-shadow:
+            0 18px 50px rgba(0, 0, 0, .28),
+            0 0 0 1px rgba(0, 217, 255, .055);
+    }
+
+    .vl-terminal-panel-standalone .vl-terminal {
+        min-height: 0;
+    }
+
+    .vl-xterm-container {
+        width: 100%;
+        height: 100%;
+        padding: 16px 20px;
+        box-sizing: border-box;
+        background:
+            radial-gradient(circle at 75% 15%, rgba(0, 217, 255, .025), transparent 30%),
+            #08111f;
+        border-top: 1px solid rgba(148, 163, 184, .07);
+    }
+
+    .vl-xterm-container .xterm-viewport {
+        background: transparent !important;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(100, 116, 139, .45) transparent;
+    }
+
+    .vl-xterm-container .xterm-screen {
+        padding-top: 2px;
+    }
+
+    .vl-xterm-container .xterm-cursor-layer {
+        transition: opacity .08s ease;
+    }
+
+    .vl-xterm-container .xterm {
+        width: 100%;
+        height: 100%;
+    }
+
+    @media (max-width: 760px) {
+        .vl-terminal-page {
+            padding: 14px;
+        }
+
+        .vl-terminal-page-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .vl-terminal-panel-standalone {
+            height: calc(100vh - 245px);
+            min-height: 360px;
+        }
+    }
+</style>
+{% endblock extra_css %}
+
+{% block maincontent %}
+
+<div class="vl-terminal-page">
+
+    <header class="vl-terminal-page-header">
+
+        <div class="vl-terminal-page-title">
+
+            <div class="vl-terminal-page-icon">
+                <i class="fas fa-terminal"></i>
+            </div>
+
+            <div>
+                <h1>Virtual Lab Terminal</h1>
+                <small>
+                    {{ lab.name }} · /workspace · Docker shell
+                </small>
+            </div>
+
+        </div>
+
+        <div class="vl-terminal-page-actions">
+
+            <span class="vl-terminal-page-status" id="vl-terminal-status">
+                <span class="vl-terminal-page-status-dot"></span>
+                CONNECTING
+            </span>
+
+            <button
+                type="button"
+                class="vl-terminal-page-btn"
+                id="vl-terminal-clear"
+            >
+                <i class="fas fa-eraser"></i>
+                Clear
+            </button>
+
+            <a
+                href="{% url 'virtuallab:file_manager' lab.id %}"
+                class="vl-terminal-page-btn"
+            >
+                <i class="fas fa-folder-tree"></i>
+                File Manager
+            </a>
+
+            <a
+                href="{% url 'virtuallab:lab_session' lab.id %}"
+                class="vl-terminal-page-btn"
+            >
+                <i class="fas fa-house"></i>
+                Lab Home
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <section class="vl-terminal-panel-standalone">
+
+        <div class="vl-terminal-header">
+
+            <div class="vl-terminal-title-group">
+
+                <div class="vl-terminal-icon">
+                    <i class="fas fa-terminal"></i>
+                </div>
+
+                <div>
+
+                    <div class="vl-terminal-title">
+                        TERMINAL
+                    </div>
+
+                    <div class="vl-terminal-subtitle">
+                        HPC / VIRTUAL-LAB / SHELL
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="vl-terminal-header-right">
+
+                <div class="vl-terminal-shell">
+                    <span class="vl-terminal-live-dot"></span>
+                    <span id="vl-terminal-shell-text">
+                        CONNECTING
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="vl-terminal"
+            class="vl-terminal"
+            data-websocket-url="/ws/virtuallab/{{ lab.id }}/terminal/"
+        ></div>
+
+    </section>
+
+</div>
+
+{% endblock maincontent %}
+
+
+{% block js %}
+
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const terminalElement =
+        document.getElementById("vl-terminal");
+
+    if (!terminalElement || typeof Terminal === "undefined") {
+        return;
+    }
+
+    const terminal = new Terminal({
+        cursorBlink: true,
+        cursorStyle: "bar",
+        cursorWidth: 2,
+
+        fontFamily: "JetBrains Mono, Consolas, monospace",
+        fontWeight: "500",
+        fontSize: 17,
+        lineHeight: 1.35,
+        letterSpacing: 0.15,
+
+        scrollback: 5000,
+        convertEol: true,
+
+        theme: {
+            background: "#08111f",
+            foreground: "#d9e5f2",
+
+            cursor: "#38bdf8",
+            cursorAccent: "#08111f",
+
+            selectionBackground: "rgba(56, 189, 248, 0.20)",
+
+            black: "#0f172a",
+            red: "#f87171",
+            green: "#4ade80",
+            yellow: "#facc15",
+            blue: "#60a5fa",
+            magenta: "#c084fc",
+            cyan: "#22d3ee",
+            white: "#dbe7f5",
+
+            brightBlack: "#64748b",
+            brightRed: "#fb7185",
+            brightGreen: "#86efac",
+            brightYellow: "#fde047",
+            brightBlue: "#93c5fd",
+            brightMagenta: "#d8b4fe",
+            brightCyan: "#67e8f9",
+            brightWhite: "#f8fafc"
+        }
+    });
+
+    let fitAddon = null;
+
+    if (
+        typeof FitAddon !== "undefined" &&
+        FitAddon.FitAddon
+    ) {
+        fitAddon = new FitAddon.FitAddon();
+        terminal.loadAddon(fitAddon);
+    }
+
+    terminalElement.innerHTML = "";
+    terminalElement.classList.add("vl-xterm-container");
+    terminal.open(terminalElement);
+
+    function fitTerminal() {
+        if (!fitAddon) {
+            return;
+        }
+
+        try {
+            fitAddon.fit();
+        } catch (error) {
+            console.error("XTERM FIT ERROR:", error);
+        }
+    }
+
+    setTimeout(fitTerminal, 100);
+
+
+    const websocketPath =
+        terminalElement.dataset.websocketUrl;
+
+    const protocol =
+        window.location.protocol === "https:"
+            ? "wss:"
+            : "ws:";
+
+    const websocketUrl =
+        websocketPath.startsWith("/")
+            ? protocol +
+              "//" +
+              window.location.host +
+              websocketPath
+            : websocketPath;
+
+
+    const statusElement =
+        document.getElementById("vl-terminal-status");
+
+    const shellText =
+        document.getElementById("vl-terminal-shell-text");
+
+    const liveDot =
+        document.querySelector(".vl-terminal-live-dot");
+
+
+    function setStatus(connected, text) {
+
+        if (statusElement) {
+            statusElement.innerHTML = connected
+                ? '<span class="vl-terminal-page-status-dot"></span> CONNECTED'
+                : '<span class="vl-terminal-page-status-dot"></span> ' + text;
+        }
+
+        if (shellText) {
+            shellText.textContent =
+                connected ? "CONTAINER" : text;
+        }
+
+        if (liveDot) {
+            liveDot.classList.toggle(
+                "is-offline",
+                !connected
+            );
+        }
+    }
+
+
+    let socket = null;
+
+
+    function sendResize() {
+
+        if (
+            !socket ||
+            socket.readyState !== WebSocket.OPEN
+        ) {
+            return;
+        }
+
+        socket.send(JSON.stringify({
+            type: "resize",
+            cols: terminal.cols || 120,
+            rows: terminal.rows || 30
+        }));
+    }
+
+
+    function connectTerminal() {
+
+        terminal.write(
+            "\x1b[36mConnecting to Virtual Lab...\x1b[0m\r\n"
+        );
+
+        socket = new WebSocket(websocketUrl);
+        socket.binaryType = "arraybuffer";
+
+
+        socket.onopen = function () {
+
+            setStatus(true, "CONNECTED");
+
+            terminal.write(
+                "\x1b[32mConnected.\x1b[0m\r\n"
+            );
+
+            terminal.focus();
+            fitTerminal();
+            sendResize();
+        };
+
+
+        socket.onmessage = function (event) {
+
+            try {
+
+                const data =
+                    JSON.parse(event.data);
+
+                if (data.type === "output") {
+
+                    terminal.write(
+                        data.data || ""
+                    );
+
+                } else if (data.type === "connected") {
+
+                    terminal.write(
+                        "\r\n\x1b[36mEnvironment: " +
+                        (data.lab || "{{ lab.name|escapejs }}") +
+                        "\x1b[0m\r\n"
+                    );
+
+                    terminal.write(
+                        "\x1b[36mWorkspace: " +
+                        (data.workspace || "/workspace") +
+                        "\x1b[0m\r\n\r\n"
+                    );
+
+                } else if (data.type === "error") {
+
+                    terminal.write(
+                        "\r\n\x1b[31m" +
+                        (data.message || "Terminal error") +
+                        "\x1b[0m\r\n"
+                    );
+
+                }
+
+            } catch (error) {
+
+                terminal.write(event.data);
+
+            }
+        };
+
+
+        socket.onclose = function () {
+
+            setStatus(false, "DISCONNECTED");
+
+            terminal.write(
+                "\r\n\x1b[31mTerminal connection closed.\x1b[0m\r\n"
+            );
+        };
+
+
+        socket.onerror = function (error) {
+
+            console.error(
+                "VIRTUAL LAB WEBSOCKET ERROR:",
+                error
+            );
+
+            setStatus(false, "ERROR");
+
+            terminal.write(
+                "\r\n\x1b[31mWebSocket connection error.\x1b[0m\r\n"
+            );
+        };
+    }
+
+
+    terminal.onData(function (data) {
+
+        if (
+            socket &&
+            socket.readyState === WebSocket.OPEN
+        ) {
+            socket.send(JSON.stringify({
+                type: "input",
+                data: data
+            }));
+        }
+    });
+
+
+    if (
+        typeof ResizeObserver !== "undefined"
+    ) {
+
+        const observer =
+            new ResizeObserver(function () {
+
+                fitTerminal();
+                sendResize();
+
+            });
+
+        observer.observe(terminalElement);
+    }
+
+
+    window.addEventListener("resize", function () {
+        fitTerminal();
+        sendResize();
+    });
+
+
+    const clearButton =
+        document.getElementById("vl-terminal-clear");
+
+    if (clearButton) {
+
+        clearButton.addEventListener(
+            "click",
+            function () {
+
+                terminal.clear();
+                terminal.focus();
+
+            }
+        );
+    }
+
+
+    connectTerminal();
+
+});
+</script>
+
+{% endblock js %}

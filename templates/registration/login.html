@@ -1,40 +1,292 @@
 {% extends 'registration/registration_base.html' %}
++ {% load static %}
 {% load i18n %}
-{% block title %}{% trans 'Dj Learning Management System - Login' %}{% endblock title %}
 {% load crispy_forms_tags %}
+
+{% block title %}
+{% trans 'Dj Learning Management System - Login' %}
+{% endblock title %}
+
+
+
 {% block content %}
 
-<div class="col-md-4 mx-auto mt-5">
-  <div class="card">
-    <div class="form-title">
-      <i class="fas fa-lock me-2"></i>
-      {% trans 'Sign in' %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<div class="hpc-login-page">
+
+    <!-- Background -->
+    <div class="hpc-login-grid"></div>
+
+    <div class="hpc-login-glow hpc-login-glow-one"></div>
+    <div class="hpc-login-glow hpc-login-glow-two"></div>
+
+    <!-- Floating compute nodes -->
+    <div class="hpc-login-nodes" aria-hidden="true">
+        <span class="login-node node-one"></span>
+        <span class="login-node node-two"></span>
+        <span class="login-node node-three"></span>
+        <span class="login-node node-four"></span>
+        <span class="login-node node-five"></span>
+        <span class="login-node node-six"></span>
     </div>
-    <div class="card-body">
-        <form action="" method="POST" id="login-form">{% csrf_token %}
-          <div class="form-group mb-3">
-              <label class="mb-2" for="username_id"><i class="fas fa-address-card me-2"></i>{% trans 'ID Number' %}</label>
-              <input type="text" name="username" id="username_id" class="form-control" required>
-              <div id="message-wrapper"></div>
-          </div>
-          <div class="form-group mb-3">
-              <label class="mb-2" for="password_id"><i class="fas fa-key me-2"></i>{% trans 'Password' %}</label>
-              <input type="password" name="password" id="password_id" class="form-control" required>
-          </div>
-          {% if form.errors %}
-                <span class="text-danger"><i class="fas fa-exclamation-circle"></i> {% trans 'Invalid ID & Password.' %}</span><br>
-          {% endif %}
-      
-          <button type="submit" class="btn btn-primary" id="login-btn"><i class="fas fa-sign-in-alt"></i><small>{% trans 'SIGN IN' %}</small></button>
-        </form>
-        <br>
-        <div class="login-bottom">
-          <a href="{% url 'password_reset' %}" class="link">{% trans 'Forgot password ?' %}</a>
+
+
+    <div class="hpc-login-container">
+
+        <!-- Brand / System Identity -->
+
+        <div class="hpc-login-brand">
+
+            <div class="hpc-login-brand-mark">
+                <span>HPC</span>
+            </div>
+
+            <div class="hpc-login-brand-text">
+
+                <div class="hpc-login-brand-title">
+                    C-DAC HPC
+                </div>
+
+                <div class="hpc-login-brand-subtitle">
+                    DIGITAL LEARNING PLATFORM
+                </div>
+
+            </div>
+
         </div>
-      </div>
-  </div>
+
+
+        <!-- Login Card -->
+
+        <div class="hpc-login-card">
+
+            <div class="hpc-login-card-top">
+
+                <div class="hpc-login-eyebrow">
+                    <span class="hpc-login-status-dot"></span>
+                    SECURE LEARNING ACCESS
+                </div>
+
+                <!-- <div class="hpc-login-system-code">
+                    AUTH / NODE-01
+                </div> -->
+
+            </div>
+
+
+            <div class="hpc-login-heading">
+
+                <h1>
+                    Welcome <span>Back.</span>
+                </h1>
+
+                <p>
+                    Sign in to access your learning environment,
+                    virtual labs and computing resources.
+                </p>
+
+            </div>
+
+
+            <form action="" method="POST" id="login-form">
+
+                {% csrf_token %}
+
+
+                <!-- ID Number -->
+
+                <div class="hpc-login-field">
+
+                    <label for="username_id">
+
+                        <span class="hpc-field-icon">
+                            <i class="fas fa-address-card"></i>
+                        </span>
+
+                        <span>
+                            {% trans 'Username' %}
+                        </span>
+
+                    </label>
+
+                    <div class="hpc-input-wrapper">
+
+                        <input
+                            type="text"
+                            name="username"
+                            id="username_id"
+                            class="hpc-login-input"
+                            autocomplete="username"
+                            required
+                        >
+
+                        <span class="hpc-input-line"></span>
+
+                    </div>
+
+                    <div id="message-wrapper"></div>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="hpc-login-field">
+
+                    <label for="password_id">
+
+                        <span class="hpc-field-icon">
+                            <i class="fas fa-key"></i>
+                        </span>
+
+                        <span>
+                            {% trans 'Password' %}
+                        </span>
+
+                    </label>
+
+                    <div class="hpc-input-wrapper">
+
+                        <input
+                            type="password"
+                            name="password"
+                            id="password_id"
+                            class="hpc-login-input"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <span class="hpc-input-line"></span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Error -->
+
+                {% if form.errors %}
+
+                    <div class="hpc-login-error">
+
+                        <i class="fas fa-exclamation-circle"></i>
+
+                        <span>
+                            {% trans 'Invalid ID & Password.' %}
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- Login Button -->
+
+                <button
+                    type="submit"
+                    class="hpc-login-button"
+                    id="login-btn"
+                >
+
+                    <span class="hpc-login-button-content">
+
+                        <i class="fas fa-sign-in-alt"></i>
+
+                        <span>
+                            {% trans 'SIGN IN' %}
+                        </span>
+
+                    </span>
+
+                    <span class="hpc-login-button-arrow">
+                        →
+                    </span>
+
+                </button>
+
+            </form>
+
+
+            <!-- Bottom -->
+
+            <div class="hpc-login-bottom">
+
+                <a
+                    href="{% url 'password_reset' %}"
+                    class="hpc-forgot-link"
+                >
+                    <i class="fas fa-lock"></i>
+
+                    {% trans 'Forgot password?' %}
+
+                    <span>→</span>
+                </a>
+
+            </div>
+
+
+            <!-- System Status -->
+
+            <div class="hpc-login-system-status">
+
+                <div class="hpc-login-status-item">
+
+                    <span class="status-indicator"></span>
+
+                    <span>
+                        AUTHENTICATION
+                    </span>
+
+                </div>
+
+                <div class="hpc-login-status-divider"></div>
+
+                <div class="hpc-login-status-item">
+
+                    <span class="status-indicator"></span>
+
+                    <span>
+                        SECURE CONNECTION
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Footer Identity -->
+
+        <div class="hpc-login-footer">
+
+            <span>
+                HPC E-LEARNING PLATFORM
+            </span>
+
+            <i></i>
+
+            <span>
+                C-DAC BANGALORE
+            </span>
+
+            <i></i>
+
+            <span>
+                NSM
+            </span>
+
+        </div>
+
+    </div>
+
 </div>
+
+
+
 {% endblock content %}
+
 
 {% block js %}
 
@@ -45,8 +297,8 @@
     $('#login-btn').html(`<i class="fas fa-sign-in-alt"></i> Signining you in . . .`)
   })
 
-  $("#username").on("input", function () {
-    username = $(this).val();
+  $("#username_id").on("input", function () {
+    const username = $(this).val();
 
     $.ajax({
       url: "/accounts/ajax/validate-username/",

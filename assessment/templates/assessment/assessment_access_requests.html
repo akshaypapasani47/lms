@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+<!-- HEADER -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="mb-1">
+            Assessment Access Requests
+        </h2>
+
+        <p class="text-muted mb-0">
+            Manage lecturer requests to access assessments.
+        </p>
+
+    </div>
+
+    <a
+        href="{% url 'assessment_list' %}"
+        class="btn btn-outline-secondary"
+    >
+        ← Back to Assessments
+    </a>
+
+</div>
+
+
+<!-- REQUESTS -->
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-white py-3">
+
+        <strong>
+            Access Requests
+        </strong>
+
+    </div>
+
+
+    <div class="card-body p-0">
+
+        {% if access_requests %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th class="px-4">
+                                Assessment
+                            </th>
+
+                            <th>
+                                Lecturer
+                            </th>
+
+                            <th>
+                                Requested On
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for item in access_requests %}
+
+                            <tr>
+
+                                <td class="px-4">
+
+                                    <strong>
+                                        {{ item.assessment.title }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ item.requested_by.get_full_name|default:item.requested_by.username }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ item.created_at|date:"d M Y, h:i A" }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if item.status == "PENDING" %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            Pending
+                                        </span>
+
+                                    {% elif item.status == "APPROVED" %}
+
+                                        <span class="badge bg-success">
+                                            Approved
+                                        </span>
+
+                                    {% elif item.status == "REJECTED" %}
+
+                                        <span class="badge bg-danger">
+                                            Rejected
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if item.status == "PENDING" %}
+
+                                        <a
+                                            href="{% url 'approve_assessment_access' item.pk %}"
+                                            class="me-2"
+                                        >
+                                            Approve
+                                        </a>
+
+                                        <a
+                                            href="{% url 'reject_assessment_access' item.pk %}"
+                                        >
+                                            Reject
+                                        </a>
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            —
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="text-center py-5 px-3">
+
+                <h5 class="mb-2">
+                    No access requests found.
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Lecturer access requests will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endblock %}

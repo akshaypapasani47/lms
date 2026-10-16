@@ -1,0 +1,1191 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    /* =========================================================
+       LAB MANAGER OVERVIEW
+       ========================================================= */
+
+    .vl-manager-page {
+        width: auto;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 30px;
+        padding: 34px 40px 70px;
+        min-height: calc(100vh - 150px);
+        transition: margin-left .3s ease, width .3s ease;
+    }
+
+    body:has(#side-nav.active) .vl-manager-page {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+    }
+
+    /* ---------------------------------------------------------
+       HEADER
+       --------------------------------------------------------- */
+
+    .vl-manager-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 25px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+    .vl-manager-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 10px;
+
+        color: #00a8c6;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .vl-manager-eyebrow span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #00bcd4;
+        box-shadow: 0 0 12px rgba(0, 188, 212, .7);
+    }
+
+    .vl-manager-title {
+        margin: 0;
+        color: var(--text-primary, #111827);
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .vl-manager-subtitle {
+        margin-top: 9px;
+        max-width: 800px;
+        color: var(--text-secondary, #64748b);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .vl-manager-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .vl-manager-back {
+        min-height: 42px;
+        padding: 0 15px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        border: 1px solid rgba(0, 188, 212, .22);
+        border-radius: 8px;
+
+        background: rgba(0, 188, 212, .05);
+
+        color: #008fa3;
+        text-decoration: none;
+
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+
+        transition: .2s ease;
+    }
+
+    .vl-manager-back:hover {
+        transform: translateX(-3px);
+        border-color: #00bcd4;
+        background: rgba(0, 188, 212, .09);
+        color: #007c91;
+    }
+
+    /* ---------------------------------------------------------
+       STATUS STRIP
+       --------------------------------------------------------- */
+
+    .vl-manager-status {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+
+        min-height: 42px;
+        padding: 0 14px;
+
+        border: 1px solid rgba(34, 197, 94, .18);
+        border-radius: 8px;
+
+        background: rgba(34, 197, 94, .05);
+
+        color: #16a34a;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .vl-manager-status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 10px rgba(34, 197, 94, .7);
+    }
+
+    .vl-manager-status.inactive {
+        border-color: rgba(245, 158, 11, .2);
+        background: rgba(245, 158, 11, .06);
+        color: #d97706;
+    }
+
+    .vl-manager-status.inactive .vl-manager-status-dot {
+        background: #f59e0b;
+        box-shadow: 0 0 10px rgba(245, 158, 11, .6);
+    }
+
+    /* ---------------------------------------------------------
+       STATISTICS
+       --------------------------------------------------------- */
+
+    .vl-manager-stats {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 28px;
+    }
+
+    .vl-manager-stat {
+        position: relative;
+        overflow: hidden;
+
+        padding: 19px;
+
+        border: 1px solid rgba(100, 116, 139, .14);
+        border-radius: 14px;
+
+        background: var(--card-bg, rgba(255, 255, 255, .9));
+
+        box-shadow: 0 12px 35px rgba(0, 0, 0, .045);
+
+        transition: transform .25s ease,
+                    border-color .25s ease,
+                    box-shadow .25s ease;
+    }
+
+    .vl-manager-stat::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        width: 70px;
+        height: 70px;
+
+        border-radius: 50%;
+        background: rgba(0, 188, 212, .05);
+        transform: translate(25px, -25px);
+    }
+
+    .vl-manager-stat:hover {
+        transform: translateY(-3px);
+        border-color: rgba(0, 188, 212, .25);
+        box-shadow: 0 16px 38px rgba(0, 188, 212, .08);
+    }
+
+    .vl-manager-stat-icon {
+        width: 32px;
+        height: 32px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 13px;
+
+        border-radius: 8px;
+        background: rgba(0, 188, 212, .08);
+
+        color: #00a8c6;
+        font-size: 13px;
+    }
+
+    .vl-manager-stat-value {
+        color: var(--text-primary, #111827);
+        font-size: 25px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .vl-manager-stat-label {
+        margin-top: 8px;
+
+        color: var(--text-secondary, #64748b);
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    /* ---------------------------------------------------------
+       MAIN GRID
+       --------------------------------------------------------- */
+
+    .vl-manager-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
+        gap: 20px;
+        margin-bottom: 22px;
+    }
+
+    .vl-manager-card {
+        border: 1px solid rgba(100, 116, 139, .14);
+        border-radius: 16px;
+
+        background: var(--card-bg, rgba(255, 255, 255, .92));
+
+        box-shadow: 0 14px 40px rgba(0, 0, 0, .05);
+
+        overflow: hidden;
+    }
+
+    .vl-manager-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        padding: 20px 22px;
+
+        border-bottom: 1px solid rgba(100, 116, 139, .12);
+    }
+
+    .vl-manager-card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        margin: 0;
+
+        color: var(--text-primary, #111827);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .vl-manager-card-title i {
+        color: #00a8c6;
+    }
+
+    .vl-manager-card-body {
+        padding: 22px;
+    }
+
+    /* ---------------------------------------------------------
+       LAB INFORMATION
+       --------------------------------------------------------- */
+
+    .vl-manager-description {
+        margin: 0 0 22px;
+
+        color: var(--text-secondary, #64748b);
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .vl-manager-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 13px;
+    }
+
+    .vl-manager-info {
+        padding: 15px;
+
+        border: 1px solid rgba(100, 116, 139, .11);
+        border-radius: 10px;
+
+        background: rgba(100, 116, 139, .025);
+    }
+
+    .vl-manager-info-label {
+        margin-bottom: 7px;
+
+        color: var(--text-secondary, #64748b);
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .vl-manager-info-value {
+        color: var(--text-primary, #111827);
+        font-size: 11px;
+        font-weight: 700;
+        word-break: break-word;
+    }
+
+    .vl-manager-info-value i {
+        margin-right: 5px;
+        color: #00a8c6;
+    }
+
+    /* ---------------------------------------------------------
+       DOCKER ENVIRONMENT
+       --------------------------------------------------------- */
+
+    .vl-manager-docker {
+        padding: 18px;
+
+        border: 1px solid rgba(0, 188, 212, .16);
+        border-radius: 12px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(0, 188, 212, .055),
+                rgba(124, 58, 237, .035)
+            );
+    }
+
+    .vl-manager-docker-name {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+
+        color: var(--text-primary, #111827);
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .vl-manager-docker-name i {
+        color: #00a8c6;
+    }
+
+    .vl-manager-docker-image {
+        margin-top: 9px;
+
+        color: var(--text-secondary, #64748b);
+        font-family: monospace;
+        font-size: 10px;
+        word-break: break-all;
+    }
+
+    .vl-manager-docker-image span {
+        color: #00a8c6;
+        font-weight: 700;
+    }
+
+    .vl-manager-no-docker {
+        color: #f59e0b;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    /* ---------------------------------------------------------
+       RESOURCE ALLOCATION
+       --------------------------------------------------------- */
+
+    .vl-manager-resource {
+        margin-bottom: 18px;
+    }
+
+    .vl-manager-resource:last-child {
+        margin-bottom: 0;
+    }
+
+    .vl-manager-resource-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .vl-manager-resource-label {
+        color: var(--text-secondary, #64748b);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+    }
+
+    .vl-manager-resource-value {
+        color: var(--text-primary, #111827);
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .vl-manager-resource-bar {
+        height: 7px;
+        overflow: hidden;
+
+        border-radius: 10px;
+        background: rgba(100, 116, 139, .1);
+    }
+
+    .vl-manager-resource-fill {
+        height: 100%;
+        border-radius: inherit;
+
+        background: linear-gradient(
+            90deg,
+            #00bcd4,
+            #007c91
+        );
+    }
+
+    /* ---------------------------------------------------------
+       QUICK ACTIONS
+       --------------------------------------------------------- */
+
+    .vl-manager-actions {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .vl-manager-action {
+        min-height: 105px;
+        padding: 18px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        border: 1px solid rgba(100, 116, 139, .13);
+        border-radius: 12px;
+
+        background: var(--card-bg, rgba(255, 255, 255, .9));
+
+        color: var(--text-primary, #111827);
+        text-decoration: none;
+
+        transition: transform .22s ease,
+                    border-color .22s ease,
+                    background .22s ease,
+                    box-shadow .22s ease;
+    }
+
+    .vl-manager-action:hover {
+        transform: translateY(-3px);
+
+        border-color: rgba(0, 188, 212, .3);
+        background: rgba(0, 188, 212, .035);
+
+        color: var(--text-primary, #111827);
+
+        box-shadow: 0 12px 28px rgba(0, 188, 212, .08);
+    }
+
+    .vl-manager-action-icon {
+        width: 34px;
+        height: 34px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 8px;
+        background: rgba(0, 188, 212, .08);
+
+        color: #00a8c6;
+        font-size: 13px;
+    }
+
+    .vl-manager-action-name {
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+    }
+
+    .vl-manager-action-arrow {
+        align-self: flex-end;
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* ---------------------------------------------------------
+       DARK THEME
+       --------------------------------------------------------- */
+
+    [data-theme="dark"] .vl-manager-title {
+        color: #f1f5f9;
+    }
+
+    [data-theme="dark"] .vl-manager-subtitle {
+        color: #94a3b8;
+    }
+
+    [data-theme="dark"] .vl-manager-card,
+    [data-theme="dark"] .vl-manager-stat,
+    [data-theme="dark"] .vl-manager-action {
+        background: rgba(15, 23, 42, .88);
+        border-color: rgba(148, 163, 184, .13);
+        box-shadow: 0 18px 45px rgba(0, 0, 0, .22);
+    }
+
+    [data-theme="dark"] .vl-manager-card-header {
+        border-color: rgba(148, 163, 184, .11);
+    }
+
+    [data-theme="dark"] .vl-manager-description,
+    [data-theme="dark"] .vl-manager-info-label,
+    [data-theme="dark"] .vl-manager-resource-label,
+    [data-theme="dark"] .vl-manager-docker-image {
+        color: #94a3b8;
+    }
+
+    [data-theme="dark"] .vl-manager-stat-value,
+    [data-theme="dark"] .vl-manager-info-value,
+    [data-theme="dark"] .vl-manager-docker-name,
+    [data-theme="dark"] .vl-manager-resource-value,
+    [data-theme="dark"] .vl-manager-action {
+        color: #e2e8f0;
+    }
+
+    [data-theme="dark"] .vl-manager-info {
+        background: rgba(148, 163, 184, .035);
+        border-color: rgba(148, 163, 184, .1);
+    }
+
+    [data-theme="dark"] .vl-manager-action:hover {
+        background: rgba(34, 211, 238, .045);
+    }
+
+    [data-theme="dark"] .vl-manager-back {
+        color: #67e8f9;
+        border-color: rgba(34, 211, 238, .22);
+        background: rgba(34, 211, 238, .05);
+    }
+
+    [data-theme="dark"] .vl-manager-back:hover {
+        color: #a5f3fc;
+        border-color: #22d3ee;
+    }
+
+    /* ---------------------------------------------------------
+       RESPONSIVE
+       --------------------------------------------------------- */
+
+    @media (max-width: 1200px) {
+
+        .vl-manager-stats {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .vl-manager-actions {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 1100px) {
+
+        body:has(#side-nav.active) .vl-manager-page {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .vl-manager-page {
+            margin-top: 25px;
+        }
+
+        .vl-manager-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 700px) {
+
+        .vl-manager-page {
+            padding: 28px 20px 50px;
+        }
+
+        .vl-manager-header {
+            flex-direction: column;
+        }
+
+        .vl-manager-header-actions {
+            width: 100%;
+        }
+
+        .vl-manager-back,
+        .vl-manager-status {
+            flex: 1;
+        }
+
+        .vl-manager-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .vl-manager-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .vl-manager-actions {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .vl-manager-page {
+            margin-top: 20px;
+            padding: 22px 15px 40px;
+        }
+
+        .vl-manager-stats {
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+        }
+
+        .vl-manager-stat {
+            padding: 14px;
+        }
+
+        .vl-manager-stat-value {
+            font-size: 21px;
+        }
+
+        .vl-manager-actions {
+            grid-template-columns: 1fr;
+        }
+
+        .vl-manager-action {
+            min-height: 80px;
+        }
+
+        .vl-manager-header-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .vl-manager-back,
+        .vl-manager-status {
+            width: 100%;
+            flex: none;
+        }
+    }
+</style>
+
+
+<div class="vl-manager-page">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <div class="vl-manager-header">
+
+        <div>
+
+            <div class="vl-manager-eyebrow">
+                <span></span>
+                HPC / VIRTUAL LAB / MANAGEMENT
+            </div>
+
+            <h1 class="vl-manager-title">
+                {{ lab.name }}
+            </h1>
+
+            <div class="vl-manager-subtitle">
+                Manage this Virtual Lab, monitor student environments,
+                configure resources and control the laboratory workspace.
+            </div>
+
+        </div>
+
+
+        <div class="vl-manager-header-actions">
+
+            {% if lab.status == "ACTIVE" %}
+                <div class="vl-manager-status">
+                    <span class="vl-manager-status-dot"></span>
+                    LAB ACTIVE
+                </div>
+            {% else %}
+                <div class="vl-manager-status inactive">
+                    <span class="vl-manager-status-dot"></span>
+                    {{ lab.get_status_display|upper }}
+                </div>
+            {% endif %}
+
+            <a
+                href="{% url 'virtuallab:lab_management' %}"
+                class="vl-manager-back"
+            >
+                <i class="fas fa-arrow-left"></i>
+                LAB MANAGEMENT
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STATISTICS
+         ===================================================== -->
+
+    <div class="vl-manager-stats">
+
+        <div class="vl-manager-stat">
+
+            <div class="vl-manager-stat-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+
+            <div class="vl-manager-stat-value">
+                {{ approved_students }}
+            </div>
+
+            <div class="vl-manager-stat-label">
+                Approved Students
+            </div>
+
+        </div>
+
+
+        <div class="vl-manager-stat">
+
+            <div class="vl-manager-stat-icon">
+                <i class="fas fa-user-clock"></i>
+            </div>
+
+            <div class="vl-manager-stat-value">
+                {{ pending_requests }}
+            </div>
+
+            <div class="vl-manager-stat-label">
+                Pending Requests
+            </div>
+
+        </div>
+
+
+        <div class="vl-manager-stat">
+
+            <div class="vl-manager-stat-icon">
+                <i class="fas fa-user-times"></i>
+            </div>
+
+            <div class="vl-manager-stat-value">
+                {{ rejected_requests }}
+            </div>
+
+            <div class="vl-manager-stat-label">
+                Rejected Requests
+            </div>
+
+        </div>
+
+
+        <div class="vl-manager-stat">
+
+            <div class="vl-manager-stat-icon">
+                <i class="fas fa-server"></i>
+            </div>
+
+            <div class="vl-manager-stat-value">
+                {{ environment_count }}
+            </div>
+
+            <div class="vl-manager-stat-label">
+                Environments
+            </div>
+
+        </div>
+
+
+        <div class="vl-manager-stat">
+
+            <div class="vl-manager-stat-icon">
+                <i class="fas fa-play-circle"></i>
+            </div>
+
+            <div class="vl-manager-stat-value">
+                {{ running_environments }}
+            </div>
+
+            <div class="vl-manager-stat-label">
+                Running
+            </div>
+
+        </div>
+
+
+        <div class="vl-manager-stat">
+
+            <div class="vl-manager-stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+
+            <div class="vl-manager-stat-value">
+                {{ ready_environments }}
+            </div>
+
+            <div class="vl-manager-stat-label">
+                Ready
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <div class="vl-manager-grid">
+
+        <!-- LAB INFORMATION -->
+
+        <div class="vl-manager-card">
+
+            <div class="vl-manager-card-header">
+
+                <h2 class="vl-manager-card-title">
+                    <i class="fas fa-flask"></i>
+                    Lab Information
+                </h2>
+
+            </div>
+
+
+            <div class="vl-manager-card-body">
+
+                {% if lab.description %}
+                    <p class="vl-manager-description">
+                        {{ lab.description }}
+                    </p>
+                {% else %}
+                    <p class="vl-manager-description">
+                        No description has been added for this Virtual Lab.
+                    </p>
+                {% endif %}
+
+
+                <div class="vl-manager-info-grid">
+
+                    <div class="vl-manager-info">
+
+                        <div class="vl-manager-info-label">
+                            Lab Type
+                        </div>
+
+                        <div class="vl-manager-info-value">
+                            <i class="fas fa-layer-group"></i>
+                            {{ lab.get_lab_type_display }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="vl-manager-info">
+
+                        <div class="vl-manager-info-label">
+                            Technology
+                        </div>
+
+                        <div class="vl-manager-info-value">
+                            <i class="fas fa-code"></i>
+                            {{ lab.technology|default:"Not specified" }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="vl-manager-info">
+
+                        <div class="vl-manager-info-label">
+                            RAM Allocation
+                        </div>
+
+                        <div class="vl-manager-info-value">
+                            <i class="fas fa-memory"></i>
+                            {{ lab.allocated_ram }} MB
+                        </div>
+
+                    </div>
+
+
+                    <div class="vl-manager-info">
+
+                        <div class="vl-manager-info-label">
+                            Storage Allocation
+                        </div>
+
+                        <div class="vl-manager-info-value">
+                            <i class="fas fa-hard-drive"></i>
+                            {{ lab.allocated_storage }} MB
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DOCKER ENVIRONMENT -->
+
+        <div class="vl-manager-card">
+
+            <div class="vl-manager-card-header">
+
+                <h2 class="vl-manager-card-title">
+                    <i class="fab fa-docker"></i>
+                    Docker Environment
+                </h2>
+
+            </div>
+
+
+            <div class="vl-manager-card-body">
+
+                {% if lab.docker_environment %}
+
+                    <div class="vl-manager-docker">
+
+                        <div class="vl-manager-docker-name">
+                            <i class="fab fa-docker"></i>
+                            {{ lab.docker_environment.name }}
+                        </div>
+
+                        <div class="vl-manager-docker-image">
+                            IMAGE:
+                            <span>
+                                {{ lab.docker_environment.docker_image }}
+                            </span>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="vl-manager-no-docker">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        No Docker Environment assigned to this lab.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- RESOURCE ALLOCATION -->
+
+        <div class="vl-manager-card">
+
+            <div class="vl-manager-card-header">
+
+                <h2 class="vl-manager-card-title">
+                    <i class="fas fa-microchip"></i>
+                    Resource Allocation
+                </h2>
+
+            </div>
+
+
+            <div class="vl-manager-card-body">
+
+                <div class="vl-manager-resource">
+
+                    <div class="vl-manager-resource-top">
+
+                        <span class="vl-manager-resource-label">
+                            RAM
+                        </span>
+
+                        <span class="vl-manager-resource-value">
+                            {{ lab.allocated_ram }} MB
+                        </span>
+
+                    </div>
+
+                    <div class="vl-manager-resource-bar">
+                        <div
+                            class="vl-manager-resource-fill"
+                            style="width: 65%;"
+                        ></div>
+                    </div>
+
+                </div>
+
+
+                <div class="vl-manager-resource">
+
+                    <div class="vl-manager-resource-top">
+
+                        <span class="vl-manager-resource-label">
+                            Storage
+                        </span>
+
+                        <span class="vl-manager-resource-value">
+                            {{ lab.allocated_storage }} MB
+                        </span>
+
+                    </div>
+
+                    <div class="vl-manager-resource-bar">
+                        <div
+                            class="vl-manager-resource-fill"
+                            style="width: 55%;"
+                        ></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         QUICK ACTIONS
+         ===================================================== -->
+
+    <div class="vl-manager-card">
+
+        <div class="vl-manager-card-header">
+
+            <h2 class="vl-manager-card-title">
+                <i class="fas fa-bolt"></i>
+                Lab Management
+            </h2>
+
+        </div>
+
+
+        <div class="vl-manager-card-body">
+
+            <div class="vl-manager-actions">
+
+                <a
+                    href="{% url 'virtuallab:lab_access_details' lab.id %}?from=overview"
+                    class="vl-manager-action"
+                >
+
+                    <div class="vl-manager-action-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+
+                    <span class="vl-manager-action-name">
+                        Students
+                    </span>
+
+                    <span class="vl-manager-action-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{% url 'virtuallab:manage_lab_resources' lab.id %}"
+                    class="vl-manager-action"
+                >
+
+                    <div class="vl-manager-action-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+
+                    <span class="vl-manager-action-name">
+                        Resources
+                    </span>
+
+                    <span class="vl-manager-action-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{% url 'virtuallab:lab_assignments' lab.id %}"
+                    class="vl-manager-action"
+                >
+
+                    <div class="vl-manager-action-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+
+                    <span class="vl-manager-action-name">
+                        Assignments
+                    </span>
+
+                    <span class="vl-manager-action-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{% url 'virtuallab:docker_environment_management' %}"
+                    class="vl-manager-action"
+                >
+
+                    <div class="vl-manager-action-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+
+                    <span class="vl-manager-action-name">
+                        Environment
+                    </span>
+
+                    <span class="vl-manager-action-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{% url 'virtuallab:edit_lab' lab.id %}"
+                    class="vl-manager-action"
+                >
+
+                    <div class="vl-manager-action-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+
+                    <span class="vl-manager-action-name">
+                        Edit Lab
+                    </span>
+
+                    <span class="vl-manager-action-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

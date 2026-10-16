@@ -1,723 +1,746 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load course_tags %}
-{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
 {% load static %}
 
+{% block title %}{{ title }} | {% trans 'Learning management system' %}{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/lesson_player.css' %}">
+{% endblock extra_css %}
+
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
+<div class="lesson-studio">
 
-        <!-- LEFT SIDE VIDEO -->
-        <div class="col-md-8">
-<style>
-.video-player {
-    width: 100%;
-    max-width: 1000px;
-    height: 560px;
-    border-radius: 10px;
-    background: black;
-}
-.video-player {
-    width: 100%;
-    max-width: 1000px;
-    height: 560px;
-    border-radius: 10px;
-    background: black;
-}
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
 
-.course-sidebar {
-    height: 100vh;
-    overflow-y: auto;
-    border-left: 1px solid #ddd;
-    background: #f8f9fa;
-    padding: 15px;
-}
+    <header class="lesson-topbar">
 
-.lesson-link {
-    text-decoration: none;
-    color: #333;
-}
-
-.lesson-link:hover {
-    color: #0d6efd;
-}
-.course-sidebar {
-    height: 100vh;
-    overflow-y: auto;
-    background: #f8f9fa;
-    padding: 15px;
-    border-left: 1px solid #ddd;
-}
-
-.lesson-link {
-    display: block;
-    padding: 8px 10px;
-    text-decoration: none;
-    color: #333;
-    border-radius: 6px;
-}
-
-.lesson-link:hover {
-    background: #e9ecef;
-}
-
-.active-lesson {
-    background: #0d6efd;
-    color: white !important;
-    font-weight: bold;
-}
-
-.text-primary {
-    font-weight: bold;
-}
-
-.text-success {
-    font-weight: bold;
-}
-</style>
-<div class="mb-3">
-    <a href="{% url 'user_course_list' %}" class="btn btn-outline-primary">
-        <i class="fas fa-arrow-left"></i> Back to My Courses
-    </a>
-</div>
-
-<h3>{{ lesson.title }}</h3>
-<input type="hidden" id="lesson-id" value="{{ lesson.id }}">
-<input type="hidden"
-        id="saved-time"
-        value="{% if lesson_progress %}{{ lesson_progress.watched_seconds }}{% else %}0{% endif %}">
-
-<input type="hidden"
-    id="saved-percent"
-    value="{% if lesson_progress %}{{ lesson_progress.progress_percent }}{% else %}0{% endif %}">
-
-<h5>Saved Time = {{ lesson_progress.watched_seconds }}</h5>
-<h5>Saved Percent = {{ lesson_progress.progress_percent }}</h5>
-
-{% for video in videos %}
-<input type="hidden"
-       class="video-id"
-       value="{{ video.id }}">
-<div class="video-container">
-
-    <!-- <select class="language-select">
-        <option value="en">English</option>
-        <option value="hi">Hindi</option>
-        <option value="te">Telugu</option>
-        <option value="kn">Kannada</option>
-    </select> -->
-    <!-- <select class="language-select">
-        <option value="en">English</option>
-
-        {% if video.audio_hi %}
-            <option value="hi">Hindi</option>
-        {% endif %}
-
-        {% if video.audio_te %}
-            <option value="te">Telugu</option>
-        {% endif %}
-
-        {% if video.audio_kn %}
-            <option value="kn">Kannada</option>
-        {% endif %}
-    </select> -->
-    <select class="language-select">
-        <option value="en">English</option>
-
-        {% for lang in video.available_languages %}
-            <option value="{{ lang.code }}">
-                {{ lang.name }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <br><br>
-    
-    <video controls class="video-player">
-
-        <source src="{{ video.video.url }}" type="video/mp4">
-
-        {% if video.subtitle_en %}
-        <track src="{{ video.subtitle_en.url }}"
-               kind="subtitles"
-               srclang="en"
-               label="English"
-               default>
-        {% endif %}
-
-        {% if video.subtitle_hi %}
-        <track src="{{ video.subtitle_hi.url }}"
-               kind="subtitles"
-               srclang="hi"
-               label="Hindi">
-        {% endif %}
-
-        {% if video.subtitle_te %}
-        <track src="{{ video.subtitle_te.url }}"
-               kind="subtitles"
-               srclang="te"
-               label="Telugu">
-        {% endif %}
-
-        {% if video.subtitle_kn %}
-        <track src="{{ video.subtitle_kn.url }}"
-               kind="subtitles"
-               srclang="kn"
-               label="Kannada">
-        {% endif %}
-
-    </video>
-
-
-    <div class="d-flex justify-content-between mt-4">
-
-        {% if previous_lesson %}
-        <a href="{% url 'lesson_detail' previous_lesson.id %}"
-        class="btn btn-outline-secondary">
-            ← Previous Lesson
+        <a href="{% url 'user_course_list' %}" class="lesson-back">
+            <i class="fas fa-arrow-left"></i>
+            MY COURSES
         </a>
-        {% endif %}
 
-        {% if next_lesson %}
-        <a href="{% url 'lesson_detail' next_lesson.id %}"
-        class="btn btn-primary">
-            Next Lesson →
-        </a>
-        {% endif %}
-
-    </div>
-
-
-    <div class="d-flex justify-content-between mb-1">
-        <span>Lesson Progress</span>
-        <span class="progressText">0%</span>
-    </div>
-
-    <div class="progress mb-3">
-        <div class="progress-bar bg-success progressBar"
-            role="progressbar"
-            style="width:0%">
-            0%
-        </div>
-    </div>
-    <audio class="dub-audio"></audio>
-
-    <!-- {% if video.audio_hi %}
-    <input type="hidden" class="hi-audio" value="{{ video.audio_hi.url }}">
-    {% endif %}
-
-    {% if video.audio_te %}
-    <input type="hidden" class="te-audio" value="{{ video.audio_te.url }}">
-    {% endif %}
-
-    {% if video.audio_kn %}
-    <input type="hidden" class="kn-audio" value="{{ video.audio_kn.url }}">
-    {% endif %} -->
-    {% if video.audio_hi %}
-    <input
-        type="hidden"
-        class="audio-source"
-        data-lang="hi"
-        value="{{ video.audio_hi.url }}">
-    {% endif %}
-
-    {% if video.audio_te %}
-    <input
-        type="hidden"
-        class="audio-source"
-        data-lang="te"
-        value="{{ video.audio_te.url }}">
-    {% endif %}
-
-    {% if video.audio_kn %}
-    <input
-        type="hidden"
-        class="audio-source"
-        data-lang="kn"
-        value="{{ video.audio_kn.url }}">
-    {% endif %}
-
-</div>
-
-<hr>
-{% empty %}
-<p>No videos</p>
-{% endfor %}
-
-
-<h4>Files</h4>
-{% for f in files %}
-    <a href="{{ f.file.url }}" target="_blank">
-        📄 {{ f.title }}
-    </a><br>
-{% empty %}
-    <p>No files</p>
-{% endfor %}
-
-<hr>
-<p>Lesson Quiz: {{ lesson_quiz }}</p>
-<p>Chapter Quiz: {{ chapter_quiz }}</p>
-<p>Module Quiz: {{ module_quiz }}</p>
-{% if lesson_quiz %}
-<a class="btn btn-warning"
-   href="{% url 'quiz_take' pk=course.pk slug=lesson_quiz.slug %}">
-   📝 Take Lesson Quiz
-</a>
-{% endif %}
-
-{% if chapter_quiz %}
-<a class="btn btn-info"
-   href="{% url 'quiz_take' pk=course.pk slug=chapter_quiz.slug %}">
-   📂 Chapter Assessment
-</a>
-{% endif %}
-
-{% if module_quiz %}
-<a class="btn btn-success"
-   href="{% url 'quiz_take' pk=course.pk slug=module_quiz.slug %}">
-   📘 Module Assessment
-</a>
-{% endif %}
-
-<h6>Total Quizzes: {{ all_quizzes.count }}</h6>
-
-{% for quiz in all_quizzes %}
-    <p>
-        {{ quiz.title }}
-        | Module={{ quiz.module }}
-        | Chapter={{ quiz.chapter }}
-        | Lesson={{ quiz.lesson }}
-    </p>
-{% endfor %}
-        </div>
-
-        <div class="col-md-4 course-sidebar">
-
-            <h5>{{ course.title }}</h5>
-            <p class="text-muted">
-                Duration: {{ course.duration_display }} 
-            </p>
-            <h6 class="mt-3">Course Progress</h6>
-
-            <div class="progress mb-3">
-                <div class="progress-bar bg-success"
-                    style="width: {{ course_progress }}%">
-                    {{ course_progress }}%
-                </div>
+        <div class="lesson-context">
+            <div class="lesson-context-label">
+                LEARNING / ACTIVE SESSION
             </div>
 
-            {% for module in modules %}
+            <div class="lesson-context-title">
+                {{ course.title }}
+            </div>
+        </div>
+
+        <div class="lesson-course-progress">
+            <div class="lesson-course-progress-head">
+                <span>COURSE PROGRESS</span>
+                <span>{{ course_progress }}%</span>
+            </div>
+
+            <div class="lesson-course-progress-bar">
+                <span style="width: {{ course_progress }}%;"></span>
+            </div>
+        </div>
+
+        <button
+            type="button"
+            id="course-sidebar-toggle"
+            class="lesson-sidebar-toggle"
+            aria-controls="course-curriculum"
+            aria-expanded="true"
+        >
+            <i class="fas fa-columns"></i>
+            <span>HIDE CONTENT</span>
+        </button>
+
+    </header>
 
 
+    <!-- =====================================================
+         DESKTOP: VIDEO LEFT / CURRICULUM RIGHT
+         ===================================================== -->
 
-                <div class="mb-2">
+    <div class="lesson-workspace">
 
-                    <!-- MODULE -->
-                    <button class="btn btn-light w-100 text-start fw-bold"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#module{{ module.id }}">
+        <!-- =================================================
+             MAIN LESSON AREA
+             ================================================= -->
 
-                        {% if lesson.chapter.module.id == module.id %}
-                            <span class="text-primary">
-                                📘 {{ module.title }}
-                                ({{ module_progress|get_item:module.id }}%)
-                                - {{ module.duration_display }} 
-                            </span>
-                        {% else %}
-                            📘 {{ module.title }}
-                            ({{ module_progress|get_item:module.id }}%)
-                            - {{ module.duration_display }} 
-                        {% endif %}
+        <main class="lesson-main">
 
-                    </button>
+            <section class="lesson-player-card">
 
-                    <div id="module{{ module.id }}"
-                        class="collapse {% if lesson.chapter.module.id == module.id %}show{% endif %}">
+                <div class="lesson-player-header">
+                    <div class="lesson-player-status">
+                        <span></span>
+                        LEARNING SESSION ACTIVE
+                    </div>
 
-                        {% for chapter in module.chapters.all %}
+                    <div class="lesson-player-node">
+                        NODE / VIDEO COMPUTE
+                    </div>
+                </div>
 
-                            <div class="ms-3 mt-2">
+                <div class="lesson-video-stage">
 
-                                <!-- CHAPTER -->
-                                <button class="btn btn-sm btn-outline-secondary w-100 text-start"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#chapter{{ chapter.id }}">
+                    <!-- IMPORTANT: These IDs are used by lesson_player.js -->
+                    <input
+                        type="hidden"
+                        id="lesson-id"
+                        value="{{ lesson.id }}"
+                    >
 
-                                    {% if lesson.chapter.id == chapter.id %}
-                                        <span class="fw-bold text-success">
-                                            📂 {{ chapter.title }}
-                                        </span>
-                                    {% else %}
-                                        📂 {{ chapter.title }}
-                                    {% endif %}
+                    <input
+                        type="hidden"
+                        id="saved-time"
+                        value="{% if lesson_progress %}{{ lesson_progress.watched_seconds }}{% else %}0{% endif %}"
+                    >
 
-                                </button>
+                    <input
+                        type="hidden"
+                        id="saved-percent"
+                        value="{% if lesson_progress %}{{ lesson_progress.progress_percent }}{% else %}0{% endif %}"
+                    >
 
-                                <div id="chapter{{ chapter.id }}"
-                                    class="collapse {% if lesson.chapter.id == chapter.id %}show{% endif %}">
 
-                                    <ul class="list-unstyled ms-3 mt-2">
+                    {% for video in videos %}
 
-                                        {% for lesson_obj in chapter.lessons.all %}
+                        <!-- IMPORTANT:
+                             .video-id must remain immediately before
+                             .video-container because the JS reads it
+                             using previousElementSibling.
+                        -->
+                        <input
+                            type="hidden"
+                            class="video-id"
+                            value="{{ video.id }}"
+                        >
 
-                                            <li>
+                        <div class="video-container">
 
-                                                {% if lesson_obj.id == lesson.id %}
-                                                    <a href="{% url 'lesson_detail' lesson_obj.id %}"
-                                                    class="lesson-link active-lesson">
-                                                        {% if lesson_obj.id in completed_lessons %}
-                                                            ✓ {{ lesson_obj.title }}
-                                                            <small class="text-muted">
-                                                                ({{ lesson_obj.duration_display }})
-                                                            </small>
-                                                        {% else %}
-                                                            ▶ {{ lesson_obj.title }}
-                                                            <small class="text-muted">
-                                                                ({{ lesson_obj.duration_display }})
-                                                            </small>
-                                                        {% endif %}
-                                                    </a>
-                                                {% else %}
-                                                    <a href="{% url 'lesson_detail' lesson_obj.id %}"
-                                                    class="lesson-link">
-                                                        {% if lesson_obj.id in completed_lessons %}
-                                                            ✓ {{ lesson_obj.title }}
-                                                        {% else %}
-                                                            ▶ {{ lesson_obj.title }}
-                                                        {% endif %}
-                                                    </a>
-                                                {% endif %}
+                            <!-- LANGUAGE -->
+                            <div class="lesson-controls">
 
-                                            </li>
+                                <div class="lesson-language-wrap">
+                                    <span class="lesson-control-label">
+                                        AUDIO / SUBTITLES
+                                    </span>
 
-                                            {% for quiz in all_quizzes %}
-                                                {% if quiz.lesson and quiz.lesson.id == lesson_obj.id %}
-                                                    <div class="ms-4">
-                                                        <a href="{% url 'quiz_take' pk=course.pk slug=quiz.slug %}"
-                                                        class="text-warning">
-                                                        📝 {{ quiz.title }}
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
+                                    <select class="language-select">
+                                        <option value="en">English</option>
 
+                                        {% for lang in video.available_languages %}
+                                            <option value="{{ lang.code }}">
+                                                {{ lang.name }}
+                                            </option>
                                         {% endfor %}
-
-                                    </ul>
-
+                                    </select>
                                 </div>
-                                {% for quiz in all_quizzes %}
-                                    {% if quiz.chapter and quiz.chapter.id == chapter.id and not quiz.lesson %}
-                                        <div class="ms-3 mt-2">
-                                            <a href="{% url 'quiz_take' pk=course.pk slug=quiz.slug %}"
-                                            class="text-info fw-bold">
-                                            📂 {{ quiz.title }}
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
 
                             </div>
 
-                        {% endfor %}
 
-                    </div>
-                    {% for quiz in all_quizzes %}
-                        {% if quiz.module and quiz.module.id == module.id and not quiz.chapter and not quiz.lesson %}
+                            <!-- VIDEO -->
+                            <div class="lesson-video-shell">
 
-                            {% if module_completed|get_item:module.id %}
-                                <div class="ms-2 mt-2">
-                                    <a href="{% url 'quiz_take' pk=course.pk slug=quiz.slug %}"
-                                    class="text-success fw-bold">
-                                    📘 {{ quiz.title }}
-                                    </a>
-                                </div>
+                                <video
+                                    controls
+                                    class="video-player"
+                                    preload="metadata"
+                                >
+
+                                    <source
+                                        src="{{ video.video.url }}"
+                                        type="video/mp4"
+                                    >
+
+                                    {% if video.subtitle_en %}
+                                        <track
+                                            src="{{ video.subtitle_en.url }}"
+                                            kind="subtitles"
+                                            srclang="en"
+                                            label="English"
+                                            default
+                                        >
+                                    {% endif %}
+
+                                    {% if video.subtitle_hi %}
+                                        <track
+                                            src="{{ video.subtitle_hi.url }}"
+                                            kind="subtitles"
+                                            srclang="hi"
+                                            label="Hindi"
+                                        >
+                                    {% endif %}
+
+                                    {% if video.subtitle_te %}
+                                        <track
+                                            src="{{ video.subtitle_te.url }}"
+                                            kind="subtitles"
+                                            srclang="te"
+                                            label="Telugu"
+                                        >
+                                    {% endif %}
+
+                                    {% if video.subtitle_kn %}
+                                        <track
+                                            src="{{ video.subtitle_kn.url }}"
+                                            kind="subtitles"
+                                            srclang="kn"
+                                            label="Kannada"
+                                        >
+                                    {% endif %}
+
+                                </video>
+
+                            </div>
+
+
+                            <!-- DUBBED AUDIO -->
+                            <audio class="dub-audio"></audio>
+
+                            {% if video.audio_hi %}
+                                <input
+                                    type="hidden"
+                                    class="audio-source"
+                                    data-lang="hi"
+                                    value="{{ video.audio_hi.url }}"
+                                >
                             {% endif %}
 
-                        {% endif %}
+                            {% if video.audio_te %}
+                                <input
+                                    type="hidden"
+                                    class="audio-source"
+                                    data-lang="te"
+                                    value="{{ video.audio_te.url }}"
+                                >
+                            {% endif %}
+
+                            {% if video.audio_kn %}
+                                <input
+                                    type="hidden"
+                                    class="audio-source"
+                                    data-lang="kn"
+                                    value="{{ video.audio_kn.url }}"
+                                >
+                            {% endif %}
+
+
+                            <!-- LESSON INFORMATION -->
+                            <div class="lesson-info">
+
+                                <div class="lesson-eyebrow">
+                                    CURRENT LESSON
+                                </div>
+
+                                <h1 class="lesson-title">
+                                    {{ lesson.title }}
+                                </h1>
+
+                                <div class="lesson-progress-head">
+                                    <span>LESSON COMPLETION</span>
+                                    <span class="progressText">0%</span>
+                                </div>
+
+                                <div class="lesson-progress-track">
+                                    <div
+                                        class="progressBar"
+                                        style="width: 0%;"
+                                    ></div>
+                                </div>
+
+                            </div>
+
+
+                            <!-- PREVIOUS / NEXT -->
+                            <div class="lesson-navigation">
+
+                                {% if previous_lesson %}
+                                    <a
+                                        href="{% url 'lesson_detail' previous_lesson.id %}"
+                                        class="lesson-nav-btn"
+                                    >
+                                        <i class="fas fa-arrow-left"></i>
+                                        PREVIOUS LESSON
+                                    </a>
+                                {% endif %}
+
+                                {% if next_lesson %}
+                                    <a
+                                        href="{% url 'lesson_detail' next_lesson.id %}"
+                                        class="lesson-nav-btn next"
+                                    >
+                                        NEXT LESSON
+                                        <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="lesson-panel">
+                            <div class="lesson-panel-body">
+                                No videos available.
+                            </div>
+                        </div>
+
                     {% endfor %}
 
                 </div>
 
-            {% endfor %}
+            </section>
 
-        </div>
-        <hr>
 
-        {% for quiz in all_quizzes %}
-            {% if not quiz.module and not quiz.chapter and not quiz.lesson %}
-                <a href="{% url 'quiz_take' pk=course.pk slug=quiz.slug %}"
-                class="btn btn-danger w-100">
-                🏆 {{ quiz.title }}
-                </a>
+            <!-- =================================================
+                 FILES + ASSESSMENTS
+                 ================================================= -->
+
+            <div class="lesson-bottom-grid">
+
+                <section class="lesson-panel">
+
+                    <div class="lesson-panel-header">
+                        <i class="fas fa-file-lines"></i>
+                        LESSON RESOURCES
+                    </div>
+
+                    <div class="lesson-panel-body">
+
+                        {% for f in files %}
+                            <a
+                                href="{{ f.file.url }}"
+                                target="_blank"
+                                rel="noopener"
+                                class="lesson-resource"
+                            >
+                                <i class="fas fa-file-pdf"></i>
+                                <span>{{ f.title }}</span>
+                            </a>
+                        {% empty %}
+                            <div class="lesson-resource">
+                                <i class="fas fa-circle-info"></i>
+                                <span>No files available.</span>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                </section>
+
+
+                <section class="lesson-panel">
+
+                    <div class="lesson-panel-header">
+                        <i class="fas fa-clipboard-check"></i>
+                        ASSESSMENTS
+                    </div>
+
+                    <div class="lesson-panel-body">
+
+                        {% if lesson_quiz %}
+                            <a
+                                class="lesson-assessment-btn"
+                                href="{% url 'quiz_take' pk=course.pk slug=lesson_quiz.slug %}"
+                            >
+                                <span>📝 Lesson Assessment</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        {% endif %}
+
+                        {% if chapter_quiz %}
+                            <a
+                                class="lesson-assessment-btn"
+                                href="{% url 'quiz_take' pk=course.pk slug=chapter_quiz.slug %}"
+                            >
+                                <span>📂 Chapter Assessment</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        {% endif %}
+
+                        {% if module_quiz %}
+                            <a
+                                class="lesson-assessment-btn"
+                                href="{% url 'quiz_take' pk=course.pk slug=module_quiz.slug %}"
+                            >
+                                <span>📘 Module Assessment</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        {% endif %}
+
+                        {% if not lesson_quiz and not chapter_quiz and not module_quiz %}
+                            <div class="lesson-resource">
+                                <i class="fas fa-circle-info"></i>
+                                <span>No assessment assigned to this lesson.</span>
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 ADMIN / LECTURER CONTROLS
+                 ================================================= -->
+
+            {% if request.user.is_superuser or request.user.is_lecturer %}
+
+                <div class="lesson-admin-actions">
+
+                    <a
+                        href="{% url 'lesson_list' lesson.chapter.id %}"
+                        class="btn btn-outline-secondary"
+                    >
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Lessons
+                    </a>
+
+                    <a
+                        href="{% url 'edit_course' course.slug %}"
+                        class="btn btn-secondary"
+                    >
+                        <i class="fas fa-pen"></i>
+                        Edit Course
+                    </a>
+
+                    <a
+                        href="{% url 'upload_file_view' course.slug %}"
+                        class="btn btn-primary"
+                    >
+                        <i class="fas fa-file-upload"></i>
+                        Upload File
+                    </a>
+
+                    <a
+                        href="{% url 'upload_video' lesson.id %}"
+                        class="btn btn-primary"
+                    >
+                        <i class="fas fa-video"></i>
+                        Upload Video
+                    </a>
+
+                </div>
+
             {% endif %}
-        {% endfor %}
+
+
+            <div class="lesson-assessment-actions">
+
+                {% if request.user.is_superuser or request.user.is_lecturer %}
+                    <a
+                        class="btn btn-warning"
+                        href="{% url 'quiz_index' course.slug %}"
+                    >
+                        <i class="fas fa-list-check"></i>
+                        Manage Quiz
+                    </a>
+                {% else %}
+                    <a
+                        class="btn btn-warning"
+                        href="{% url 'quiz_index' course.slug %}"
+                    >
+                        <i class="fas fa-clipboard-check"></i>
+                        Assessment
+                    </a>
+                {% endif %}
+
+            </div>
+
+        </main>
+
+
+        <!-- =================================================
+             COURSE CURRICULUM SIDEBAR
+             ================================================= -->
+
+        <aside
+            id="course-curriculum"
+            class="course-sidebar"
+        >
+
+            <div class="lesson-sidebar-head">
+
+                <div class="course-sidebar-header-row">
+
+                    <div>
+                        <div class="lesson-sidebar-eyebrow">
+                            COURSE CURRICULUM
+                        </div>
+
+                        <div class="lesson-sidebar-title">
+                            {{ course.title }}
+                        </div>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="course-sidebar-close"
+                        class="lesson-sidebar-close"
+                        aria-label="Close course content"
+                    >
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                </div>
+
+                <div class="course-sidebar-system">
+                    <span class="course-sidebar-system-dot"></span>
+                    LMS / LEARNING NODE
+                </div>
+
+                <div class="lesson-sidebar-meta">
+                    <i class="fas fa-clock"></i>
+                    Duration: {{ course.duration_display }}
+                </div>
+
+                <div class="curriculum-progress">
+                    <div class="curriculum-progress-head">
+                        <span>COURSE PROGRESS</span>
+                        <span>{{ course_progress }}%</span>
+                    </div>
+
+                    <div class="curriculum-progress-track">
+                        <span style="width: {{ course_progress }}%;"></span>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="curriculum-scroll">
+
+                {% for module in modules %}
+
+                    <div class="module-item">
+
+                        <!-- MODULE -->
+                        <button
+                            class="module-btn"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#module{{ module.id }}"
+                            aria-expanded="{% if lesson.chapter.module.id == module.id %}true{% else %}false{% endif %}"
+                            aria-controls="module{{ module.id }}"
+                        >
+
+                            <span class="module-icon">
+                                <i class="fas fa-cube"></i>
+                            </span>
+
+                            <span class="module-copy">
+
+                                <span class="module-title">
+                                    {{ module.title }}
+                                </span>
+
+                                <span class="module-meta">
+                                    <span>{{ module_progress|get_item:module.id }}%</span>
+                                    <span>•</span>
+                                    <span>{{ module.duration_display }}</span>
+                                </span>
+
+                                <span class="module-progress">
+                                    <span
+                                        style="width: {{ module_progress|get_item:module.id }}%;"
+                                    ></span>
+                                </span>
+
+                            </span>
+
+                            <span class="module-chevron">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+
+                        </button>
+
+
+                        <div
+                            id="module{{ module.id }}"
+                            class="collapse {% if lesson.chapter.module.id == module.id %}show{% endif %}"
+                        >
+
+                            {% for chapter in module.chapters.all %}
+
+                                <div class="chapter-item">
+
+                                    <!-- CHAPTER -->
+                                    <button
+                                        class="chapter-btn"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#chapter{{ chapter.id }}"
+                                        aria-expanded="{% if lesson.chapter.id == chapter.id %}true{% else %}false{% endif %}"
+                                        aria-controls="chapter{{ chapter.id }}"
+                                    >
+                                        <i class="fas fa-folder-open"></i>
+
+                                        <span>
+                                            {{ chapter.title }}
+                                        </span>
+                                    </button>
+
+
+                                    <div
+                                        id="chapter{{ chapter.id }}"
+                                        class="collapse {% if lesson.chapter.id == chapter.id %}show{% endif %}"
+                                    >
+
+                                        <ul class="lesson-list">
+
+                                            {% for lesson_obj in chapter.lessons.all %}
+
+                                                <li class="lesson-list-item">
+
+                                                    {% if lesson_obj.id == lesson.id %}
+
+                                                        <a
+                                                            href="{% url 'lesson_detail' lesson_obj.id %}"
+                                                            class="lesson-link active-lesson"
+                                                        >
+                                                            <span>
+                                                                {% if lesson_obj.id in completed_lessons %}
+                                                                    ✓
+                                                                {% else %}
+                                                                    ▶
+                                                                {% endif %}
+                                                            </span>
+
+                                                            <span>
+                                                                {{ lesson_obj.title }}
+
+                                                                {% if lesson_obj.duration_display %}
+                                                                    <small>
+                                                                        {{ lesson_obj.duration_display }}
+                                                                    </small>
+                                                                {% endif %}
+                                                            </span>
+                                                        </a>
+
+                                                    {% else %}
+
+                                                        <a
+                                                            href="{% url 'lesson_detail' lesson_obj.id %}"
+                                                            class="lesson-link"
+                                                        >
+                                                            <span>
+                                                                {% if lesson_obj.id in completed_lessons %}
+                                                                    ✓
+                                                                {% else %}
+                                                                    ▶
+                                                                {% endif %}
+                                                            </span>
+
+                                                            <span>
+                                                                {{ lesson_obj.title }}
+                                                            </span>
+                                                        </a>
+
+                                                    {% endif %}
+
+                                                </li>
+
+
+                                                <!-- LESSON QUIZZES -->
+                                                {% for quiz in all_quizzes %}
+                                                    {% if quiz.lesson and quiz.lesson.id == lesson_obj.id %}
+                                                        <li>
+                                                            <a
+                                                                href="{% url 'quiz_take' pk=course.pk slug=quiz.slug %}"
+                                                                class="quiz-link"
+                                                            >
+                                                                📝 {{ quiz.title }}
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                            {% endfor %}
+
+                                        </ul>
+
+                                    </div>
+
+
+                                    <!-- CHAPTER QUIZZES -->
+                                    {% for quiz in all_quizzes %}
+                                        {% if quiz.chapter and quiz.chapter.id == chapter.id and not quiz.lesson %}
+                                            <a
+                                                href="{% url 'quiz_take' pk=course.pk slug=quiz.slug %}"
+                                                class="quiz-link"
+                                            >
+                                                📂 {{ quiz.title }}
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endfor %}
+
+
+                            <!-- MODULE QUIZZES -->
+                            {% for quiz in all_quizzes %}
+                                {% if quiz.module and quiz.module.id == module.id and not quiz.chapter and not quiz.lesson %}
+
+                                    {% if module_completed|get_item:module.id %}
+                                        <a
+                                            href="{% url 'quiz_take' pk=course.pk slug=quiz.slug %}"
+                                            class="module-quiz-link"
+                                        >
+                                            📘 {{ quiz.title }}
+                                        </a>
+                                    {% endif %}
+
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+
+                <!-- COURSE-LEVEL QUIZZES -->
+                {% for quiz in all_quizzes %}
+                    {% if not quiz.module and not quiz.chapter and not quiz.lesson %}
+                        <a
+                            href="{% url 'quiz_take' pk=course.pk slug=quiz.slug %}"
+                            class="final-quiz-link"
+                        >
+                            🏆 {{ quiz.title }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+
+        </aside>
 
     </div>
+
+
+    <!-- =====================================================
+         JS CONFIGURATION
+         ===================================================== -->
+
+    <div
+        id="lesson-player-config"
+        aria-hidden="true"
+        data-save-video-duration-url="{% url 'save_video_duration' %}"
+        data-save-progress-url="{% url 'save_progress' %}"
+        data-csrf-token="{{ csrf_token }}"
+    ></div>
+
 </div>
-{% if request.user.is_superuser or request.user.is_lecturer %}
 
-
-<div class="mb-3">
-    <a href="{% url 'lesson_list' lesson.chapter.id %}"
-       class="btn btn-outline-secondary">
-        ← Back to Lessons
-    </a>
-</div>
-
-<a class="btn btn-secondary"
-   href="{% url 'edit_course' course.slug %}">
-   Edit Course
-</a>
-
-<a class="btn btn-primary"
-   href="{% url 'upload_file_view' course.slug %}">
-   Upload File
-</a>
-
-<a class="btn btn-primary"
-   href="{% url 'upload_video' lesson.id %}">
-    Upload Video
-</a>
-
-{% endif %}
-
-{% if request.user.is_superuser or request.user.is_lecturer %}
-
-<a class="btn btn-warning"
-   href="{% url 'quiz_index' course.slug %}">
-   📝 Manage Quiz
-</a>
-
-{% else %}
-
-<a class="btn btn-warning"
-   href="{% url 'quiz_index' course.slug %}">
-   📝 Assessment
-</a>
-
-{% endif %}
-
-
-
-
-<script>
-const lessonId = document.getElementById("lesson-id").value;
-
-const savedTime =
-    parseFloat(document.getElementById("saved-time").value || 0);
-
-const savedPercent =
-    parseFloat(document.getElementById("saved-percent").value || 0);
-
-document.querySelectorAll(".video-container").forEach(container => {
-
-    const video = container.querySelector(".video-player");
-    const videoId =
-    container.previousElementSibling.value;
-
-    const audio = container.querySelector(".dub-audio");
-    const select = container.querySelector(".language-select");
-
-    // const hiAudio = container.querySelector(".hi-audio");
-    // const teAudio = container.querySelector(".te-audio");
-    // const knAudio = container.querySelector(".kn-audio");
-
-    const progressBar = container.querySelector(".progressBar");
-    const progressText = container.querySelector(".progressText");
-
-    let lastSaved = 0;
-
-    // Initial progress
-    if (progressBar) {
-        progressBar.style.width = savedPercent + "%";
-        progressBar.innerHTML = savedPercent + "%";
-    }
-
-    if (progressText) {
-        progressText.innerHTML = savedPercent + "%";
-    }
-
-    // Resume video
-    video.addEventListener("canplay", function () {
-
-        if (savedTime > 0) {
-            video.currentTime = Number(savedTime);
-        }
-
-    }, { once: true });
-
-    video.addEventListener("loadedmetadata", function () {
-
-        fetch("{% url 'save_video_duration' %}", {
-
-            method: "POST",
-
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}",
-                "Content-Type":
-                    "application/x-www-form-urlencoded",
-            },
-
-            body:
-                "video_id=" + videoId +
-                "&duration=" +
-                Math.floor(video.duration)
-        });
-
-    });
-
-    // Language switch
-    if (select) {
-
-        select.addEventListener("change", function () {
-
-            const lang = this.value;
-
-            const tracks = video.textTracks;
-
-            for (let i = 0; i < tracks.length; i++) {
-                tracks[i].mode =
-                    tracks[i].language === lang
-                        ? "showing"
-                        : "disabled";
-            }
-
-            if (lang === "en") {
-
-                audio.pause();
-                audio.removeAttribute("src");
-                audio.load();
-
-                video.muted = false;
-
-                return;
-            }
-
-            // let src = "";
-
-            // if (lang === "hi" && hiAudio) src = hiAudio.value;
-            // if (lang === "te" && teAudio) src = teAudio.value;
-            // if (lang === "kn" && knAudio) src = knAudio.value;
-
-            // if (!src) return;
-
-            const audioInput = container.querySelector(
-                `.audio-source[data-lang="${lang}"]`
-            );
-
-            if (!audioInput) return;
-
-            const src = audioInput.value;
-
-            video.muted = true;
-
-            audio.pause();
-            audio.src = src;
-            audio.load();
-
-            audio.currentTime = video.currentTime;
-
-            if (!video.paused) {
-                audio.play();
-            }
-        });
-    }
-
-    // Sync audio
-    video.addEventListener("play", () => {
-
-        if (select && select.value !== "en" && audio.src) {
-
-            audio.currentTime = video.currentTime;
-            audio.play();
-        }
-    });
-
-    video.addEventListener("pause", () => {
-        audio.pause();
-    });
-
-    video.addEventListener("seeking", () => {
-
-        if (audio.src) {
-            audio.currentTime = video.currentTime;
-        }
-    });
-
-    video.addEventListener("timeupdate", () => {
-
-        if (
-            select &&
-            select.value !== "en" &&
-            audio.src &&
-            Math.abs(audio.currentTime - video.currentTime) > 0.2
-        ) {
-            audio.currentTime = video.currentTime;
-        }
-    });
-
-    function saveProgress() {
-
-        const current = video.currentTime;
-        const duration = video.duration;
-
-        if (!duration) return;
-
-        const percent = Math.floor((current / duration) * 100);
-
-        if (progressBar) {
-            progressBar.style.width = percent + "%";
-            progressBar.innerHTML = percent + "%";
-        }
-
-        if (progressText) {
-            progressText.innerHTML = percent + "%";
-        }
-
-        fetch("{% url 'save_progress' %}", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}",
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body:
-                "lesson_id=" + lessonId +
-                "&current_time=" + current +
-                "&duration=" + duration
-        });
-    }
-
-    video.addEventListener("timeupdate", function () {
-
-        const current = Math.floor(video.currentTime);
-        const duration = video.duration;
-
-        if (!duration) return;
-
-        const percent = Math.floor((current / duration) * 100);
-
-        if (progressBar) {
-            progressBar.style.width = percent + "%";
-            progressBar.innerHTML = percent + "%";
-        }
-
-        if (progressText) {
-            progressText.innerHTML = percent + "%";
-        }
-
-        if (current - lastSaved >= 5) {
-
-            lastSaved = current;
-            saveProgress();
-        }
-    });
-
-    video.addEventListener("pause", saveProgress);
-    video.addEventListener("ended", saveProgress);
-
-});
-</script>
+<script src="{% static 'js/lesson_player.js' %}"></script>
 {% endblock content %}
-

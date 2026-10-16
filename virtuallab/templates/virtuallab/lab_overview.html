@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/virtual_lab.css' %}"
+>
+
+{% endblock extra_css %}
+
+
+
+{% block content %}
+{% if messages %}
+    <div class="vl-access-messages" role="status" aria-live="polite">
+        {% for message in messages %}
+            <div class="vl-access-message vl-access-message-{{ message.tags|default:'info' }}">
+                <i class="fas fa-circle-info"></i>
+                <span>{{ message }}</span>
+                <button type="button"
+                        onclick="this.parentElement.remove()"
+                        aria-label="Dismiss message">
+                    &times;
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+<div class="vl-overview-page">
+
+    <div class="vl-overview-shell">
+
+        <!-- Back -->
+        <div class="vl-overview-back">
+            <a href="{% url 'virtuallab:lab_catalog' %}">
+                <span>←</span>
+                Back to Labs
+            </a>
+        </div>
+
+        <!-- Hero -->
+        <section class="vl-overview-hero">
+
+            <div class="vl-overview-hero-content">
+
+                <div class="vl-lab-type">
+                    {{ lab.get_lab_type_display }}
+                </div>
+
+                <h1>{{ lab.name }}</h1>
+
+                {% if lab.description %}
+                    <p class="vl-overview-description">
+                        {{ lab.description }}
+                    </p>
+                {% else %}
+                    <p class="vl-overview-description">
+                        Virtual laboratory environment for practical learning and experimentation.
+                    </p>
+                {% endif %}
+
+                {% if lab.technology %}
+                    <div class="vl-technology">
+                        <span class="vl-tech-label">Technology</span>
+                        <span class="vl-tech-value">{{ lab.technology }}</span>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <div class="vl-overview-status-card">
+
+                <div class="vl-status-header">
+                    <span class="vl-status-dot"></span>
+                    <span>Environment Status</span>
+                </div>
+
+                {% if environment %}
+
+                    <div class="vl-status-value">
+                        {{ environment.get_status_display }}
+                    </div>
+
+                    <div class="vl-status-subtext">
+                        {% if environment.status == "READY" %}
+                            Your lab environment is ready to use.
+                        {% elif environment.status == "RUNNING" %}
+                            Your lab environment is currently running.
+                        {% elif environment.status == "PROVISIONING" %}
+                            Your environment is being prepared.
+                        {% else %}
+                            Environment requires attention.
+                        {% endif %}
+                    </div>
+
+                {% else %}
+
+                    <div class="vl-status-value">
+                        Not Provisioned
+                    </div>
+
+                    <div class="vl-status-subtext">
+                        Your Virtual Lab environment is not available yet.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- Lab Information -->
+        <section class="vl-overview-section">
+
+            <div class="vl-section-heading">
+                <span class="vl-section-kicker">LAB CONFIGURATION</span>
+                <h2>Environment Details</h2>
+            </div>
+
+            <div class="vl-info-grid">
+
+                <!-- Technology -->
+                <div class="vl-info-card">
+                    <div class="vl-info-icon">⌘</div>
+
+                    <div>
+                        <span class="vl-info-label">
+                            Technology
+                        </span>
+
+                        <strong>
+                            {% if lab.technology %}
+                                {{ lab.technology }}
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </strong>
+                    </div>
+                </div>
+
+
+                <!-- RAM -->
+                <div class="vl-info-card">
+                    <div class="vl-info-icon">RAM</div>
+
+                    <div>
+                        <span class="vl-info-label">
+                            Memory
+                        </span>
+
+                        <strong>
+                            {{ lab.allocated_ram }} MB
+                        </strong>
+                    </div>
+                </div>
+
+
+                <!-- Storage -->
+                <div class="vl-info-card">
+                    <div class="vl-info-icon">SSD</div>
+
+                    <div>
+                        <span class="vl-info-label">
+                            Workspace Storage
+                        </span>
+
+                        <strong>
+                            {{ lab.allocated_storage }} MB
+                        </strong>
+                    </div>
+                </div>
+
+
+                <!-- Environment -->
+                <div class="vl-info-card">
+                    <div class="vl-info-icon">◉</div>
+
+                    <div>
+                        <span class="vl-info-label">
+                            Environment
+                        </span>
+
+                        <strong>
+                            Docker
+                        </strong>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Access -->
+        <section class="vl-access-section">
+
+            <div class="vl-access-content">
+
+                <span class="vl-section-kicker">
+                    READY TO START?
+                </span>
+
+                <h2>
+                    Enter your Virtual Lab
+                </h2>
+
+                <p>
+                    Launch your isolated laboratory environment with access
+                    to the file manager, terminal, assignments and lab resources.
+                </p>
+
+            </div>
+
+
+            <div class="vl-access-action">
+
+                {% if access_request and access_request.status == "APPROVED" %}
+
+                    {% if environment %}
+                        {% if environment.status == "READY" or environment.status == "RUNNING" %}
+
+                            <form method="post"
+                                action="{% url 'virtuallab:access_lab' lab.id %}">
+                                {% csrf_token %}
+
+                                <button type="submit" class="vl-access-button">
+                                    <span>Access Lab</span>
+                                    <span class="vl-access-arrow">→</span>
+                                </button>
+                            </form>
+
+                        {% else %}
+
+                            <button class="vl-access-button vl-access-button-disabled"
+                                    disabled>
+                                Environment Not Ready
+                            </button>
+
+                        {% endif %}
+                    {% else %}
+
+                        <button class="vl-access-button vl-access-button-disabled"
+                                disabled>
+                            Environment Not Ready
+                        </button>
+
+                    {% endif %}
+
+                {% elif access_request and access_request.status == "REJECTED" %}
+
+                    <div>
+
+                        <button
+                            class="vl-access-button vl-access-button-disabled"
+                            disabled
+                        >
+                            Access Request Rejected
+                        </button>
+
+                        <form
+                            method="post"
+                            action="{% url 'virtuallab:request_lab_access' lab.id %}"
+                            style="margin-top: 10px;"
+                        >
+                            {% csrf_token %}
+
+                            <button type="submit" class="vl-access-button">
+                                <span>Request Access Again</span>
+                                <span class="vl-access-arrow">→</span>
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% elif access_request and access_request.status == "REJECTED" %}
+
+                    <button class="vl-access-button vl-access-button-disabled"
+                            disabled>
+                        Access Request Rejected
+                    </button>
+
+                {% else %}
+
+                    <form
+                        method="post"
+                        action="{% url 'virtuallab:request_lab_access' lab.id %}"
+                    >
+                        {% csrf_token %}
+
+                        <button type="submit" class="vl-access-button">
+                            <span>Request Access</span>
+                            <span class="vl-access-arrow">→</span>
+                        </button>
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.db.models import Sum, Avg, Max, Min, Count
+from django.db.models import Sum, Avg, Max, Min, Count, Q
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.core.paginator import Paginator
@@ -525,8 +525,17 @@ def course_registration(request):
             ids = ids + (str(key),)
         for s in range(0, len(ids)):
             course = Course.objects.get(pk=ids[s])
-            obj = TakenCourse.objects.create(student=student, course=course)
-            obj.save()
+
+            already_enrolled = TakenCourse.objects.filter(
+                student=student,
+                course=course
+            ).exists()
+
+            if not already_enrolled:
+                TakenCourse.objects.create(
+                    student=student,
+                    course=course
+                )
         messages.success(request, "Courses registered successfully!")
         return redirect("course_registration")
     else:
@@ -543,13 +552,20 @@ def course_registration(request):
             t += (i.course.pk,)
 
         courses = (
+            # Course.objects.filter(
+            #     # program__pk=student.program.id,
+            #     # level=student.level.replace(" Degree", ""),
+            #     semester=current_semester.semester,
+            # )
+            # .exclude(id__in=t)
+            # .order_by("year")
             Course.objects.filter(
-                # program__pk=student.program.id,
-                # level=student.level.replace(" Degree", ""),
-                semester=current_semester.semester,
-            )
-            .exclude(id__in=t)
-            .order_by("year")
+                Q(
+                    level=student.level,
+                    program__pk=student.program.id
+                )
+                | Q(id__in=t)
+            ).order_by("year")
         )
         all_courses = Course.objects.filter(
             level=student.level, program__pk=student.program.id
@@ -593,6 +609,7 @@ def course_registration(request):
             "registered_courses": registered_courses,
             "total_registered_credit": total_registered_credit,
             "student": student,
+            "taken_courses": taken_courses,
         }
         return render(request, "course/course_registration.html", context)
 

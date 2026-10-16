@@ -1,0 +1,3803 @@
+/* =========================================================
+   HPC E-LEARNING PLATFORM
+   GLOBAL LIGHT / DARK THEME
+   ========================================================= */
+
+
+/* =========================================================
+   1. LIGHT THEME - DEFAULT
+   ========================================================= */
+
+:root {
+
+    /* ---------- Main ---------- */
+    --lms-bg: #ffffff;
+    --lms-bg-secondary: #f8f9fa;
+    --lms-bg-tertiary: #f1f3f5;
+
+    /* ---------- Cards ---------- */
+    --lms-card-bg: #ffffff;
+    --lms-card-hover: #f8f9fa;
+
+    /* ---------- Text ---------- */
+    --lms-text: #212529;
+    --lms-text-secondary: #6c757d;
+    --lms-heading: #212529;
+
+    /* ---------- Borders ---------- */
+    --lms-border: #dee2e6;
+
+    /* ---------- Navbar ---------- */
+    --lms-navbar-bg: #ffffff;
+    --lms-navbar-text: #212529;
+
+    /* ---------- Sidebar ---------- */
+    --lms-sidebar-bg: #ffffff;
+    --lms-sidebar-text: #212529;
+    --lms-sidebar-hover: #f1f3f5;
+    --lms-sidebar-active: #e7f1ff;
+
+    /* ---------- Inputs ---------- */
+    --lms-input-bg: #ffffff;
+    --lms-input-text: #212529;
+    --lms-input-border: #ced4da;
+    --lms-input-placeholder: #6c757d;
+
+    /* ---------- Tables ---------- */
+    --lms-table-bg: #ffffff;
+    --lms-table-text: #212529;
+    --lms-table-border: #dee2e6;
+    --lms-table-hover: #f8f9fa;
+
+    /* ---------- Dropdown ---------- */
+    --lms-dropdown-bg: #ffffff;
+    --lms-dropdown-text: #212529;
+
+    /* ---------- Modal ---------- */
+    --lms-modal-bg: #ffffff;
+    --lms-modal-text: #212529;
+
+    /* ---------- Alert ---------- */
+    --lms-alert-bg: #ffffff;
+    --lms-alert-text: #212529;
+
+    /* ---------- Code / Terminal ---------- */
+    --lms-code-bg: #f1f3f5;
+    --lms-code-text: #212529;
+
+    /* ---------- Shadow ---------- */
+    --lms-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+    /* ---------- Transition ---------- */
+    --lms-transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+/* =========================================================
+   2. DARK THEME
+   ========================================================= */
+
+[data-theme="dark"] {
+
+    /* ---------- Main ---------- */
+    --lms-bg: #121212;
+    --lms-bg-secondary: #1a1a1a;
+    --lms-bg-tertiary: #242424;
+
+    /* ---------- Cards ---------- */
+    --lms-card-bg: #1e1e1e;
+    --lms-card-hover: #292929;
+
+    /* ---------- Text ---------- */
+    --lms-text: #f1f3f5;
+    --lms-text-secondary: #adb5bd;
+    --lms-heading: #ffffff;
+
+    /* ---------- Borders ---------- */
+    --lms-border: #3a3a3a;
+
+    /* ---------- Navbar ---------- */
+    --lms-navbar-bg: #181818;
+    --lms-navbar-text: #f1f3f5;
+
+    /* ---------- Sidebar ---------- */
+    --lms-sidebar-bg: #181818;
+    --lms-sidebar-text: #f1f3f5;
+    --lms-sidebar-hover: #292929;
+    --lms-sidebar-active: #12345a;
+
+    /* ---------- Inputs ---------- */
+    --lms-input-bg: #242424;
+    --lms-input-text: #ffffff;
+    --lms-input-border: #4a4a4a;
+    --lms-input-placeholder: #999999;
+
+    /* ---------- Tables ---------- */
+    --lms-table-bg: #1e1e1e;
+    --lms-table-text: #f1f3f5;
+    --lms-table-border: #3a3a3a;
+    --lms-table-hover: #292929;
+
+    /* ---------- Dropdown ---------- */
+    --lms-dropdown-bg: #242424;
+    --lms-dropdown-text: #f1f3f5;
+
+    /* ---------- Modal ---------- */
+    --lms-modal-bg: #1e1e1e;
+    --lms-modal-text: #f1f3f5;
+
+    /* ---------- Alert ---------- */
+    --lms-alert-bg: #1e1e1e;
+    --lms-alert-text: #f1f3f5;
+
+    /* ---------- Code / Terminal ---------- */
+    --lms-code-bg: #242424;
+    --lms-code-text: #f1f3f5;
+
+    /* ---------- Shadow ---------- */
+    --lms-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+}
+
+
+/* =========================================================
+   3. GLOBAL HTML / BODY
+   ========================================================= */
+
+html,
+body {
+
+    transition: var(--lms-transition);
+}
+
+[data-theme="dark"] body {
+
+    background-color: var(--lms-bg);
+    color: var(--lms-text);
+}
+
+
+/* =========================================================
+   4. MAIN CONTENT
+   ========================================================= */
+
+[data-theme="dark"] #main,
+[data-theme="dark"] #main-content {
+
+    background-color: var(--lms-bg);
+    color: var(--lms-text);
+}
+
+/* =========================================================
+   5. TEXT
+   ========================================================= */
+
+/* =========================================================
+   5. TEXT - DARK MODE ONLY
+   ========================================================= */
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+
+    color: var(--lms-heading);
+}
+
+[data-theme="dark"] p {
+
+    color: var(--lms-text);
+}
+
+[data-theme="dark"] small {
+
+    color: var(--lms-text-secondary);
+}
+
+[data-theme="dark"] .text-muted {
+
+    color: var(--lms-text-secondary) !important;
+}
+
+
+/* =========================================================
+   6. LINKS
+   ========================================================= */
+
+a {
+
+    transition: color 0.2s ease;
+}
+
+
+/* =========================================================
+   7. CARDS - DARK MODE ONLY
+   ========================================================= */
+
+[data-theme="dark"] .card {
+
+    background-color: var(--lms-card-bg);
+    color: var(--lms-text);
+
+    border-color: var(--lms-border);
+}
+
+[data-theme="dark"] .card-body {
+
+    background-color: var(--lms-card-bg);
+    color: var(--lms-text);
+}
+
+[data-theme="dark"] .card-header {
+
+    background-color: var(--lms-bg-secondary);
+    color: var(--lms-text);
+
+    border-bottom-color: var(--lms-border);
+}
+
+[data-theme="dark"] .card-footer {
+
+    background-color: var(--lms-bg-secondary);
+    color: var(--lms-text);
+
+    border-top-color: var(--lms-border);
+}
+
+/* =========================================================
+   8. BOOTSTRAP BACKGROUND UTILITIES
+   ========================================================= */
+
+/* bg-light */
+
+[data-theme="dark"] .bg-light {
+
+    background-color: var(--lms-bg-secondary) !important;
+    color: var(--lms-text) !important;
+}
+
+
+/* bg-white */
+
+[data-theme="dark"] .bg-white {
+
+    background-color: var(--lms-card-bg) !important;
+    color: var(--lms-text) !important;
+}
+
+
+/* bg-body */
+
+[data-theme="dark"] .bg-body {
+
+    background-color: var(--lms-bg) !important;
+}
+
+
+/* =========================================================
+   9. BOOTSTRAP TEXT UTILITIES
+   ========================================================= */
+
+[data-theme="dark"] .text-dark {
+
+    color: var(--lms-text) !important;
+}
+
+[data-theme="dark"] .text-black {
+
+    color: var(--lms-text) !important;
+}
+
+[data-theme="dark"] .text-body {
+
+    color: var(--lms-text) !important;
+}
+
+
+/* =========================================================
+   10. BORDERS
+   ========================================================= */
+
+[data-theme="dark"] .border {
+
+    border-color: var(--lms-border) !important;
+}
+
+[data-theme="dark"] .border-top {
+
+    border-top-color: var(--lms-border) !important;
+}
+
+[data-theme="dark"] .border-bottom {
+
+    border-bottom-color: var(--lms-border) !important;
+}
+
+[data-theme="dark"] .border-start {
+
+    border-left-color: var(--lms-border) !important;
+}
+
+[data-theme="dark"] .border-end {
+
+    border-right-color: var(--lms-border) !important;
+}
+
+
+/* =========================================================
+   11. TABLES - DARK MODE ONLY
+   ========================================================= */
+
+[data-theme="dark"] .table {
+
+    --bs-table-bg: var(--lms-table-bg);
+    --bs-table-color: var(--lms-table-text);
+    --bs-table-border-color: var(--lms-table-border);
+
+    color: var(--lms-table-text);
+}
+
+[data-theme="dark"] .table> :not(caption)>*>* {
+
+    background-color: var(--lms-table-bg);
+    color: var(--lms-table-text);
+
+    border-color: var(--lms-table-border);
+}
+
+[data-theme="dark"] .table-hover>tbody>tr:hover>* {
+
+    background-color: var(--lms-table-hover);
+    color: var(--lms-table-text);
+}
+
+
+/* =========================================================
+   12. FORMS - DARK MODE ONLY
+   ========================================================= */
+
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] textarea {
+
+    background-color: var(--lms-input-bg);
+    color: var(--lms-input-text);
+
+    border-color: var(--lms-input-border);
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus,
+[data-theme="dark"] textarea:focus {
+
+    background-color: var(--lms-input-bg);
+    color: var(--lms-input-text);
+
+    border-color: #86b7fe;
+}
+
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] textarea::placeholder {
+
+    color: var(--lms-input-placeholder);
+}
+
+
+/* =========================================================
+   13. CHECKBOX / RADIO
+   ========================================================= */
+
+[data-theme="dark"] .form-check-label {
+
+    color: var(--lms-text);
+}
+
+
+/* =========================================================
+   14. DROPDOWN
+   ========================================================= */
+
+[data-theme="dark"] .dropdown-menu {
+
+    background-color: var(--lms-dropdown-bg);
+
+    border-color: var(--lms-border);
+}
+
+[data-theme="dark"] .dropdown-item {
+
+    color: var(--lms-dropdown-text);
+}
+
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+
+    background-color: var(--lms-bg-tertiary);
+    color: var(--lms-text);
+}
+
+[data-theme="dark"] .dropdown-divider {
+
+    border-color: var(--lms-border);
+}
+
+/* =========================================================
+   15. MODALS
+   ========================================================= */
+
+[data-theme="dark"] .modal-content {
+
+    background-color: var(--lms-modal-bg);
+    color: var(--lms-modal-text);
+
+    border-color: var(--lms-border);
+}
+
+.modal-header {
+
+    border-bottom-color: var(--lms-border);
+}
+
+.modal-footer {
+
+    border-top-color: var(--lms-border);
+}
+
+.modal-title {
+
+    color: var(--lms-heading);
+}
+
+
+/* =========================================================
+   16. LIST GROUP
+   ========================================================= */
+
+[data-theme="dark"] .list-group-item {
+
+    background-color: var(--lms-card-bg);
+    color: var(--lms-text);
+
+    border-color: var(--lms-border);
+}
+
+[data-theme="dark"] .list-group-item-action:hover {
+
+    background-color: var(--lms-card-hover);
+    color: var(--lms-text);
+}
+
+
+/* =========================================================
+   17. NAVBAR
+   ========================================================= */
+
+[data-theme="dark"] .main-header {
+
+    background-color: var(--lms-navbar-bg) !important;
+    color: var(--lms-navbar-text);
+}
+
+[data-theme="dark"] .main-header .navbar-brand {
+
+    color: var(--lms-navbar-text);
+}
+
+[data-theme="dark"] .navbar-light {
+
+    --bs-navbar-color: var(--lms-navbar-text);
+    --bs-navbar-hover-color: #ffffff;
+}
+
+[data-theme="dark"] .navbar-toggler {
+
+    border-color: var(--lms-border);
+}
+
+
+/* =========================================================
+   18. SIDEBAR
+   ========================================================= */
+
+[data-theme="dark"] #side-nav {
+
+    background-color: var(--lms-sidebar-bg);
+    color: var(--lms-sidebar-text);
+}
+
+[data-theme="dark"] #side-nav a {
+
+    color: var(--lms-sidebar-text);
+}
+
+[data-theme="dark"] #side-nav a:hover {
+
+    background-color: var(--lms-sidebar-hover);
+    color: var(--lms-sidebar-text);
+}
+
+[data-theme="dark"] #side-nav li.active>a {
+
+    background-color: var(--lms-sidebar-active);
+}
+
+
+/* =========================================================
+   19. BREADCRUMB
+   ========================================================= */
+
+.breadcrumb {
+
+    background-color: transparent;
+}
+
+[data-theme="dark"] .breadcrumb-item,
+[data-theme="dark"] .breadcrumb-item.active {
+
+    color: var(--lms-text-secondary);
+}
+
+
+/* =========================================================
+   20. PAGINATION
+   ========================================================= */
+
+.page-link {
+
+    background-color: var(--lms-card-bg);
+    color: var(--lms-text);
+
+    border-color: var(--lms-border);
+}
+
+.page-link:hover {
+
+    background-color: var(--lms-card-hover);
+    color: var(--lms-text);
+}
+
+[data-theme="dark"] .page-item.disabled .page-link {
+
+    background-color: var(--lms-bg-secondary);
+    color: var(--lms-text-secondary);
+
+    border-color: var(--lms-border);
+}
+
+
+/* =========================================================
+   21. ALERTS
+   ========================================================= */
+
+[data-theme="dark"] .alert-light {
+
+    background-color: var(--lms-card-bg);
+    color: var(--lms-text);
+
+    border-color: var(--lms-border);
+}
+
+
+/* =========================================================
+   22. BUTTON - LIGHT
+   ========================================================= */
+
+[data-theme="dark"] .btn-light {
+
+    background-color: #2b2b2b;
+    border-color: #444444;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .btn-light:hover {
+
+    background-color: #383838;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   23. CODE / PRE
+   ========================================================= */
+
+pre,
+code {
+
+    background-color: var(--lms-code-bg);
+    color: var(--lms-code-text);
+}
+
+[data-theme="dark"] pre {
+
+    border-color: var(--lms-border);
+}
+
+
+/* =========================================================
+   24. HR
+   ========================================================= */
+
+hr {
+
+    border-color: var(--lms-border);
+}
+
+
+/* =========================================================
+   25. NAV TABS
+   ========================================================= */
+
+[data-theme="dark"] .nav-tabs {
+
+    border-bottom-color: var(--lms-border);
+}
+
+[data-theme="dark"] .nav-tabs .nav-link {
+
+    color: var(--lms-text-secondary);
+}
+
+[data-theme="dark"] .nav-tabs .nav-link:hover {
+
+    border-color: var(--lms-border);
+    color: var(--lms-text);
+}
+
+[data-theme="dark"] .nav-tabs .nav-link.active {
+
+    background-color: var(--lms-card-bg);
+    color: var(--lms-text);
+
+    border-color: var(--lms-border);
+}
+
+
+/* =========================================================
+   26. ACCORDION
+   ========================================================= */
+
+[data-theme="dark"] .accordion-item {
+
+    background-color: var(--lms-card-bg);
+    color: var(--lms-text);
+
+    border-color: var(--lms-border);
+}
+
+[data-theme="dark"] .accordion-button {
+
+    background-color: var(--lms-card-bg);
+    color: var(--lms-text);
+}
+
+[data-theme="dark"] .accordion-button:not(.collapsed) {
+
+    background-color: var(--lms-bg-secondary);
+    color: var(--lms-text);
+}
+
+[data-theme="dark"] .accordion-body {
+
+    background-color: var(--lms-card-bg);
+    color: var(--lms-text);
+}
+
+
+/* =========================================================
+   27. TOOLTIPS / POPOVERS
+   ========================================================= */
+
+[data-theme="dark"] .popover {
+
+    background-color: var(--lms-card-bg);
+    border-color: var(--lms-border);
+}
+
+[data-theme="dark"] .popover-body {
+
+    color: var(--lms-text);
+}
+
+[data-theme="dark"] .tooltip-inner {
+
+    background-color: #000000;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   28. THEME TOGGLE BUTTON
+   ========================================================= */
+
+.theme-toggle-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    min-width: 90px;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+
+    transform: translateY(-1px);
+}
+
+.theme-toggle-btn .theme-icon {
+
+    font-size: 15px;
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+
+    color: #f8f9fa;
+    border-color: #6c757d;
+    background-color: transparent;
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+
+    background-color: #2b2b2b;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   29. CHATBOT
+   ========================================================= */
+
+[data-theme="dark"] #chatbot-iframe-container {
+
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+
+/* =========================================================
+   30. GLOBAL THEME TRANSITION
+   ========================================================= */
+
+body,
+.navbar,
+.card,
+.card-body,
+.card-header,
+.card-footer,
+.table,
+.form-control,
+.form-select,
+textarea,
+.dropdown-menu,
+.modal-content,
+.list-group-item,
+.page-link,
+#side-nav {
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease;
+}
+
+/* =========================================================
+   COURSE VIDEO SIDEBAR - DARK MODE
+   ========================================================= */
+
+[data-theme="dark"] .course-sidebar {
+    background-color: var(--lms-card-bg) !important;
+    color: var(--lms-text) !important;
+    border-left-color: var(--lms-border) !important;
+}
+
+/* Course title and normal text */
+[data-theme="dark"] .course-sidebar h5,
+[data-theme="dark"] .course-sidebar h6,
+[data-theme="dark"] .course-sidebar p {
+    color: var(--lms-text);
+}
+
+/* Module buttons */
+[data-theme="dark"] .course-sidebar .btn-light {
+    background-color: var(--lms-bg-secondary) !important;
+    color: var(--lms-text) !important;
+    border-color: var(--lms-border) !important;
+}
+
+[data-theme="dark"] .course-sidebar .btn-light:hover {
+    background-color: var(--lms-bg-tertiary) !important;
+    color: var(--lms-text) !important;
+}
+
+/* Chapter buttons */
+[data-theme="dark"] .course-sidebar .btn-outline-secondary {
+    color: var(--lms-text-secondary);
+    border-color: var(--lms-border);
+}
+
+[data-theme="dark"] .course-sidebar .btn-outline-secondary:hover {
+    background-color: var(--lms-bg-tertiary);
+    color: var(--lms-text);
+}
+
+/* Lesson links */
+[data-theme="dark"] .course-sidebar .lesson-link {
+    color: var(--lms-text) !important;
+}
+
+[data-theme="dark"] .course-sidebar .lesson-link:hover {
+    background-color: var(--lms-bg-tertiary) !important;
+    color: var(--lms-text) !important;
+}
+
+/* Active lesson */
+[data-theme="dark"] .course-sidebar .active-lesson {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+/* Duration text inside active lesson */
+[data-theme="dark"] .course-sidebar .active-lesson .text-muted {
+    color: #e9ecef !important;
+}
+
+/* Course sidebar horizontal separators */
+[data-theme="dark"] .course-sidebar hr {
+    border-color: var(--lms-border);
+}
+
+/* Quiz links */
+[data-theme="dark"] .course-sidebar .text-warning {
+    color: #ffc107 !important;
+}
+
+[data-theme="dark"] .course-sidebar .text-info {
+    color: #0dcaf0 !important;
+}
+
+[data-theme="dark"] .course-sidebar .text-success {
+    color: #75d88a !important;
+}
+
+/* Progress area */
+[data-theme="dark"] .course-sidebar .progress {
+    background-color: var(--lms-bg-tertiary);
+}
+
+/* =========================================================
+   GLOBAL RESPONSIVE HEADER
+   ========================================================= */
+
+/* ---------- Large Desktop ---------- */
+
+.main-header {
+    min-height: 70px;
+}
+
+.main-header .container-fluid {
+    min-width: 0;
+}
+
+.main-header .navbar-brand {
+    min-width: 0;
+}
+
+.main-header .navbar-brand img {
+    max-width: 100%;
+    height: 50px;
+    width: auto;
+}
+
+.main-header .navbar-brand span {
+    white-space: nowrap;
+}
+
+
+/* ---------- Laptop / Smaller Desktop ---------- */
+
+@media (max-width: 1199.98px) {
+
+    .main-header .container-fluid {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    .main-header .navbar-brand img {
+        height: 42px;
+    }
+
+    .main-header .navbar-brand span {
+        font-size: 1.1rem !important;
+    }
+}
+
+
+/* ---------- Tablet ---------- */
+
+@media (max-width: 991.98px) {
+
+    .main-header .container-fluid {
+        gap: 8px;
+    }
+
+    #sidebar-toggle {
+        flex-shrink: 0;
+        margin-right: 5px !important;
+    }
+
+    .main-header .navbar-brand {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .main-header .navbar-brand img {
+        height: 38px;
+        margin-right: 8px !important;
+        flex-shrink: 0;
+    }
+
+    .main-header .navbar-brand span {
+        font-size: 1rem !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .main-header .ms-auto {
+        flex-shrink: 0;
+    }
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 767.98px) {
+
+    .main-header {
+        min-height: 60px;
+    }
+
+    .main-header .container-fluid {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        gap: 5px;
+    }
+
+    #sidebar-toggle {
+        padding: 6px 9px;
+        margin-right: 3px !important;
+    }
+
+    .main-header .navbar-brand {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .main-header .navbar-brand img {
+        height: 32px;
+        margin-right: 5px !important;
+    }
+
+    /* Hide platform name on mobile */
+    .main-header .navbar-brand span {
+        display: none;
+    }
+
+    .main-header .ms-auto {
+        gap: 4px !important;
+    }
+
+    .main-header .btn {
+        font-size: 13px;
+        padding: 6px 9px;
+        white-space: nowrap;
+    }
+
+    .theme-toggle-btn {
+        padding: 6px 8px !important;
+    }
+}
+
+
+/* ---------- Small Mobile ---------- */
+
+@media (max-width: 575.98px) {
+
+    .main-header .navbar-brand img {
+        height: 28px;
+        margin-right: 3px !important;
+    }
+
+    #sidebar-toggle {
+        padding: 5px 7px;
+    }
+
+    .main-header .btn {
+        font-size: 12px;
+        padding: 5px 7px;
+    }
+
+    /* Show only theme icon */
+    .theme-toggle-btn .theme-text {
+        display: none;
+    }
+
+    .theme-toggle-btn {
+        width: 36px;
+        height: 34px;
+        padding: 4px !important;
+    }
+
+    .theme-toggle-btn .theme-icon {
+        margin: 0;
+    }
+}
+
+
+/* ---------- Very Small Mobile ---------- */
+
+@media (max-width: 400px) {
+
+    .main-header .navbar-brand img {
+        height: 25px;
+    }
+
+    .main-header .btn {
+        font-size: 11px;
+        padding: 4px 6px;
+    }
+
+    #sidebar-toggle {
+        padding: 4px 6px;
+    }
+
+    .theme-toggle-btn {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+
+/* =========================================================
+   GLOBAL RESPONSIVE SIDEBAR
+   ========================================================= */
+
+/* Prevent sidebar from creating horizontal overflow */
+
+#side-nav {
+    max-width: 100vw;
+    box-sizing: border-box;
+}
+
+#side-nav .main-menu {
+    width: 100%;
+}
+
+
+/* Sidebar links */
+
+#side-nav ul li a {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+#side-nav ul li a i {
+    flex-shrink: 0;
+}
+
+
+/* ---------- Tablet ---------- */
+
+@media (max-width: 1150px) {
+
+    #side-nav {
+        width: 300px;
+        max-width: 85vw;
+    }
+
+    #main {
+        padding-left: 0 !important;
+    }
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 767.98px) {
+
+    #side-nav {
+        width: 280px;
+        max-width: 85vw;
+    }
+
+    #side-nav ul li a {
+        padding: 0.75rem 0.9rem;
+        font-size: 14px;
+    }
+
+    #side-nav .top-side {
+        padding: 1rem !important;
+    }
+}
+
+
+/* ---------- Small Mobile ---------- */
+
+@media (max-width: 575.98px) {
+
+    #side-nav {
+        width: 270px;
+        max-width: 88vw;
+    }
+
+    #side-nav ul li a {
+        padding: 0.7rem 0.8rem;
+        font-size: 13px;
+    }
+
+    #side-nav ul li a i {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+}
+
+
+/* ---------- Mobile Sidebar Close Button ---------- */
+
+@media (max-width: 1150px) {
+
+    #side-nav .desktop-hide {
+        display: block;
+        position: relative;
+    }
+
+    #side-nav .desktop-hide .toggle-btn {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        z-index: 1001;
+        cursor: pointer;
+    }
+
+    #side-nav .desktop-hide .toggle-btn i {
+        background: transparent;
+    }
+}
+
+/* =========================================================
+   HPC E-LEARNING PLATFORM
+   FUTURISTIC GLOBAL DESIGN SYSTEM
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   31. HPC DESIGN TOKENS
+   --------------------------------------------------------- */
+
+:root {
+    /* HPC Brand */
+    --hpc-cyan: #00d9ff;
+    --hpc-blue: #147aff;
+    --hpc-purple: #7b4dff;
+
+    --hpc-cyan-soft: rgba(0, 217, 255, 0.14);
+    --hpc-blue-soft: rgba(20, 122, 255, 0.14);
+    --hpc-purple-soft: rgba(123, 77, 255, 0.14);
+
+    /* Light Mode */
+    --hpc-bg: #f4f8fc;
+    --hpc-bg-secondary: #edf3f9;
+    --hpc-surface: rgba(255, 255, 255, 0.88);
+    --hpc-surface-solid: #ffffff;
+
+    --hpc-text: #0b1728;
+    --hpc-text-secondary: #53657a;
+    --hpc-text-muted: #7d8da0;
+
+    --hpc-border: rgba(11, 23, 40, 0.10);
+    --hpc-border-strong: rgba(20, 122, 255, 0.22);
+
+    /* Glass */
+    --hpc-glass: rgba(255, 255, 255, 0.72);
+    --hpc-glass-border: rgba(255, 255, 255, 0.75);
+
+    /* Radius */
+    --hpc-radius-sm: 8px;
+    --hpc-radius-md: 14px;
+    --hpc-radius-lg: 20px;
+    --hpc-radius-xl: 28px;
+
+    /* Shadows */
+    --hpc-shadow-sm:
+        0 4px 16px rgba(13, 38, 76, 0.07);
+
+    --hpc-shadow-md:
+        0 12px 35px rgba(13, 38, 76, 0.10);
+
+    --hpc-shadow-lg:
+        0 20px 60px rgba(13, 38, 76, 0.14);
+
+    --hpc-glow-cyan:
+        0 0 24px rgba(0, 217, 255, 0.22);
+
+    --hpc-glow-blue:
+        0 0 24px rgba(20, 122, 255, 0.22);
+
+    --hpc-glow-purple:
+        0 0 24px rgba(123, 77, 255, 0.22);
+
+    /* Motion */
+    --hpc-fast: 0.18s ease;
+    --hpc-normal: 0.28s ease;
+    --hpc-slow: 0.45s ease;
+}
+
+
+/* ---------------------------------------------------------
+   32. HPC DARK MODE TOKENS
+   --------------------------------------------------------- */
+
+[data-theme="dark"] {
+
+    --hpc-bg: #030914;
+    --hpc-bg-secondary: #071426;
+
+    --hpc-surface: rgba(7, 20, 38, 0.78);
+    --hpc-surface-solid: #081522;
+
+    --hpc-text: #f4f9ff;
+    --hpc-text-secondary: #aab7ca;
+    --hpc-text-muted: #71829a;
+
+    --hpc-border: rgba(125, 170, 210, 0.14);
+    --hpc-border-strong: rgba(0, 217, 255, 0.28);
+
+    --hpc-glass: rgba(3, 13, 27, 0.74);
+    --hpc-glass-border: rgba(0, 217, 255, 0.12);
+
+    --hpc-shadow-sm:
+        0 5px 18px rgba(0, 0, 0, 0.28);
+
+    --hpc-shadow-md:
+        0 15px 40px rgba(0, 0, 0, 0.34);
+
+    --hpc-shadow-lg:
+        0 25px 70px rgba(0, 0, 0, 0.42);
+}
+
+
+/* ---------------------------------------------------------
+   33. GLOBAL HPC BODY
+   --------------------------------------------------------- */
+
+html {
+    background: var(--hpc-bg);
+}
+
+body {
+    background:
+        radial-gradient(circle at 10% 15%,
+            rgba(0, 217, 255, 0.035),
+            transparent 28%),
+        radial-gradient(circle at 90% 10%,
+            rgba(123, 77, 255, 0.035),
+            transparent 30%),
+        var(--hpc-bg);
+
+    color: var(--hpc-text);
+
+    transition:
+        background-color 0.35s ease,
+        color 0.35s ease;
+}
+
+
+/* ---------------------------------------------------------
+   34. DARK BODY ATMOSPHERE
+   --------------------------------------------------------- */
+
+[data-theme="dark"] body {
+    background:
+        radial-gradient(circle at 15% 10%,
+            rgba(0, 217, 255, 0.055),
+            transparent 30%),
+        radial-gradient(circle at 85% 15%,
+            rgba(123, 77, 255, 0.055),
+            transparent 32%),
+        linear-gradient(135deg,
+            #030914 0%,
+            #06101f 48%,
+            #030914 100%);
+}
+
+
+/* ---------------------------------------------------------
+   35. MAIN APPLICATION AREA
+   --------------------------------------------------------- */
+
+#main {
+    position: relative;
+    min-height: calc(100vh - 72px);
+    background: transparent;
+}
+
+#main-content {
+    position: relative;
+    min-height: calc(100vh - 72px);
+}
+
+
+/* Subtle technology grid */
+
+#main::before {
+    content: "";
+    position: fixed;
+    inset: 72px 0 0 0;
+
+    pointer-events: none;
+    z-index: 0;
+
+    background-image:
+        linear-gradient(rgba(20, 122, 255, 0.025) 1px,
+            transparent 1px),
+        linear-gradient(90deg,
+            rgba(20, 122, 255, 0.025) 1px,
+            transparent 1px);
+
+    background-size: 45px 45px;
+
+    mask-image: linear-gradient(to bottom,
+            black,
+            transparent 90%);
+}
+
+[data-theme="dark"] #main::before {
+    background-image:
+        linear-gradient(rgba(0, 217, 255, 0.035) 1px,
+            transparent 1px),
+        linear-gradient(90deg,
+            rgba(0, 217, 255, 0.035) 1px,
+            transparent 1px);
+}
+
+
+/* ---------------------------------------------------------
+   36. HPC HEADER
+   --------------------------------------------------------- */
+
+.hpc-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 72px;
+
+    z-index: 2000;
+
+    background:
+        linear-gradient(135deg,
+            rgba(255, 255, 255, 0.92),
+            rgba(246, 250, 255, 0.86));
+
+    border-bottom: 1px solid var(--hpc-border);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 6px 30px rgba(13, 38, 76, 0.07);
+
+    transition:
+        background 0.35s ease,
+        border-color 0.35s ease,
+        box-shadow 0.35s ease;
+}
+
+[data-theme="dark"] .hpc-header {
+    background:
+        linear-gradient(135deg,
+            rgba(3, 14, 28, 0.94),
+            rgba(5, 19, 37, 0.88));
+
+    border-bottom-color:
+        rgba(0, 217, 255, 0.12);
+
+    box-shadow:
+        0 8px 35px rgba(0, 0, 0, 0.32);
+}
+
+
+/* ---------------------------------------------------------
+   37. HEADER INNER
+   --------------------------------------------------------- */
+
+.hpc-header-inner {
+    height: 100%;
+
+    width: 100%;
+
+    padding:
+        0 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.hpc-header-left,
+.hpc-header-right {
+    display: flex;
+    align-items: center;
+}
+
+.hpc-header-left {
+    min-width: 0;
+    flex: 1;
+}
+
+.hpc-header-right {
+    flex-shrink: 0;
+    gap: 10px;
+}
+
+
+/* ---------------------------------------------------------
+   38. SIDEBAR MENU BUTTON
+   --------------------------------------------------------- */
+
+.hpc-menu-button {
+    width: 42px;
+    height: 42px;
+
+    padding: 0;
+    margin-right: 14px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    border: 1px solid var(--hpc-border-strong);
+    border-radius: 11px;
+
+    background:
+        var(--hpc-cyan-soft);
+
+    cursor: pointer;
+
+    transition:
+        transform var(--hpc-fast),
+        background var(--hpc-fast),
+        border-color var(--hpc-fast),
+        box-shadow var(--hpc-fast);
+}
+
+.hpc-menu-button span {
+    display: block;
+
+    width: 18px;
+    height: 2px;
+
+    border-radius: 2px;
+
+    background:
+        linear-gradient(90deg,
+            var(--hpc-cyan),
+            var(--hpc-blue));
+
+    transition:
+        transform var(--hpc-normal),
+        opacity var(--hpc-normal);
+}
+
+.hpc-menu-button:hover {
+    transform: translateY(-1px);
+
+    background:
+        rgba(0, 217, 255, 0.18);
+
+    border-color:
+        rgba(0, 217, 255, 0.42);
+
+    box-shadow:
+        var(--hpc-glow-cyan);
+}
+
+
+/* Existing ID compatibility */
+
+#sidebar-toggle {
+    flex-shrink: 0;
+}
+
+
+/* ---------------------------------------------------------
+   39. HPC BRAND
+   --------------------------------------------------------- */
+
+.hpc-brand {
+    display: flex;
+    align-items: center;
+
+    min-width: 0;
+
+    text-decoration: none !important;
+
+    color: var(--hpc-text);
+
+    gap: 14px;
+}
+
+.hpc-brand:hover {
+    color: var(--hpc-text);
+}
+
+
+/* Logos */
+
+.hpc-brand-logos {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    flex-shrink: 0;
+}
+
+.hpc-brand-logo {
+    height: 42px;
+    width: auto;
+
+    object-fit: contain;
+
+    transition:
+        transform var(--hpc-normal),
+        filter var(--hpc-normal);
+}
+
+.hpc-brand-logo:hover {
+    transform: translateY(-1px) scale(1.03);
+}
+
+
+/* Brand separator */
+
+.hpc-brand-separator {
+    width: 1px;
+    height: 30px;
+
+    margin: 0 4px;
+
+    background:
+        linear-gradient(to bottom,
+            transparent,
+            var(--hpc-cyan),
+            transparent);
+
+    opacity: 0.5;
+}
+
+
+/* ---------------------------------------------------------
+   40. BRAND TEXT
+   --------------------------------------------------------- */
+
+.hpc-brand-text {
+    min-width: 0;
+}
+
+.hpc-brand-title {
+    font-size: 18px;
+    line-height: 1.1;
+
+    font-weight: 700;
+
+    letter-spacing: 0.02em;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    background:
+        linear-gradient(90deg,
+            var(--hpc-text),
+            var(--hpc-blue));
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .hpc-brand-title {
+    background:
+        linear-gradient(90deg,
+            #ffffff,
+            var(--hpc-cyan));
+
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.hpc-brand-subtitle {
+    margin-top: 4px;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 0.17em;
+
+    color: var(--hpc-text-muted);
+
+    white-space: nowrap;
+}
+
+
+/* ---------------------------------------------------------
+   41. SYSTEM STATUS
+   --------------------------------------------------------- */
+
+.hpc-system-status {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        7px 10px;
+
+    border:
+        1px solid var(--hpc-border);
+
+    border-radius: 999px;
+
+    background:
+        var(--hpc-surface);
+
+    color: var(--hpc-text-secondary);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+.hpc-status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #19e68c;
+
+    box-shadow:
+        0 0 8px rgba(25, 230, 140, 0.7);
+
+    animation:
+        hpc-status-pulse 2s infinite;
+}
+
+@keyframes hpc-status-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.55;
+        transform: scale(0.82);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   42. THEME BUTTON
+   --------------------------------------------------------- */
+
+#theme-toggle {
+    width: 40px;
+    height: 40px;
+
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid var(--hpc-border);
+
+    border-radius: 12px;
+
+    background:
+        var(--hpc-surface);
+
+    color: var(--hpc-text);
+
+    cursor: pointer;
+
+    transition:
+        transform var(--hpc-fast),
+        background var(--hpc-fast),
+        border-color var(--hpc-fast),
+        color var(--hpc-fast),
+        box-shadow var(--hpc-fast);
+}
+
+#theme-toggle:hover {
+    transform:
+        translateY(-1px) rotate(3deg);
+
+    border-color:
+        rgba(0, 217, 255, 0.42);
+
+    color:
+        var(--hpc-cyan);
+
+    background:
+        var(--hpc-cyan-soft);
+
+    box-shadow:
+        var(--hpc-glow-cyan);
+}
+
+#theme-toggle .theme-icon {
+    font-size: 15px;
+}
+
+
+/* ---------------------------------------------------------
+   43. HEADER ACTION BUTTONS
+   --------------------------------------------------------- */
+
+.hpc-header-action {
+    min-height: 40px;
+
+    padding:
+        0 14px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    transition:
+        transform var(--hpc-fast),
+        background var(--hpc-fast),
+        border-color var(--hpc-fast),
+        color var(--hpc-fast),
+        box-shadow var(--hpc-fast);
+}
+
+.hpc-header-action:hover {
+    transform: translateY(-1px);
+}
+
+
+/* Profile */
+
+.hpc-profile-btn {
+    color: var(--hpc-blue);
+
+    background:
+        rgba(20, 122, 255, 0.07);
+
+    border:
+        1px solid rgba(20, 122, 255, 0.22);
+}
+
+.hpc-profile-btn:hover {
+    background:
+        rgba(20, 122, 255, 0.14);
+
+    box-shadow:
+        var(--hpc-glow-blue);
+}
+
+
+/* Login */
+
+.hpc-login-btn {
+    color: var(--hpc-blue);
+
+    background:
+        transparent;
+
+    border:
+        1px solid rgba(20, 122, 255, 0.28);
+}
+
+.hpc-login-btn:hover {
+    background:
+        rgba(20, 122, 255, 0.08);
+}
+
+
+/* Primary */
+
+.hpc-primary-btn {
+    color: #ffffff !important;
+
+    border: 1px solid transparent;
+
+    background:
+        linear-gradient(135deg,
+            var(--hpc-blue),
+            var(--hpc-purple));
+
+    box-shadow:
+        0 6px 18px rgba(20, 122, 255, 0.20);
+}
+
+.hpc-primary-btn:hover {
+    color: #ffffff !important;
+
+    box-shadow:
+        0 8px 24px rgba(20, 122, 255, 0.32);
+}
+
+
+/* Logout */
+
+.hpc-logout-btn {
+    color: #dc3545;
+
+    background:
+        rgba(220, 53, 69, 0.06);
+
+    border:
+        1px solid rgba(220, 53, 69, 0.20);
+}
+
+.hpc-logout-btn:hover {
+    background:
+        rgba(220, 53, 69, 0.12);
+}
+
+
+/* ---------------------------------------------------------
+   44. HEADER ENERGY LINE
+   --------------------------------------------------------- */
+
+.hpc-header-energy {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: -1px;
+
+    height: 1px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            var(--hpc-cyan) 25%,
+            var(--hpc-blue) 50%,
+            var(--hpc-purple) 75%,
+            transparent);
+
+    opacity: 0.85;
+}
+
+.hpc-header-energy::after {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -30%;
+
+    width: 30%;
+    height: 100%;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            #ffffff,
+            transparent);
+
+    filter:
+        drop-shadow(0 0 5px var(--hpc-cyan));
+
+    animation:
+        hpc-energy-flow 4s linear infinite;
+}
+
+@keyframes hpc-energy-flow {
+    from {
+        left: -30%;
+    }
+
+    to {
+        left: 130%;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   45. HEADER SPACER
+   --------------------------------------------------------- */
+
+.hpc-header-spacer {
+    height: 58px;
+}
+
+
+/* ---------------------------------------------------------
+   46. HPC SURFACES
+   --------------------------------------------------------- */
+
+.hpc-surface {
+    position: relative;
+
+    background:
+        var(--hpc-surface);
+
+    border:
+        1px solid var(--hpc-border);
+
+    border-radius:
+        var(--hpc-radius-lg);
+
+    backdrop-filter:
+        blur(14px);
+
+    -webkit-backdrop-filter:
+        blur(14px);
+
+    box-shadow:
+        var(--hpc-shadow-sm);
+
+    color:
+        var(--hpc-text);
+
+    transition:
+        background var(--hpc-normal),
+        border-color var(--hpc-normal),
+        box-shadow var(--hpc-normal),
+        transform var(--hpc-normal);
+}
+
+
+/* ---------------------------------------------------------
+   47. HPC CARD
+   --------------------------------------------------------- */
+
+.hpc-card {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 22px;
+
+    background:
+        var(--hpc-surface);
+
+    border:
+        1px solid var(--hpc-border);
+
+    border-radius:
+        var(--hpc-radius-lg);
+
+    color:
+        var(--hpc-text);
+
+    box-shadow:
+        var(--hpc-shadow-sm);
+
+    backdrop-filter:
+        blur(12px);
+
+    -webkit-backdrop-filter:
+        blur(12px);
+
+    transition:
+        transform var(--hpc-normal),
+        border-color var(--hpc-normal),
+        box-shadow var(--hpc-normal),
+        background var(--hpc-normal);
+}
+
+.hpc-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            var(--hpc-cyan),
+            var(--hpc-blue),
+            transparent);
+
+    opacity: 0.35;
+
+    transition:
+        opacity var(--hpc-normal);
+}
+
+.hpc-card:hover {
+    transform:
+        translateY(-3px);
+
+    border-color:
+        var(--hpc-border-strong);
+
+    box-shadow:
+        var(--hpc-shadow-md);
+}
+
+.hpc-card:hover::before {
+    opacity: 0.9;
+}
+
+
+/* ---------------------------------------------------------
+   48. HPC BUTTONS
+   --------------------------------------------------------- */
+
+.hpc-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 42px;
+
+    padding:
+        0 17px;
+
+    border-radius:
+        10px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    border:
+        1px solid var(--hpc-border);
+
+    cursor: pointer;
+
+    transition:
+        transform var(--hpc-fast),
+        background var(--hpc-fast),
+        border-color var(--hpc-fast),
+        box-shadow var(--hpc-fast),
+        color var(--hpc-fast);
+}
+
+.hpc-btn:hover {
+    transform:
+        translateY(-1px);
+}
+
+.hpc-btn-primary {
+    color: #ffffff !important;
+
+    border-color:
+        transparent;
+
+    background:
+        linear-gradient(135deg,
+            var(--hpc-blue),
+            var(--hpc-purple));
+
+    box-shadow:
+        0 7px 20px rgba(20, 122, 255, 0.18);
+}
+
+.hpc-btn-primary:hover {
+    color: #ffffff !important;
+
+    box-shadow:
+        0 10px 28px rgba(20, 122, 255, 0.28);
+}
+
+.hpc-btn-secondary {
+    color:
+        var(--hpc-text);
+
+    background:
+        var(--hpc-surface);
+
+    border-color:
+        var(--hpc-border-strong);
+}
+
+.hpc-btn-secondary:hover {
+    color:
+        var(--hpc-cyan);
+
+    border-color:
+        rgba(0, 217, 255, 0.35);
+
+    background:
+        var(--hpc-cyan-soft);
+}
+
+
+/* ---------------------------------------------------------
+   49. HPC INPUTS
+   --------------------------------------------------------- */
+
+.hpc-input {
+    width: 100%;
+
+    min-height: 42px;
+
+    padding:
+        9px 13px;
+
+    border:
+        1px solid var(--hpc-border);
+
+    border-radius:
+        10px;
+
+    background:
+        var(--hpc-surface);
+
+    color:
+        var(--hpc-text);
+
+    outline: none;
+
+    transition:
+        border-color var(--hpc-fast),
+        box-shadow var(--hpc-fast),
+        background var(--hpc-fast);
+}
+
+.hpc-input::placeholder {
+    color:
+        var(--hpc-text-muted);
+}
+
+.hpc-input:focus {
+    border-color:
+        rgba(0, 217, 255, 0.55);
+
+    box-shadow:
+        0 0 0 3px rgba(0, 217, 255, 0.08),
+        var(--hpc-glow-cyan);
+
+    background:
+        var(--hpc-surface-solid);
+}
+
+
+/* ---------------------------------------------------------
+   50. SECTION LABEL
+   --------------------------------------------------------- */
+
+.hpc-section-label {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 10px;
+
+    color:
+        var(--hpc-cyan);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.hpc-section-label::before {
+    content: "";
+
+    width: 20px;
+    height: 1px;
+
+    background:
+        linear-gradient(90deg,
+            var(--hpc-cyan),
+            var(--hpc-blue));
+}
+
+
+/* ---------------------------------------------------------
+   51. DIVIDER
+   --------------------------------------------------------- */
+
+.hpc-divider {
+    width: 100%;
+    height: 1px;
+
+    margin:
+        18px 0;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            var(--hpc-border-strong),
+            transparent);
+}
+
+
+/* ---------------------------------------------------------
+   52. ACTIVE STATUS
+   --------------------------------------------------------- */
+
+.hpc-status-active {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: #19c987;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.hpc-status-active::before {
+    content: "";
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #19c987;
+
+    box-shadow:
+        0 0 8px rgba(25, 201, 135, 0.65);
+}
+
+
+/* ---------------------------------------------------------
+   53. SCROLLBAR
+   --------------------------------------------------------- */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background:
+        var(--hpc-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+
+    background:
+        linear-gradient(180deg,
+            var(--hpc-blue),
+            var(--hpc-purple));
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background:
+        linear-gradient(180deg,
+            var(--hpc-cyan),
+            var(--hpc-blue));
+}
+
+
+/* ---------------------------------------------------------
+   54. TEXT SELECTION
+   --------------------------------------------------------- */
+
+::selection {
+    color: #ffffff;
+
+    background:
+        var(--hpc-blue);
+}
+
+
+/* ---------------------------------------------------------
+   55. GLOBAL FOCUS
+   --------------------------------------------------------- */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline:
+        2px solid var(--hpc-cyan);
+
+    outline-offset:
+        2px;
+}
+
+
+/* ---------------------------------------------------------
+   56. RESPONSIVE HEADER
+   --------------------------------------------------------- */
+
+@media (max-width: 1199.98px) {
+
+    .hpc-header-inner {
+        padding:
+            0 18px;
+    }
+
+    .hpc-brand-title {
+        font-size: 16px;
+    }
+
+    .hpc-brand-logo {
+        height: 38px;
+    }
+
+    .hpc-brand-subtitle {
+        font-size: 7px;
+    }
+}
+
+
+@media (max-width: 991.98px) {
+
+    .hpc-header-right {
+        gap: 7px;
+    }
+
+    .hpc-system-status {
+        display: none;
+    }
+
+    .hpc-brand-title {
+        font-size: 15px;
+    }
+
+    .hpc-brand-subtitle {
+        display: none;
+    }
+
+    .hpc-brand-logo {
+        height: 36px;
+    }
+
+    .hpc-header-action {
+        padding:
+            0 11px;
+    }
+}
+
+
+@media (max-width: 767.98px) {
+
+    .hpc-header {
+        height: 62px;
+    }
+
+    .hpc-header-inner {
+        padding:
+            0 10px;
+
+        gap: 8px;
+    }
+
+    .hpc-header-spacer {
+        height: 62px;
+    }
+
+    .hpc-menu-button {
+        width: 38px;
+        height: 38px;
+
+        margin-right: 7px;
+    }
+
+    .hpc-brand {
+        gap: 7px;
+    }
+
+    .hpc-brand-logos {
+        gap: 3px;
+    }
+
+    .hpc-brand-logo {
+        height: 30px;
+    }
+
+    .hpc-brand-title {
+        font-size: 13px;
+        max-width: 190px;
+    }
+
+    .hpc-brand-subtitle {
+        display: none;
+    }
+
+    #theme-toggle {
+        width: 37px;
+        height: 37px;
+    }
+
+    .hpc-header-action {
+        min-height: 37px;
+
+        padding:
+            0 9px;
+
+        font-size: 11px;
+    }
+
+    #main {
+        min-height:
+            calc(100vh - 62px);
+    }
+
+    #main-content {
+        min-height:
+            calc(100vh - 62px);
+    }
+
+    #main::before {
+        inset:
+            62px 0 0 0;
+    }
+}
+
+
+@media (max-width: 575.98px) {
+
+    .hpc-header-inner {
+        padding:
+            0 7px;
+    }
+
+    .hpc-brand-logo {
+        height: 26px;
+    }
+
+    .hpc-brand-title {
+        font-size: 11px;
+        max-width: 145px;
+    }
+
+    .hpc-brand-separator {
+        display: none;
+    }
+
+    .hpc-header-action {
+        padding:
+            0 7px;
+
+        font-size: 10px;
+    }
+
+    .hpc-profile-btn {
+        font-size: 0;
+    }
+
+    .hpc-profile-btn i {
+        font-size: 13px;
+    }
+
+    .hpc-logout-btn {
+        font-size: 0;
+    }
+
+    .hpc-logout-btn i {
+        font-size: 13px;
+    }
+
+    .hpc-primary-btn {
+        font-size: 0;
+    }
+
+    .hpc-primary-btn i {
+        font-size: 13px;
+    }
+
+    .hpc-card {
+        padding: 16px;
+        border-radius:
+            var(--hpc-radius-md);
+    }
+}
+
+
+@media (max-width: 400px) {
+
+    .hpc-brand-title {
+        display: none;
+    }
+
+    .hpc-brand-logo {
+        height: 25px;
+    }
+
+    .hpc-header-action {
+        width: 34px;
+        height: 34px;
+
+        min-height: 34px;
+
+        padding: 0;
+    }
+
+    #theme-toggle {
+        width: 34px;
+        height: 34px;
+    }
+
+    .hpc-menu-button {
+        width: 34px;
+        height: 34px;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   57. REDUCED MOTION
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* =========================================================
+   HPC HEADER — LOGO SIZE FIX
+   ========================================================= */
+
+.hpc-brand-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    height: 44px;
+    flex-shrink: 0;
+}
+
+.hpc-logo-wrap {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+.hpc-logo-wrap img {
+    width: 100% !important;
+    height: 100% !important;
+
+    max-width: 42px !important;
+    max-height: 42px !important;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+.hpc-logo-divider {
+    width: 1px;
+    height: 26px;
+
+    background: var(--hpc-border);
+
+    flex-shrink: 0;
+}
+
+
+
+
+/* =========================================================
+   HPC SIDEBAR — FUTURISTIC NAVIGATION
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   SIDEBAR CONTAINER
+   --------------------------------------------------------- */
+
+#side-nav.hpc-sidebar {
+
+    position: fixed;
+
+    top: 72px;
+    left: 0;
+    bottom: 0;
+
+    width: 270px;
+
+    z-index: 1000;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 18px 14px 30px;
+
+    background:
+        linear-gradient(180deg,
+            rgba(5, 15, 30, 0.97),
+            rgba(3, 10, 22, 0.99));
+
+    border-right:
+        1px solid rgba(0, 217, 255, 0.16);
+
+    box-shadow:
+        10px 0 40px rgba(0, 0, 0, 0.18);
+
+    backdrop-filter: blur(18px);
+
+    color: #dbeafe;
+
+    transition:
+        width 0.3s ease,
+        transform 0.3s ease,
+        background 0.3s ease;
+
+}
+
+
+/* subtle grid atmosphere */
+
+#side-nav.hpc-sidebar::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: 0.22;
+
+    background-image:
+        linear-gradient(rgba(0, 217, 255, 0.035) 1px,
+            transparent 1px),
+        linear-gradient(90deg,
+            rgba(0, 217, 255, 0.035) 1px,
+            transparent 1px);
+
+    background-size: 30px 30px;
+
+}
+
+
+/* top cyan glow */
+
+#side-nav.hpc-sidebar::after {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            #00d9ff,
+            #7b4dff,
+            transparent);
+
+    opacity: 0.8;
+
+}
+
+
+/* ---------------------------------------------------------
+   SIDEBAR HEADER
+   --------------------------------------------------------- */
+
+.hpc-sidebar-header {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    min-height: 58px;
+
+    padding: 8px 8px 14px;
+
+    border-bottom:
+        1px solid rgba(0, 217, 255, 0.10);
+
+}
+
+
+.hpc-sidebar-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 0;
+
+}
+
+
+.hpc-sidebar-brand-icon {
+
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #00d9ff;
+
+    background:
+        linear-gradient(135deg,
+            rgba(0, 217, 255, 0.15),
+            rgba(123, 77, 255, 0.12));
+
+    border:
+        1px solid rgba(0, 217, 255, 0.30);
+
+    box-shadow:
+        0 0 18px rgba(0, 217, 255, 0.12);
+
+}
+
+
+.hpc-sidebar-brand-icon i {
+
+    font-size: 17px;
+
+}
+
+
+.hpc-sidebar-brand-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    line-height: 1.2;
+
+}
+
+
+.hpc-sidebar-brand-text span {
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+
+    color: #ffffff;
+
+}
+
+
+.hpc-sidebar-brand-text small {
+
+    margin-top: 4px;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    color: #6f829e;
+
+}
+
+
+/* close button */
+
+.hpc-sidebar-close {
+
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(0, 217, 255, 0.15);
+
+    border-radius: 8px;
+
+    background:
+        rgba(255, 255, 255, 0.03);
+
+    color: #91a4bd;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+
+}
+
+
+.hpc-sidebar-close:hover {
+
+    color: #00d9ff;
+
+    border-color:
+        rgba(0, 217, 255, 0.45);
+
+    background:
+        rgba(0, 217, 255, 0.08);
+
+    box-shadow:
+        0 0 15px rgba(0, 217, 255, 0.12);
+
+}
+
+
+/* ---------------------------------------------------------
+   SYSTEM STATUS
+   --------------------------------------------------------- */
+
+.hpc-sidebar-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin: 14px 2px 20px;
+
+    padding: 10px 11px;
+
+    border-radius: 10px;
+
+    background:
+        rgba(0, 217, 255, 0.035);
+
+    border:
+        1px solid rgba(0, 217, 255, 0.09);
+
+}
+
+
+.hpc-status-dot {
+
+    width: 7px;
+    height: 7px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #00e5a8;
+
+    box-shadow:
+        0 0 10px rgba(0, 229, 168, 0.75);
+
+    animation:
+        hpcStatusPulse 2s ease-in-out infinite;
+
+}
+
+
+@keyframes hpcStatusPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 8px rgba(0, 229, 168, 0.55);
+    }
+
+    50% {
+        opacity: 0.55;
+        box-shadow: 0 0 16px rgba(0, 229, 168, 0.9);
+    }
+
+}
+
+
+.hpc-sidebar-status>div {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+.hpc-status-title {
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+
+    color: #c9d8eb;
+
+}
+
+
+.hpc-status-subtitle {
+
+    margin-top: 3px;
+
+    font-size: 7px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.9px;
+
+    color: #61748e;
+
+}
+
+
+/* ---------------------------------------------------------
+   NAVIGATION
+   --------------------------------------------------------- */
+
+.hpc-sidebar-nav {
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+.hpc-nav-section {
+
+    margin-bottom: 22px;
+
+}
+
+
+.hpc-nav-label {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 9px;
+
+    margin-bottom: 7px;
+
+    color: #536985;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+}
+
+
+.hpc-nav-label i {
+
+    font-size: 4px;
+
+    color: #00d9ff;
+
+    opacity: 0.8;
+
+}
+
+
+/* ---------------------------------------------------------
+   NAV ITEMS
+   --------------------------------------------------------- */
+
+.hpc-nav-item {
+
+    position: relative;
+
+    list-style: none;
+
+    margin: 3px 0;
+
+}
+
+
+.hpc-nav-item a {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    min-height: 42px;
+
+    padding: 7px 10px;
+
+    border-radius: 9px;
+
+    color: #8fa3bd;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+
+}
+
+
+/* icon */
+
+.hpc-nav-icon {
+
+    width: 31px;
+    height: 31px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    color: #66809e;
+
+    background:
+        rgba(255, 255, 255, 0.025);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.045);
+
+    transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+
+}
+
+
+.hpc-nav-icon i {
+
+    font-size: 12px;
+
+}
+
+
+/* text */
+
+.hpc-nav-text {
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+
+/* ---------------------------------------------------------
+   HOVER
+   --------------------------------------------------------- */
+
+.hpc-nav-item a:hover {
+
+    color: #e8f7ff;
+
+    background:
+        linear-gradient(90deg,
+            rgba(0, 217, 255, 0.075),
+            rgba(123, 77, 255, 0.045));
+
+    transform:
+        translateX(3px);
+
+}
+
+
+.hpc-nav-item a:hover .hpc-nav-icon {
+
+    color: #00d9ff;
+
+    background:
+        rgba(0, 217, 255, 0.08);
+
+    border-color:
+        rgba(0, 217, 255, 0.24);
+
+    box-shadow:
+        0 0 13px rgba(0, 217, 255, 0.10);
+
+}
+
+
+/* ---------------------------------------------------------
+   ACTIVE ITEM
+   --------------------------------------------------------- */
+
+.hpc-nav-item.active a {
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(90deg,
+            rgba(0, 217, 255, 0.13),
+            rgba(123, 77, 255, 0.075));
+
+    border:
+        1px solid rgba(0, 217, 255, 0.13);
+
+    box-shadow:
+        inset 0 0 20px rgba(0, 217, 255, 0.025),
+        0 4px 18px rgba(0, 0, 0, 0.12);
+
+}
+
+
+/* active cyan line */
+
+.hpc-nav-item.active a::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: -14px;
+
+    top: 7px;
+    bottom: 7px;
+
+    width: 3px;
+
+    border-radius: 0 4px 4px 0;
+
+    background:
+        linear-gradient(180deg,
+            #00d9ff,
+            #147aff);
+
+    box-shadow:
+        0 0 12px rgba(0, 217, 255, 0.75);
+
+}
+
+
+/* active icon */
+
+.hpc-nav-item.active .hpc-nav-icon {
+
+    color: #00d9ff;
+
+    background:
+        rgba(0, 217, 255, 0.10);
+
+    border-color:
+        rgba(0, 217, 255, 0.28);
+
+    box-shadow:
+        0 0 15px rgba(0, 217, 255, 0.10);
+
+}
+
+
+/* ---------------------------------------------------------
+   SCROLLBAR
+   --------------------------------------------------------- */
+
+#side-nav.hpc-sidebar::-webkit-scrollbar {
+
+    width: 4px;
+
+}
+
+
+#side-nav.hpc-sidebar::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+
+#side-nav.hpc-sidebar::-webkit-scrollbar-thumb {
+
+    background:
+        rgba(0, 217, 255, 0.20);
+
+    border-radius: 10px;
+
+}
+
+
+#side-nav.hpc-sidebar::-webkit-scrollbar-thumb:hover {
+
+    background:
+        rgba(0, 217, 255, 0.40);
+
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT MODE
+   --------------------------------------------------------- */
+
+html[data-theme="light"] #side-nav.hpc-sidebar {
+
+    background:
+        linear-gradient(180deg,
+            rgba(247, 251, 255, 0.98),
+            rgba(237, 245, 252, 0.98));
+
+    color: #18304a;
+
+    border-right:
+        1px solid rgba(20, 122, 255, 0.15);
+
+    box-shadow:
+        10px 0 35px rgba(27, 67, 108, 0.08);
+
+}
+
+
+html[data-theme="light"] #side-nav.hpc-sidebar::before {
+
+    opacity: 0.14;
+
+    background-image:
+        linear-gradient(rgba(20, 122, 255, 0.045) 1px,
+            transparent 1px),
+        linear-gradient(90deg,
+            rgba(20, 122, 255, 0.045) 1px,
+            transparent 1px);
+
+}
+
+
+html[data-theme="light"] .hpc-sidebar-brand-text span {
+
+    color: #17314c;
+
+}
+
+
+html[data-theme="light"] .hpc-sidebar-brand-text small {
+
+    color: #71849b;
+
+}
+
+
+html[data-theme="light"] .hpc-sidebar-brand-icon {
+
+    background:
+        rgba(20, 122, 255, 0.07);
+
+    border-color:
+        rgba(20, 122, 255, 0.20);
+
+}
+
+
+html[data-theme="light"] .hpc-sidebar-status {
+
+    background:
+        rgba(20, 122, 255, 0.035);
+
+    border-color:
+        rgba(20, 122, 255, 0.10);
+
+}
+
+
+html[data-theme="light"] .hpc-status-title {
+
+    color: #36516d;
+
+}
+
+
+html[data-theme="light"] .hpc-status-subtitle {
+
+    color: #8293a7;
+
+}
+
+
+html[data-theme="light"] .hpc-nav-label {
+
+    color: #7890a8;
+
+}
+
+
+html[data-theme="light"] .hpc-nav-item a {
+
+    color: #536b83;
+
+}
+
+
+html[data-theme="light"] .hpc-nav-item a:hover {
+
+    color: #163d63;
+
+    background:
+        linear-gradient(90deg,
+            rgba(20, 122, 255, 0.07),
+            rgba(123, 77, 255, 0.035));
+
+}
+
+
+html[data-theme="light"] .hpc-nav-icon {
+
+    color: #6f89a3;
+
+    background:
+        rgba(20, 122, 255, 0.025);
+
+    border-color:
+        rgba(20, 122, 255, 0.07);
+
+}
+
+
+html[data-theme="light"] .hpc-nav-item.active a {
+
+    color: #173b60;
+
+    background:
+        linear-gradient(90deg,
+            rgba(20, 122, 255, 0.09),
+            rgba(123, 77, 255, 0.045));
+
+    border-color:
+        rgba(20, 122, 255, 0.12);
+
+}
+
+
+html[data-theme="light"] .hpc-nav-item.active .hpc-nav-icon {
+
+    color: #147aff;
+
+    background:
+        rgba(20, 122, 255, 0.08);
+
+    border-color:
+        rgba(20, 122, 255, 0.18);
+
+}
+
+
+/* ---------------------------------------------------------
+   DESKTOP SIDEBAR
+   --------------------------------------------------------- */
+
+@media (min-width: 992px) {
+
+    #side-nav.hpc-sidebar {
+
+        transform: translateX(0);
+
+        transition:
+            transform 0.35s ease,
+            width 0.35s ease;
+
+    }
+
+
+    #side-nav.hpc-sidebar.active {
+
+        transform: translateX(0);
+
+    }
+
+
+    #side-nav.hpc-sidebar:not(.active) {
+
+        transform: translateX(-100%);
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   TABLET / MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 991px) {
+
+    #side-nav.hpc-sidebar {
+
+        top: 62px;
+
+        width: 270px;
+
+        transform:
+            translateX(-100%);
+
+        box-shadow:
+            15px 0 45px rgba(0, 0, 0, 0.28);
+
+    }
+
+
+    #side-nav.hpc-sidebar.active {
+
+        transform:
+            translateX(0);
+
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    #side-nav.hpc-sidebar {
+
+        width: min(285px, 88vw);
+
+        padding-left: 12px;
+        padding-right: 12px;
+
+    }
+
+}
+
+
+/* =========================================================
+   HPC SIDEBAR — USER IDENTITY
+   ========================================================= */
+
+.hpc-user-avatar {
+
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    color: #00d9ff;
+
+    background:
+        linear-gradient(135deg,
+            rgba(0, 217, 255, 0.12),
+            rgba(123, 77, 255, 0.12));
+
+    border:
+        1px solid rgba(0, 217, 255, 0.24);
+
+    box-shadow:
+        0 0 16px rgba(0, 217, 255, 0.08);
+}
+
+
+.hpc-user-avatar i {
+    font-size: 14px;
+}
+
+
+.hpc-user-info {
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    line-height: 1.2;
+}
+
+
+.hpc-user-role {
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    color: #00d9ff;
+}
+
+
+.hpc-user-name {
+
+    margin-top: 4px;
+
+    max-width: 175px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    color: #d7e4f3;
+}
+
+
+html[data-theme="light"] .hpc-user-name {
+
+    color: #294661;
+
+}
+
+
+html[data-theme="light"] .hpc-user-role {
+
+    color: #147aff;
+
+}
+
+
+html[data-theme="light"] .hpc-user-avatar {
+
+    background:
+        rgba(20, 122, 255, 0.07);
+
+    border-color:
+        rgba(20, 122, 255, 0.18);
+}
+
+/* =========================================================
+   SIDEBAR + MAIN CONTENT LAYOUT
+   ========================================================= */
+
+/* Desktop: sidebar open */
+@media (min-width: 992px) {
+
+    #main {
+
+        margin-left: 270px !important;
+
+        padding-top: 72px !important;
+
+        width: calc(100% - 270px);
+
+        transition:
+            margin-left 0.35s ease,
+            width 0.35s ease;
+
+    }
+
+
+    /* Sidebar closed */
+
+    body:has(#side-nav.hpc-sidebar:not(.active)) #main {
+
+        margin-left: 0 !important;
+
+        width: 100%;
+
+    }
+
+}
+
+
+/* =========================================================
+   SIDEBAR / MAIN CONTENT SYNCHRONIZATION
+   ========================================================= */
+
+@media (min-width: 992px) {
+
+    /* Sidebar OPEN */
+    body:has(#side-nav.hpc-sidebar.active) #main {
+
+        margin-left: 270px !important;
+        padding-left: 0 !important;
+
+        width: calc(100% - 270px) !important;
+
+        transition:
+            margin-left 0.35s ease,
+            width 0.35s ease;
+
+    }
+
+
+    /* Sidebar CLOSED */
+    body:has(#side-nav.hpc-sidebar:not(.active)) #main {
+
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+
+        width: 100% !important;
+
+        transition:
+            margin-left 0.35s ease,
+            width 0.35s ease;
+
+    }
+
+}
+
+
+/* =========================================================
+   SIDEBAR — CLEAN ICON STYLE
+   ========================================================= */
+
+.hpc-nav-icon {
+    width: 30px;
+    height: 30px;
+
+    background: transparent !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
+
+    border-radius: 0;
+
+    color: #6f849e;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    transition:
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+/* Icon itself */
+
+.hpc-nav-icon i {
+    font-size: 14px;
+}
+
+
+/* Hover */
+
+.hpc-nav-item a:hover .hpc-nav-icon {
+
+    color: #00d9ff;
+
+    background: transparent !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
+
+    transform: scale(1.08);
+
+}
+
+
+/* Active */
+
+.hpc-nav-item.active .hpc-nav-icon {
+
+    color: #00d9ff;
+
+    background: transparent !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
+
+}
+
+
+/* Light mode */
+
+html[data-theme="light"] .hpc-nav-icon {
+
+    color: #6d849d;
+
+}
+
+
+html[data-theme="light"] .hpc-nav-item a:hover .hpc-nav-icon,
+
+html[data-theme="light"] .hpc-nav-item.active .hpc-nav-icon {
+
+    color: #147aff;
+
+}
+
+
+/* =========================================================
+   LANDING PAGE — FULL WIDTH
+   ========================================================= */
+
+body:has(.hpc-hero) #main {
+
+    margin-left: 0 !important;
+
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+}

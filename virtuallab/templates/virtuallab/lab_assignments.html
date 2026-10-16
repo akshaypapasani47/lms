@@ -1,0 +1,940 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Assignments | {{ lab.name }}{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   VIRTUAL LAB — ASSIGNMENTS
+   FUTURISTIC LMS UI
+   LIGHT / DARK THEME
+   ========================================================= */
+
+.vl-assignment-page {
+
+    --assign-bg: #f5f7fb;
+    --assign-card: rgba(255, 255, 255, 0.94);
+    --assign-border: rgba(15, 23, 42, 0.09);
+
+    --assign-text: #172033;
+    --assign-muted: #667085;
+
+    --assign-accent: #2563eb;
+    --assign-accent-2: #06b6d4;
+
+    --assign-soft: rgba(37, 99, 235, 0.08);
+
+    --assign-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.08);
+
+    min-height: calc(100vh - 70px);
+
+    padding: 34px 22px 60px;
+
+    color: var(--assign-text);
+
+    background:
+        radial-gradient(
+            circle at 8% 8%,
+            rgba(37, 99, 235, 0.09),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 92% 18%,
+            rgba(6, 182, 212, 0.08),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 80% 90%,
+            rgba(124, 58, 237, 0.06),
+            transparent 25%
+        ),
+        var(--assign-bg);
+
+    transition:
+        background 0.3s ease,
+        color 0.3s ease;
+}
+
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+[data-theme="dark"] .vl-assignment-page,
+body.dark-mode .vl-assignment-page {
+
+    --assign-bg: #07111f;
+    --assign-card: rgba(12, 25, 43, 0.94);
+    --assign-border: rgba(148, 163, 184, 0.14);
+
+    --assign-text: #e8eef8;
+    --assign-muted: #94a3b8;
+
+    --assign-accent: #3b82f6;
+    --assign-accent-2: #22d3ee;
+
+    --assign-soft: rgba(59, 130, 246, 0.11);
+
+    --assign-shadow:
+        0 22px 55px rgba(0, 0, 0, 0.32);
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+   ========================================================= */
+
+.vl-assignment-container {
+    width: min(1200px, 100%);
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.vl-assignment-header {
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 24px;
+
+    margin-bottom: 30px;
+
+    animation:
+        vlAssignmentFadeIn 0.45s ease both;
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.vl-assignment-title {
+
+    min-width: 0;
+}
+
+.vl-assignment-kicker {
+
+    display: inline-flex;
+
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 10px;
+
+    padding: 7px 12px;
+
+    border:
+        1px solid
+        rgba(37, 99, 235, 0.18);
+
+    border-radius: 999px;
+
+    background: var(--assign-soft);
+
+    color: var(--assign-accent);
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+
+    text-transform: uppercase;
+}
+
+.vl-assignment-kicker i {
+    font-size: 10px;
+}
+
+
+.vl-assignment-title h1 {
+
+    margin: 0;
+
+    color: var(--assign-text);
+
+    font-size:
+        clamp(27px, 4vw, 38px);
+
+    line-height: 1.12;
+
+    font-weight: 800;
+
+    letter-spacing: -0.03em;
+}
+
+
+.vl-assignment-title p {
+
+    margin: 10px 0 0;
+
+    color: var(--assign-muted);
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+.vl-assignment-title p strong {
+
+    color: var(--assign-text);
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.vl-back-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+
+    padding: 10px 15px;
+
+    border:
+        1px solid
+        var(--assign-border);
+
+    border-radius: 10px;
+
+    background: var(--assign-card);
+
+    color: var(--assign-muted);
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    box-shadow:
+        0 6px 18px rgba(15, 23, 42, 0.04);
+
+    transition:
+        transform 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.vl-back-btn:hover {
+
+    transform: translateX(-3px);
+
+    color: var(--assign-accent);
+
+    border-color:
+        rgba(37, 99, 235, 0.30);
+
+    box-shadow:
+        0 10px 24px
+        rgba(37, 99, 235, 0.10);
+}
+
+
+/* =========================================================
+   ASSIGNMENT GRID
+   ========================================================= */
+
+.vl-assignment-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(290px, 1fr)
+        );
+
+    gap: 20px;
+}
+
+
+/* =========================================================
+   ASSIGNMENT CARD
+   ========================================================= */
+
+.vl-assignment-card {
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    min-height: 300px;
+
+    padding: 23px;
+
+    border:
+        1px solid
+        var(--assign-border);
+
+    border-radius: 17px;
+
+    background: var(--assign-card);
+
+    box-shadow: var(--assign-shadow);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+
+    animation:
+        vlAssignmentCardIn
+        0.45s ease both;
+}
+
+
+/* TOP ACCENT */
+
+.vl-assignment-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--assign-accent),
+            var(--assign-accent-2)
+        );
+}
+
+
+/* GLOW */
+
+.vl-assignment-card::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 130px;
+    height: 130px;
+
+    right: -55px;
+    top: -55px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(37, 99, 235, 0.10),
+            transparent 70%
+        );
+
+    pointer-events: none;
+}
+
+
+.vl-assignment-card:hover {
+
+    transform: translateY(-6px);
+
+    border-color:
+        rgba(37, 99, 235, 0.22);
+
+    box-shadow:
+        0 24px 50px
+        rgba(15, 23, 42, 0.13);
+}
+
+
+/* =========================================================
+   ICON
+   ========================================================= */
+
+.vl-assignment-icon {
+
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 19px;
+
+    border:
+        1px solid
+        rgba(37, 99, 235, 0.15);
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37, 99, 235, 0.12),
+            rgba(6, 182, 212, 0.08)
+        );
+
+    color: var(--assign-accent);
+
+    font-size: 21px;
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, 0.07);
+
+    transition:
+        transform 0.25s ease;
+}
+
+.vl-assignment-card:hover
+.vl-assignment-icon {
+
+    transform:
+        rotate(-4deg)
+        scale(1.05);
+}
+
+
+/* =========================================================
+   CARD CONTENT
+   ========================================================= */
+
+.vl-assignment-card h3 {
+
+    margin: 0 0 9px;
+
+    color: var(--assign-text);
+
+    font-size: 19px;
+
+    line-height: 1.35;
+
+    font-weight: 750;
+
+    letter-spacing: -0.015em;
+}
+
+
+.vl-assignment-card p {
+
+    margin: 0 0 18px;
+
+    color: var(--assign-muted);
+
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   META
+   ========================================================= */
+
+.vl-assignment-meta {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 20px;
+}
+
+
+.vl-assignment-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 6px 10px;
+
+    border:
+        1px solid
+        rgba(37, 99, 235, 0.13);
+
+    border-radius: 999px;
+
+    background: var(--assign-soft);
+
+    color: var(--assign-accent);
+
+    font-size: 11px;
+
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   START BUTTON
+   ========================================================= */
+
+.vl-start-btn {
+
+    width: 100%;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin-top: auto;
+
+    padding: 11px 16px;
+
+    border:
+        1px solid
+        rgba(37, 99, 235, 0.15);
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--assign-accent),
+            #4f46e5
+        );
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 750;
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, 0.17);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+.vl-start-btn:hover {
+
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    filter: brightness(1.05);
+
+    box-shadow:
+        0 13px 27px
+        rgba(37, 99, 235, 0.27);
+}
+
+.vl-start-btn i {
+
+    font-size: 12px;
+
+    transition:
+        transform 0.2s ease;
+}
+
+.vl-start-btn:hover i {
+
+    transform:
+        translateX(3px);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.vl-empty-state {
+
+    max-width: 650px;
+
+    margin: 65px auto;
+
+    padding: 48px 28px;
+
+    text-align: center;
+
+    border:
+        1px solid
+        var(--assign-border);
+
+    border-radius: 18px;
+
+    background: var(--assign-card);
+
+    box-shadow: var(--assign-shadow);
+
+    backdrop-filter: blur(12px);
+
+    animation:
+        vlAssignmentFadeIn
+        0.45s ease both;
+}
+
+
+.vl-empty-icon {
+
+    width: 70px;
+    height: 70px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 20px;
+
+    border-radius: 20px;
+
+    background: var(--assign-soft);
+
+    color: var(--assign-accent);
+
+    font-size: 29px;
+}
+
+
+.vl-empty-state h2 {
+
+    margin: 0 0 10px;
+
+    color: var(--assign-text);
+
+    font-size: 21px;
+
+    font-weight: 750;
+}
+
+
+.vl-empty-state p {
+
+    max-width: 470px;
+
+    margin: 0 auto;
+
+    color: var(--assign-muted);
+
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes vlAssignmentFadeIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes vlAssignmentCardIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .vl-assignment-page {
+        padding: 24px 15px 45px;
+    }
+
+    .vl-assignment-header {
+
+        align-items: stretch;
+
+        margin-bottom: 24px;
+    }
+
+    .vl-assignment-title h1 {
+        font-size: 27px;
+    }
+
+    .vl-back-btn {
+
+        width: 100%;
+
+        min-height: 43px;
+    }
+
+    .vl-assignment-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .vl-assignment-page {
+        padding: 20px 12px 40px;
+    }
+
+    .vl-assignment-title h1 {
+        font-size: 24px;
+    }
+
+    .vl-assignment-title p {
+        font-size: 12px;
+    }
+
+    .vl-assignment-card {
+        padding: 19px;
+
+        border-radius: 14px;
+    }
+
+    .vl-empty-state {
+        margin: 40px auto;
+
+        padding: 38px 20px;
+    }
+}
+
+</style>
+
+
+<div class="vl-assignment-page">
+
+    <div class="vl-assignment-container">
+
+
+        <!-- =================================================
+             HEADER
+             ================================================= -->
+
+        <div class="vl-assignment-header">
+
+            <div class="vl-assignment-title">
+
+                <div class="vl-assignment-kicker">
+
+                    <i class="fas fa-clipboard-check"></i>
+
+                    Virtual Lab Assessment
+
+                </div>
+
+
+                <h1>
+                    Assignments
+                </h1>
+
+
+                <p>
+                    Assessments assigned to
+                    <strong>{{ lab.name }}</strong>
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'virtuallab:lab_session' lab.id %}"
+                class="vl-back-btn"
+            >
+
+                <i class="fas fa-arrow-left"></i>
+
+                Back to Virtual Lab
+
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             ASSIGNMENTS
+             ================================================= -->
+
+        {% if assignments %}
+
+            <div class="vl-assignment-grid">
+
+                {% for assessment in assignments %}
+
+                    <div class="vl-assignment-card">
+
+
+                        <!-- ICON -->
+
+                        <div class="vl-assignment-icon">
+
+                            <i class="fas fa-file-alt"></i>
+
+                        </div>
+
+
+                        <!-- TITLE -->
+
+                        <h3>
+                            {{ assessment.title }}
+                        </h3>
+
+
+                        <!-- DESCRIPTION -->
+
+                        {% if assessment.description %}
+
+                            <p>
+                                {{ assessment.description|truncatewords:30 }}
+                            </p>
+
+                        {% else %}
+
+                            <p>
+                                Complete this assessment to evaluate
+                                your understanding of the lab concepts.
+                            </p>
+
+                        {% endif %}
+
+
+                        <!-- META -->
+
+                        <div class="vl-assignment-meta">
+
+                            {% if assessment.duration_minutes %}
+
+                                <span class="vl-assignment-badge">
+
+                                    <i class="fas fa-clock"></i>
+
+                                    {{ assessment.duration_minutes }}
+                                    min
+
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if assessment.total_marks %}
+
+                                <span class="vl-assignment-badge">
+
+                                    <i class="fas fa-bullseye"></i>
+
+                                    {{ assessment.total_marks }}
+                                    marks
+
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- START -->
+
+                        <a
+                            href="{% url 'student_assessment_start' assessment.pk %}"
+                            class="vl-start-btn"
+                        >
+
+                            Start Assessment
+
+                            <i class="fas fa-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- =================================================
+                 EMPTY STATE
+                 ================================================= -->
+
+            <div class="vl-empty-state">
+
+                <div class="vl-empty-icon">
+
+                    <i class="fas fa-clipboard-list"></i>
+
+                </div>
+
+
+                <h2>
+                    No Assignments Yet
+                </h2>
+
+
+                <p>
+                    No assessments have been assigned to this
+                    Virtual Lab yet. Please check again later.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,83 +1,387 @@
 {% extends 'registration/registration_base.html' %}
+{% load static %}
 {% load i18n %}
 {% block title %}{% trans 'Register | Learning management system' %}{% endblock title %}
 {% load crispy_forms_tags %}
-
 {% block content %}
 
-<div class="container py-5">
-	
-  <div class="blue-gradient text-light p-3 mb-5">
-	  <h1 class="lead my-0">
-		<i class="fas fa-lock mr-2"></i>{% trans 'Create Your Account' %}
-	  </h1>
-  </div>
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
 
-  <form action="" method="POST" id="login-form">
-	  {% csrf_token %}
-	  <div class="row">
-		  <div class="col-lg-6">
-			<h1 class="lead p-2 bg-light">{% trans 'Login Form' %}</h1>
-			<div class="mb-3">
-				<label for="username_id" class="form-label">{{ form.username.label }}</label>
-				{{ form.username }}
-				<div id="message-wrapper"></div>
-			</div>
-			<div class="mb-3">
-				<label for="email_id" class="form-label">{{ form.email.label }}</label>
-				{{ form.email }}
-			</div>
-			<div class="mb-3">
-				<label for="password1_id" class="form-label">{{ form.password1.label }}</label>
-				{{ form.password1 }}
-			</div>
-			<div class="mb-3">
-				<label for="password2_id" class="form-label">{{ form.password2.label }}</label>
-				{{ form.password2 }}
-			</div>
-		  </div>
-		  <div class="col-lg-6">
-			<h1 class="lead p-2 bg-light">{% trans 'Personal Info' %}</h1>
-			<div class="mb-3">
-				<label for="address_id" class="form-label">{{ form.address.label }}</label>
-				{{ form.address }}
-			</div>
-			<div class="mb-3">
-				<label for="phone_id" class="form-label">{{ form.phone.label }}</label>
-				{{ form.phone }}
-			</div>
-			<div class="mb-3">
-				<label for="first_name_id" class="form-label">{{ form.first_name.label }}</label>
-				{{ form.first_name }}
-			</div>
-			<div class="mb-3">
-				<label for="last_name_id" class="form-label">{{ form.last_name.label }}</label>
-				{{ form.last_name }}
-			</div>
-			<div class="mb-3">
-				<label for="gender_id" class="form-label">{{ form.gender.label }}</label>
-				{{ form.gender }}
-			</div>
-			<div class="mb-3">
-				<label for="level_id" class="form-label">{{ form.level.label }}</label>
-				{{ form.level }}
-			</div>
-			<div class="mb-3">
-				<label for="program_id" class="form-label">{{ form.program.label }}</label>
-				{{ form.program }}
-			</div>
-		  </div>
-	  </div>
+<div class="hpc-register-page">
 
-    {% if form.errors %}
-          <p class="text-danger my-2"><i class="fas fa-exclamation-circle"></i>{% trans 'Invalid ID & Password.' %}</p><br>
-    {% endif %}
+    <!-- =====================================================
+         HPC BRAND
+         ===================================================== -->
 
-    <button type="submit" class="btn btn-primary" id="login-btn"><i class="fas fa-sign-in-alt"></i><small>{% trans 'SIGN UP' %}</small></button>
-  </form>
-  <br>
-  <span> {% trans 'Already Registered ?' %} </span><a href="{% url 'login' %}" class="link">{% trans 'Login' %}</a>
+    <div class="hpc-register-brand">
+
+        <div class="hpc-register-brand-mark">
+            <span>HPC</span>
+        </div>
+
+        <div class="hpc-register-brand-text">
+            <div class="hpc-register-brand-title">
+                C-DAC HPC
+            </div>
+
+            <div class="hpc-register-brand-subtitle">
+                DIGITAL LEARNING PLATFORM
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         REGISTRATION CARD
+         ===================================================== -->
+
+    <div class="hpc-register-card">
+
+        <!-- Header -->
+
+        <div class="hpc-register-header">
+
+            <div>
+
+                <div class="hpc-register-eyebrow">
+
+                    <span class="hpc-register-status-dot"></span>
+
+                    NEW LEARNING NODE
+
+                </div>
+
+                <h1>
+                    Create Your <span>Account.</span>
+                </h1>
+
+                <p>
+                    Register to access advanced learning programs,
+                    virtual laboratories and computing resources.
+                </p>
+
+            </div>
+
+
+            <div class="hpc-register-code">
+                REGISTER / NODE-01
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FORM
+             ================================================= -->
+
+        <form action="" method="POST" id="login-form">
+
+            {% csrf_token %}
+
+
+            <!-- =============================================
+                 ACCOUNT & SECURITY
+                 ============================================= -->
+
+            <section class="hpc-register-section">
+
+                <div class="hpc-register-section-title">
+
+                    <span class="hpc-register-section-number">
+                        01
+                    </span>
+
+                    <span>
+                        ACCOUNT &amp; SECURITY
+                    </span>
+
+                    <span class="hpc-register-section-line"></span>
+
+                </div>
+
+
+                <div class="hpc-register-fields">
+
+
+                    <!-- Username -->
+
+                    <div class="hpc-register-field">
+
+                        <label for="username_id">
+                            {{ form.username.label }}
+                        </label>
+
+                        {{ form.username }}
+
+                        <div id="message-wrapper"></div>
+
+                    </div>
+
+
+                    <!-- Email -->
+
+                    <div class="hpc-register-field">
+
+                        <label for="email_id">
+                            {{ form.email.label }}
+                        </label>
+
+                        {{ form.email }}
+
+                    </div>
+
+
+                    <!-- Password -->
+
+                    <div class="hpc-register-field">
+
+                        <label for="password1_id">
+                            {{ form.password1.label }}
+                        </label>
+
+                        {{ form.password1 }}
+
+                    </div>
+
+
+                    <!-- Confirm Password -->
+
+                    <div class="hpc-register-field">
+
+                        <label for="password2_id">
+                            {{ form.password2.label }}
+                        </label>
+
+                        {{ form.password2 }}
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 PERSONAL & ACADEMIC INFORMATION
+                 ============================================= -->
+
+            <section class="hpc-register-section">
+
+                <div class="hpc-register-section-title">
+
+                    <span class="hpc-register-section-number">
+                        02
+                    </span>
+
+                    <span>
+                        PERSONAL &amp; ACADEMIC INFORMATION
+                    </span>
+
+                    <span class="hpc-register-section-line"></span>
+
+                </div>
+
+
+                <div class="hpc-register-fields">
+
+
+                    <!-- Address -->
+
+                    <div class="hpc-register-field full-width">
+
+                        <label for="address_id">
+                            {{ form.address.label }}
+                        </label>
+
+                        {{ form.address }}
+
+                    </div>
+
+
+                    <!-- Phone -->
+
+                    <div class="hpc-register-field">
+
+                        <label for="phone_id">
+                            {{ form.phone.label }}
+                        </label>
+
+                        {{ form.phone }}
+
+                    </div>
+
+
+                    <!-- First Name -->
+
+                    <div class="hpc-register-field">
+
+                        <label for="first_name_id">
+                            {{ form.first_name.label }}
+                        </label>
+
+                        {{ form.first_name }}
+
+                    </div>
+
+
+                    <!-- Last Name -->
+
+                    <div class="hpc-register-field">
+
+                        <label for="last_name_id">
+                            {{ form.last_name.label }}
+                        </label>
+
+                        {{ form.last_name }}
+
+                    </div>
+
+
+                    <!-- Gender -->
+
+                    <div class="hpc-register-field">
+
+                        <label for="gender_id">
+                            {{ form.gender.label }}
+                        </label>
+
+                        {{ form.gender }}
+
+                    </div>
+
+
+                    <!-- Level -->
+
+                    <div class="hpc-register-field">
+
+                        <label for="level_id">
+                            {{ form.level.label }}
+                        </label>
+
+                        {{ form.level }}
+
+                    </div>
+
+
+                    <!-- Program -->
+
+                    <div class="hpc-register-field">
+
+                        <label for="program_id">
+                            {{ form.program.label }}
+                        </label>
+
+                        {{ form.program }}
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 FORM ERRORS
+                 ============================================= -->
+
+            {% if form.errors %}
+
+                <div class="hpc-register-error">
+
+                    <i class="fas fa-exclamation-circle"></i>
+
+                    <span>
+                        {% trans 'Please review the highlighted fields and try again.' %}
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- =============================================
+                 SUBMIT
+                 ============================================= -->
+
+            <button
+                type="submit"
+                class="hpc-register-submit"
+                id="login-btn"
+            >
+
+                <span class="hpc-register-submit-content">
+
+                    <i class="fas fa-user-plus"></i>
+
+                    <span>
+                        {% trans 'CREATE ACCOUNT' %}
+                    </span>
+
+                </span>
+
+
+                <span class="hpc-register-submit-arrow">
+                    →
+                </span>
+
+            </button>
+
+        </form>
+
+
+        <!-- =================================================
+             LOGIN LINK
+             ================================================= -->
+
+        <div class="hpc-register-login">
+
+            <span>
+                {% trans 'Already Registered?' %}
+            </span>
+
+            <a href="{% url 'login' %}">
+
+                {% trans 'Login' %}
+
+                <span>→</span>
+
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             SYSTEM INFORMATION
+             ================================================= -->
+
+        <div class="hpc-register-system">
+
+            <span>
+                ACCOUNT REGISTRATION
+            </span>
+
+            <i></i>
+
+            <span>
+                SECURE CONNECTION
+            </span>
+
+            <i></i>
+
+            <span>
+                C-DAC BANGALORE
+            </span>
+
+        </div>
+
+    </div>
+
 </div>
+
 {% endblock content %}
 
 {% block js %}

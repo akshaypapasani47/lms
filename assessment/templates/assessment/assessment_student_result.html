@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+<!-- HEADER -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="mb-1">
+            Assessment Result
+        </h2>
+
+        <p class="text-muted mb-0">
+            {{ assessment.title }}
+        </p>
+
+    </div>
+
+
+    <a
+        href="{% url 'assessment_student_attempts' submission.pk %}"
+        class="btn btn-outline-secondary"
+    >
+        ← Back to Attempts
+    </a>
+
+</div>
+
+
+<!-- RESULT SUMMARY -->
+
+<div class="card shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <div class="row text-center">
+
+            <div class="col-md-3 mb-3 mb-md-0">
+
+                <div class="text-muted small">
+                    STUDENT
+                </div>
+
+                <div class="fw-semibold mt-1">
+                    {{ student.get_full_name|default:student.username }}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-2 mb-3 mb-md-0">
+
+                <div class="text-muted small">
+                    ATTEMPT
+                </div>
+
+                <div class="fs-5 fw-semibold mt-1">
+                    {{ submission.attempt_number }}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-2 mb-3 mb-md-0">
+
+                <div class="text-muted small">
+                    SCORE
+                </div>
+
+                <div class="fs-5 fw-semibold mt-1">
+                    {{ submission.total_marks }}
+                    <span class="text-muted">
+                        / {{ assessment.total_marks }}
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="col-md-2 mb-3 mb-md-0">
+
+                <div class="text-muted small">
+                    PERCENTAGE
+                </div>
+
+                <div class="fs-5 fw-semibold mt-1">
+                    {{ percentage }}%
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="text-muted small">
+                    SUBMITTED ON
+                </div>
+
+                <div class="fw-semibold mt-1">
+
+                    {% if submission.submitted_at %}
+
+                        {{ submission.submitted_at|date:"d M Y, h:i A" }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- QUESTION RESULTS -->
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-white py-3">
+
+        <strong>
+            Question-wise Result
+        </strong>
+
+        <div class="text-muted small mt-1">
+            Detailed evaluation of each question.
+        </div>
+
+    </div>
+
+
+    <div class="card-body">
+
+        {% for item in question_submissions %}
+
+            <!-- QUESTION CARD -->
+
+            <div class="border rounded p-4 mb-4">
+
+                <!-- QUESTION HEADER -->
+
+                <div class="d-flex justify-content-between align-items-start gap-3">
+
+                    <div>
+
+                        <h5 class="mb-2">
+
+                            Q{{ item.question.order }}.
+
+                            {{ item.question.question_text }}
+
+                        </h5>
+
+
+                        <div class="text-muted small">
+
+                            {{ item.question.get_question_type_display }}
+
+                            {% if item.question.language %}
+
+                                • {{ item.question.get_language_display }}
+
+                            {% endif %}
+
+                            • {{ item.question.marks }} marks
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MARKS -->
+
+                    <div class="text-end">
+
+                        <div class="text-muted small">
+                            MARKS
+                        </div>
+
+                        <div class="fw-semibold">
+
+                            {{ item.marks_awarded }}
+                            / {{ item.question.marks }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+                <!-- STATUS -->
+
+                <div class="mb-3">
+
+                    <strong>
+                        Status:
+                    </strong>
+
+                    {% if item.is_correct == True %}
+
+                        Correct
+
+                    {% elif item.is_correct == False %}
+
+                        Incorrect
+
+                    {% else %}
+
+                        Pending / Evaluated by AI
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- PROGRAMMING QUESTION -->
+
+                {% if item.question.question_type == "PROGRAMMING" %}
+
+                    <h6 class="mt-4 mb-2">
+                        Submitted Code
+                    </h6>
+
+
+                    {% if item.submitted_code %}
+
+                        <pre class="border rounded p-3 mb-0"><code>{{ item.submitted_code }}</code></pre>
+
+                    {% else %}
+
+                        <div class="text-muted">
+                            No code submitted.
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if item.feedback %}
+
+                        <h6 class="mt-4 mb-2">
+                            Evaluation
+                        </h6>
+
+                        <div class="border rounded p-3">
+
+                            {{ item.feedback|linebreaks }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                {% else %}
+
+                    <!-- NON-PROGRAMMING ANSWER -->
+
+                    <h6 class="mt-4 mb-2">
+                        Student Answer
+                    </h6>
+
+
+                    {% if item.answer_text %}
+
+                        <div class="border rounded p-3">
+
+                            {{ item.answer_text|linebreaks }}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="text-muted">
+                            No answer submitted.
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- FEEDBACK -->
+
+                    {% if item.feedback %}
+
+                        <h6 class="mt-4 mb-2">
+                            Feedback
+                        </h6>
+
+                        <div class="border rounded p-3">
+
+                            {{ item.feedback|linebreaks }}
+
+                        </div>
+
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+        {% empty %}
+
+            <div class="text-center py-5">
+
+                <h5 class="mb-2">
+                    No question results found.
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Question-wise evaluation details are not available for this attempt.
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

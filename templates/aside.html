@@ -1,214 +1,653 @@
 {% load static %}
 {% load i18n %}
 
-<style>
-	.top-side {
-		background-size: cover;
-		background-position: top center;
-	}
-</style>
+<div id="side-nav" class="hpc-sidebar">
 
-<div id="side-nav">
-	<div class="main-menu">
-        <div class="top-side text-center py-4"></div>
-			<div class="desktop-hide">
-				<div class="toggle-btn" onclick="toggleSidebar()">
-					<i class="fas fa-times"></i>
-				</div>
-			</div>
-			
-			<!-- <p class="text-orange">
-				<mark>
-					<i class="far fa-hand-point-right"></i>
-					{{ request.user.get_user_role }}
-				</mark>
-			</p> -->
+    <!-- Sidebar Header -->
+    <div class="hpc-sidebar-header">
+
+        <div class="hpc-sidebar-brand">
+            <div class="hpc-sidebar-brand-icon">
+                <i class="fas fa-microchip"></i>
+            </div>
+
+            <div class="hpc-sidebar-brand-text">
+                <span>HPC SYSTEM</span>
+                <small>LEARNING NODE</small>
+            </div>
+        </div>
+
+        <button
+			type="button"
+			class="hpc-sidebar-close"
+			aria-label="Close navigation">
+			<i class="fas fa-times"></i>
+		</button>
+
+    </div>
+
+
+    <!-- System Status -->
+    <!-- <div class="hpc-sidebar-status">
+
+        <span class="hpc-status-dot"></span>
+
+        <div>
+            <span class="hpc-status-title">SYSTEM ONLINE</span>
+            <span class="hpc-status-subtitle">C-DAC HPC NODE</span>
+        </div>
+
+    </div> -->
+
+
+	<div class="hpc-sidebar-status">
+
+		<div class="hpc-user-avatar">
+			<i class="fas fa-user"></i>
 		</div>
-		{% url 'home' as hom %} {% url 'dashboard' as dash %} {% url 'profile' as prof %}
-		{% url 'lecturer_list' as lec %}
-		{% url 'student_list' as stu %} {% url 'course_allocation_view' as cav %}
-		{% url 'programs' as pro %} {% url 'session_list' as sess %} {% url 'semester_list' as sem %}
-		{% url 'add_score' as ascore %} {% url 'grade_results' as vr %}{% url 'ass_results' as ar %}
-		{% url 'course_registration' as cr %} {% url 'edit_profile' as ep %} {% url 'change_password' as cp %}
-		{% url 'quiz_progress' as qpr %} {% url 'quiz_marking' as qce %} {% url 'user_course_list' as ucl %}
-		{% url 'admin_panel' as admin_p %}
 
-		<ul>
-			{% if request.user.is_superuser %}
-			<li class="{% if request.path == dash %}active{% endif %}">
-				<a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt"></i>{% trans 'Dashboard' %}</a>
-			</li>
-			{% endif %}
-			<li class="{% if request.path == hom %}active{% endif %}">
-				<a href="{% url 'home' %}"><i class="fas fa-home"></i>{% trans 'Home' %}</a>
-			</li>
-			<!-- <li class="{% if request.path == prof %}active{% endif %}">
-				<a href="{% url 'profile' %}"><i class="fas fa-user"></i>{% trans 'Profile' %}</a>
-			</li> -->
-			{% if request.user.is_superuser %}
-			<li class="{% if request.path == admin_p %}active{% endif %}">
-				<a href="{% url 'admin_panel' %}"><i class="fas fa-user-tie"></i>{% trans 'Admin Panel' %}</a>
-			</li>
-			<li class="{% if request.path == lec %}active{% endif %}">
-				<a href="{% url 'lecturer_list' %}"><i class="fas fa-chalkboard-teacher"></i>{% trans 'Lecturers' %}</a>
-			</li>
-			<li class="{% if request.path == stu %}active{% endif %}">
-				<a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i>{% trans 'Students' %}</a>
-			</li>
-			{% endif %}
+		<div class="hpc-user-info">
 
-			{% if request.user.is_lecturer or request.user.is_student %}
-			<li class="{% if request.path == ucl %}active{% endif %}">
-				<a href="{% url 'user_course_list' %}"><i class="fas fa-book"></i>{% trans 'My Courses' %}</a>
-			</li>
-			{% endif %}
-			<!-- <li>
-				<a href="{% url 'virtual_lab_list' %}">
-					<i class="fas fa-laptop-code"></i>
-					{% trans 'Virtual Lab' %}
-				</a>
-			</li>
-			<li>
-				<a href="/terminal/">
-					<i class="fas fa-terminal"></i>
-					{% trans 'Interactive Terminal' %}
-				</a>
-			</li> -->
-			<li>
-				<a href="/programming-lab/">
-					<i class="fas fa-flask"></i>
-					Programming Lab
-				</a>
-			</li>
-			<li>
-				<a href="/virtual-lab2/">
-					<i class="fas fa-flask"></i>
-					Virtual Lab
-				</a>
-			</li>
+			<span class="hpc-user-role">
 
-			{% if request.user.is_student %}
+				{% if request.user.is_superuser %}
+					ADMINISTRATOR
+				{% elif request.user.is_lecturer %}
+					LECTURER
+				{% elif request.user.is_student %}
+					STUDENT
+				{% else %}
+					USER
+				{% endif %}
 
-				<li>
-					<a href="{% url 'student_assessment_list' %}">
-						<i class="fas fa-clipboard-list"></i>
-						Assessments
-					</a>
-				</li>
-			{% endif %}
+			</span>
 
-			<li class="nav-item">
-				<a class="nav-link" href="{% url 'assignment_list' %}">
-					<i class="fas fa-tasks"></i> Assignments
-				</a>
-			</li>
-			{% if request.user.is_lecturer or request.user.is_superuser %}
-			<li>
-				<a href="{% url 'faculty_dashboard' %}">
-					<i class="fas fa-desktop"></i>
-					Virtual Lab Monitor
-				</a>
-			</li>
+			<span class="hpc-user-name">
+				{{ request.user.get_full_name|default:request.user.username }}
+			</span>
 
-			<li>
-				<a href="{% url 'assessment_list' %}">
-					<i class="fas fa-laptop-code"></i>
-					Assessment
-				</a>
-			</li>
-			{% endif %}
+		</div>
 
-
-
-			{% if request.user.is_superuser or request.user.is_lecturer %}
-			<li class="{% if request.path == pro %}active{% endif %}">
-				<a href="{% url 'programs' %}"><i class="fas fa-book-open"></i>{% trans 'Programs & Courses' %}</a>
-			</li>
-			{% endif %}
-			{% if request.user.is_superuser or request.user.is_lecturer %}
-			<li class="{% if request.path == qce %}active{% endif %}">
-				<a href="{% url 'quiz_marking' %}"><i class="fas fa-check-double"></i>{% trans 'Complete Exams' %}</a>
-			</li>
-			{% endif %}
-			{% if request.user.is_superuser %}
-			<li class="{% if request.path == qpr %}active{% endif %}">
-				<a href="{% url 'quiz_progress' %}"><i class="fas fa-record-vinyl"></i>{% trans 'Quiz Progress Rec' %}</a>
-			</li>
-			<li class="{% if request.path == cav %}active{% endif %}">
-				<a href="{% url 'course_allocation_view' %}"><i class="fas fa-tasks"></i>{% trans 'Course Allocation' %}</a>
-			</li>
-			<li class="{% if request.path == sess %}active{% endif %}">
-				<a href="{% url 'session_list' %}"><i class="fas fa-calendar-week"></i>{% trans 'Manage Session' %}</a>
-			</li>
-			<li class="{% if request.path == sem %}active{% endif %}">
-				<a href="{% url 'semester_list' %}"><i class="fas fa-calendar-alt"></i>{% trans 'Manage Semester' %}</a>
-			</li>
-			{% endif %}
-			{% if request.user.is_lecturer %}
-			<li class="{% if request.path == ascore %}active{% endif %}">
-				<a href="{% url 'add_score' %}"><i class="fas fa-table"></i>{% trans 'Manage Score' %}</a>
-			</li>
-			{% endif %}
-			{% if request.user.is_student %}
-			<li class="{% if request.path == qpr %}active{% endif %}">
-				<a href="{% url 'quiz_progress' %}"><i class="fas fa-record-vinyl"></i>{% trans 'Quiz Progress Rec' %}</a>
-			</li>
-			<li class="{% if request.path == vr %}active{% endif %}">
-				<a href="{% url 'grade_results' %}"><i class="fa fa-spell-check"></i>{% trans 'Grade Results' %}</a>
-			</li>
-			<li class="{% if request.path == ar %}active{% endif %}">
-				<a href="{% url 'ass_results' %}"><i class="fa fa-list-ol"></i> {% trans 'Assesment Results' %}</a>
-			</li>
-			<li class="{% if request.path == cr %}active{% endif %}">
-				<a href="{% url 'course_registration' %}"><i class="fas fa-plus"></i>{% trans 'Add' %} &amp;{% trans 'Drop Course' %}</a>
-			</li>
-			{% endif %}
-			<br />
-			<p class="ml-3">&RightArrow; Others</p>
-			<li class="{% if request.path == ep %}active{% endif %}">
-				<a href="{% url 'edit_profile' %}"><i class="fas fa-cogs"></i>{% trans 'Account Setting' %}</a>
-			</li>
-			<li class="{% if request.path == cp %}active{% endif %}">
-				<a href="{% url 'change_password' %}"><i class="fas fa-key"></i>{% trans 'Change Password' %}</a>
-			</li>
-		</ul>
 	</div>
 
-	<!-- <footer class="card-footer mt-5 pt-3 pb-5 px-2">
-		<div class="col-12">
 
-			<form action="{% url 'set_language' %}" method="post" id="lang-form">{% csrf_token %}
-				<input name="next" type="hidden" value="{{ redirect_to }}">
-				<select class="small" name="language" id="lang-select">
-					{% get_current_language as LANGUAGE_CODE %}
-					{% get_available_languages as LANGUAGES %}
-					{% get_language_info_list for LANGUAGES as languages %}
-					{% for language in languages %}
-						<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
-							{{ language.name_local }} ({{ language.code }})
-						</option>
-					{% endfor %}
-				</select>
-			</form>
+    {% url 'home' as hom %}
+    {% url 'dashboard' as dash %}
+    {% url 'profile' as prof %}
+    {% url 'lecturer_list' as lec %}
+    {% url 'student_list' as stu %}
+    {% url 'course_allocation_view' as cav %}
+    {% url 'programs' as pro %}
+    {% url 'session_list' as sess %}
+    {% url 'semester_list' as sem %}
+    {% url 'add_score' as ascore %}
+    {% url 'grade_results' as vr %}
+    {% url 'ass_results' as ar %}
+    {% url 'course_registration' as cr %}
+    {% url 'edit_profile' as ep %}
+    {% url 'change_password' as cp %}
+    {% url 'quiz_progress' as qpr %}
+    {% url 'quiz_marking' as qce %}
+    {% url 'user_course_list' as ucl %}
+    {% url 'admin_panel' as admin_p %}
 
-			<p class="small m-0">
-				{% trans 'Read our' %} <a href="#"> {% trans 'Privacy' %} </a> {% trans 'and' %} <a href="#"> {% trans 'Terms of use.' %}' </a>
-				<br />Django LMS &copy; <script>document.write(new Date().getFullYear());</script>
-				<br />
-			</p>
-			<a href="https://github.com/adilmohak/django-lms" class="btn btn-sm btn-dark mx-auto" target="_blank">
-				{% trans '⭐️ Star This Project' %}
-			</a>
-		</div>
-	</footer> -->
+
+    <!-- Navigation -->
+    <div class="hpc-sidebar-nav">
+
+        <!-- CORE -->
+        <div class="hpc-nav-section">
+
+            <div class="hpc-nav-label">
+                <span>CORE</span>
+                <i class="fas fa-circle"></i>
+            </div>
+
+
+            {% if request.user.is_superuser %}
+
+            <li class="hpc-nav-item {% if request.path == dash %}active{% endif %}">
+                <a href="{% url 'dashboard' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Dashboard' %}</span>
+                </a>
+            </li>
+
+            {% endif %}
+
+
+            <li class="hpc-nav-item {% if request.path == hom %}active{% endif %}">
+                <a href="{% url 'home' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-home"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Home' %}</span>
+                </a>
+            </li>
+
+
+            {% if request.user.is_superuser %}
+
+            <li class="hpc-nav-item {% if request.path == admin_p %}active{% endif %}">
+                <a href="{% url 'admin_panel' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Admin Panel' %}</span>
+                </a>
+            </li>
+
+            <li class="hpc-nav-item {% if request.path == lec %}active{% endif %}">
+                <a href="{% url 'lecturer_list' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Lecturers' %}</span>
+                </a>
+            </li>
+
+            <li class="hpc-nav-item {% if request.path == stu %}active{% endif %}">
+                <a href="{% url 'student_list' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Students' %}</span>
+                </a>
+            </li>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- LEARNING -->
+        <div class="hpc-nav-section">
+
+            <div class="hpc-nav-label">
+                <span>LEARNING</span>
+                <i class="fas fa-circle"></i>
+            </div>
+
+
+            {% if request.user.is_lecturer or request.user.is_student %}
+
+            <li class="hpc-nav-item {% if request.path == ucl %}active{% endif %}">
+                <a href="{% url 'user_course_list' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-book"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'My Courses' %}</span>
+                </a>
+            </li>
+
+            {% endif %}
+
+
+            <li class="hpc-nav-item">
+                <a href="/programming-lab/">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-flask"></i>
+                    </span>
+                    <span class="hpc-nav-text">Programming Lab</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item">
+                <a href="/virtual-lab2/">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-microscope"></i>
+                    </span>
+                    <span class="hpc-nav-text">Virtual Lab</span>
+                </a>
+            </li>
+
+			<li class="hpc-nav-item {% if request.path == '/virtual-lab/' %}active{% endif %}">
+				<a href="{% url 'virtuallab:lab_catalog' %}">
+					<span class="hpc-nav-icon">
+						<i class="fas fa-server"></i>
+					</span>
+					<span class="hpc-nav-text">HPC Virtual Labs</span>
+				</a>
+			</li>
+
+			<li class="hpc-nav-item">
+				<a href="http://localhost:5174/" target="_blank">
+					<span class="hpc-nav-icon">
+						<i class="fas fa-video"></i>
+					</span>
+					<span class="hpc-nav-text">Live Classroom</span>
+				</a>
+			</li>
+
+
+            {% if request.user.is_student %}
+
+            <li class="hpc-nav-item">
+                <a href="{% url 'student_assessment_list' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </span>
+                    <span class="hpc-nav-text">Assessments</span>
+                </a>
+            </li>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- FACULTY -->
+        {% if request.user.is_lecturer or request.user.is_superuser %}
+
+        <div class="hpc-nav-section">
+
+            <div class="hpc-nav-label">
+                <span>FACULTY OPERATIONS</span>
+                <i class="fas fa-circle"></i>
+            </div>
+
+
+            <li class="hpc-nav-item">
+                <a href="{% url 'faculty_dashboard' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-desktop"></i>
+                    </span>
+                    <span class="hpc-nav-text">Virtual Lab Monitor</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item">
+                <a href="{% url 'assessment_list' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </span>
+                    <span class="hpc-nav-text">Assessment</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item {% if request.path == pro %}active{% endif %}">
+                <a href="{% url 'programs' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-book-open"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Programs & Courses' %}</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item {% if request.path == qce %}active{% endif %}">
+                <a href="{% url 'quiz_marking' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-check-double"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Complete Exams' %}</span>
+                </a>
+            </li>
+
+
+            {% if request.user.is_lecturer %}
+
+            <li class="hpc-nav-item {% if request.path == ascore %}active{% endif %}">
+                <a href="{% url 'add_score' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-table"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Manage Score' %}</span>
+                </a>
+            </li>
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ADMINISTRATION -->
+        {% if request.user.is_superuser %}
+
+        <div class="hpc-nav-section">
+
+            <div class="hpc-nav-label">
+                <span>ADMINISTRATION</span>
+                <i class="fas fa-circle"></i>
+            </div>
+
+
+            <li class="hpc-nav-item {% if request.path == qpr %}active{% endif %}">
+                <a href="{% url 'quiz_progress' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-record-vinyl"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Quiz Progress Rec' %}</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item {% if request.path == cav %}active{% endif %}">
+                <a href="{% url 'course_allocation_view' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-tasks"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Course Allocation' %}</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item {% if request.path == sess %}active{% endif %}">
+                <a href="{% url 'session_list' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Manage Session' %}</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item {% if request.path == sem %}active{% endif %}">
+                <a href="{% url 'semester_list' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Manage Semester' %}</span>
+                </a>
+            </li>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- STUDENT RESULTS -->
+        {% if request.user.is_student %}
+
+        <div class="hpc-nav-section">
+
+            <div class="hpc-nav-label">
+                <span>RESULTS</span>
+                <i class="fas fa-circle"></i>
+            </div>
+
+
+            <li class="hpc-nav-item {% if request.path == qpr %}active{% endif %}">
+                <a href="{% url 'quiz_progress' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-record-vinyl"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Quiz Progress Rec' %}</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item {% if request.path == vr %}active{% endif %}">
+                <a href="{% url 'grade_results' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fa fa-spell-check"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Grade Results' %}</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item {% if request.path == ar %}active{% endif %}">
+                <a href="{% url 'ass_results' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fa fa-list-ol"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Assessment Results' %}</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item {% if request.path == cr %}active{% endif %}">
+                <a href="{% url 'course_registration' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span class="hpc-nav-text">
+                        {% trans 'Add' %} &amp; {% trans 'Drop Course' %}
+                    </span>
+                </a>
+            </li>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- SYSTEM -->
+        <div class="hpc-nav-section">
+
+            <div class="hpc-nav-label">
+                <span>SYSTEM</span>
+                <i class="fas fa-circle"></i>
+            </div>
+
+
+            <li class="hpc-nav-item {% if request.path == ep %}active{% endif %}">
+                <a href="{% url 'edit_profile' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-cogs"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Account Setting' %}</span>
+                </a>
+            </li>
+
+
+            <li class="hpc-nav-item {% if request.path == cp %}active{% endif %}">
+                <a href="{% url 'change_password' %}">
+                    <span class="hpc-nav-icon">
+                        <i class="fas fa-key"></i>
+                    </span>
+                    <span class="hpc-nav-text">{% trans 'Change Password' %}</span>
+                </a>
+            </li>
+
+        </div>
+
+    </div>
+
 </div>
-
-{% block js %}
 <script>
-	document.getElementById("lang-select").addEventListener("change", function() {
-		console.log("Changed!")
-    	document.getElementById("lang-form").submit();  // Submit the form programmatically
-	});
-</script>
+(function () {
 
-{% endblock js %}
+    "use strict";
+
+    const sidebar = document.getElementById("side-nav");
+
+    if (!sidebar) {
+        return;
+    }
+
+
+    /* =====================================================
+       SETTINGS
+       ===================================================== */
+
+    const INACTIVITY_TIME = 7000; // 7 seconds
+
+    let inactivityTimer = null;
+
+
+    /* =====================================================
+       CLOSE SIDEBAR
+       ===================================================== */
+
+    function closeSidebar() {
+
+        sidebar.classList.remove("active");
+
+        clearTimeout(inactivityTimer);
+
+    }
+
+
+    /* =====================================================
+       OPEN SIDEBAR
+       ===================================================== */
+
+    function openSidebar() {
+
+        sidebar.classList.add("active");
+
+        resetInactivityTimer();
+
+    }
+
+
+    /* =====================================================
+       TOGGLE SIDEBAR
+       ===================================================== */
+
+    window.hpcToggleSidebar = function () {
+
+        if (sidebar.classList.contains("active")) {
+
+            closeSidebar();
+
+        } else {
+
+            openSidebar();
+
+        }
+
+    };
+
+
+    /* =====================================================
+       CLOSE BUTTON
+       ===================================================== */
+
+    const closeButton =
+        sidebar.querySelector(".hpc-sidebar-close");
+
+
+    if (closeButton) {
+
+        closeButton.addEventListener("click", function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            closeSidebar();
+
+        });
+
+    }
+
+
+    /* =====================================================
+       INACTIVITY TIMER
+       ===================================================== */
+
+    function resetInactivityTimer() {
+
+        clearTimeout(inactivityTimer);
+
+        if (!sidebar.classList.contains("active")) {
+            return;
+        }
+
+
+        inactivityTimer = setTimeout(function () {
+
+            closeSidebar();
+
+        }, INACTIVITY_TIME);
+
+    }
+
+
+    /* =====================================================
+       SIDEBAR ACTIVITY
+       ===================================================== */
+
+    const sidebarActivityEvents = [
+
+        "mousemove",
+        "mousedown",
+        "mouseenter",
+        "keydown",
+        "scroll",
+        "touchstart",
+        "touchmove"
+
+    ];
+
+
+    sidebarActivityEvents.forEach(function (eventName) {
+
+        sidebar.addEventListener(
+            eventName,
+            resetInactivityTimer,
+            {
+                passive: true
+            }
+        );
+
+    });
+
+
+    /* =====================================================
+       DESKTOP:
+       CLOSE WHEN CURSOR MOVES OUTSIDE SIDEBAR
+       ===================================================== */
+
+    document.addEventListener("mousemove", function (event) {
+
+        if (!sidebar.classList.contains("active")) {
+            return;
+        }
+
+
+        if (window.innerWidth < 992) {
+            return;
+        }
+
+
+        const sidebarWidth =
+            sidebar.getBoundingClientRect().width;
+
+
+        /*
+         * Cursor is inside sidebar
+         */
+
+        if (event.clientX <= sidebarWidth) {
+
+            resetInactivityTimer();
+
+            return;
+
+        }
+
+
+        /*
+         * Cursor has moved into main content
+         */
+
+        closeSidebar();
+
+    });
+
+
+    /* =====================================================
+       INITIAL STATE
+       ===================================================== */
+
+    if (window.innerWidth >= 992) {
+
+        sidebar.classList.add("active");
+
+        resetInactivityTimer();
+
+    }
+
+
+})();
+</script>

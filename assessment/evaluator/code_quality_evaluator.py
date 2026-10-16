@@ -109,6 +109,7 @@ Rules:
                 "model": OLLAMA_MODEL,
                 "prompt": prompt,
                 "stream": False,
+                "think": False,
                 "format": "json",
             },
             timeout=180,
@@ -125,12 +126,6 @@ Rules:
 
         # Some Qwen responses may place the
         # generated JSON in "thinking".
-        if not result_text:
-
-            result_text = data.get(
-                "thinking",
-                ""
-            )
 
         if not result_text:
 

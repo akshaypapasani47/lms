@@ -105,10 +105,22 @@
 
                             <a
                                 href="{% url 'student_assessment_start' assessment.pk %}"
-                                class="btn btn-primary w-100"
+                                class="btn btn-primary w-100 mb-2"
                             >
                                 View Assessment
                             </a>
+
+
+                            {% if assessment.has_previous_attempts %}
+
+                                <a
+                                    href="{% url 'student_assessment_attempts' assessment.previous_submission.pk %}"
+                                    class="btn btn-outline-secondary w-100"
+                                >
+                                    View Previous Results
+                                </a>
+
+                            {% endif %}
 
                         </div>
 

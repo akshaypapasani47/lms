@@ -1,0 +1,1089 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Docker Environments
+{% endblock title %}
+
+{% block maincontent %}
+
+<div class="vl-docker-page">
+
+    <div class="vl-admin-page-navigation">
+
+        <a
+            href="{% url 'virtuallab:lab_management' %}"
+            class="vl-admin-back-btn"
+        >
+            <i class="fas fa-arrow-left"></i>
+            LAB MANAGEMENT
+        </a>
+
+        <a
+            href="{% url 'virtuallab:access_requests' %}"
+            class="vl-admin-nav-secondary"
+        >
+            <i class="fas fa-user-shield"></i>
+            ACCESS CONTROL
+        </a>
+
+    </div>
+
+    <!-- HEADER -->
+    <div class="vl-docker-header">
+
+        <div class="vl-docker-eyebrow">
+            <span></span>
+            HPC / VIRTUAL LAB / DOCKER
+        </div>
+
+        <h1 class="vl-docker-title">
+            <i class="fas fa-cubes"></i>
+            Docker Environment Management
+        </h1>
+
+        <div class="vl-docker-subtitle">
+            Discover Docker images available on this machine and configure
+            reusable environments for Virtual Labs.
+        </div>
+
+    </div>
+
+
+    <!-- DOCKER STATUS -->
+    <div class="vl-docker-status">
+
+        <div class="vl-docker-status-item">
+
+            <div class="vl-status-icon">
+                <i class="fab fa-docker"></i>
+            </div>
+
+            <div>
+                <span>DOCKER ENGINE</span>
+
+                {% if docker_error %}
+                    <strong class="vl-status-error">
+                        DISCONNECTED
+                    </strong>
+                {% else %}
+                    <strong class="vl-status-ready">
+                        CONNECTED
+                    </strong>
+                {% endif %}
+            </div>
+
+        </div>
+
+
+        <div class="vl-docker-status-divider"></div>
+
+
+        <div class="vl-docker-status-item">
+
+            <div class="vl-status-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+
+            <div>
+                <span>IMAGES DETECTED</span>
+                <strong>
+                    {{ docker_images|length }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="vl-docker-status-divider"></div>
+
+
+        <div class="vl-docker-status-item">
+
+            <div class="vl-status-icon">
+                <i class="fas fa-server"></i>
+            </div>
+
+            <div>
+                <span>REGISTERED ENVIRONMENTS</span>
+                <strong>
+                    {{ environments|length }}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% if docker_error %}
+
+        <div class="vl-docker-alert">
+            <i class="fas fa-exclamation-triangle"></i>
+
+            <div>
+                <strong>Docker connection error</strong>
+                <p>{{ docker_error }}</p>
+            </div>
+        </div>
+
+    {% endif %}
+
+
+    <!-- REGISTERED ENVIRONMENTS -->
+    <section class="vl-docker-section">
+
+        <div class="vl-docker-section-header">
+
+            <div>
+                <div class="vl-docker-section-label">
+                    CONFIGURED ENVIRONMENTS
+                </div>
+
+                <h2>
+                    Registered Docker Environments
+                </h2>
+
+                <p>
+                    Reusable Docker environments configured for Virtual Labs.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'virtuallab:add_docker_environment' %}"
+                class="vl-docker-add-btn"
+            >
+                <i class="fas fa-plus"></i>
+                ADD ENVIRONMENT
+            </a>
+
+        </div>
+
+
+        {% if environments %}
+
+            <div class="vl-docker-environment-grid">
+
+                {% for environment in environments %}
+
+                    <div class="vl-docker-environment-card">
+
+                        <div class="vl-card-top">
+
+                            <div class="vl-card-icon">
+                                <i class="fab fa-docker"></i>
+                            </div>
+
+                            <span class="vl-environment-status">
+                                {{ environment.get_status_display|upper }}
+                            </span>
+
+                        </div>
+
+
+                        <h3>
+                            {{ environment.name }}
+                        </h3>
+
+
+                        <div class="vl-environment-type">
+                            {{ environment.get_environment_type_display }}
+                        </div>
+
+
+                        <div class="vl-image-name">
+                            <i class="fas fa-box"></i>
+                            {{ environment.docker_image }}
+                        </div>
+
+
+                        {% if environment.description %}
+
+                            <p class="vl-environment-description">
+                                {{ environment.description }}
+                            </p>
+
+                        {% endif %}
+
+
+                        <div class="vl-environment-meta">
+
+                            <div>
+                                <span>RAM</span>
+                                <strong>
+                                    {{ environment.default_ram }} MB
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>STORAGE</span>
+                                <strong>
+                                    {{ environment.default_storage }} MB
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>LABS</span>
+                                <strong>
+                                    {{ environment.labs.count }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="vl-docker-empty">
+
+                <div class="vl-empty-icon">
+                    <i class="fas fa-cubes"></i>
+                </div>
+
+                <h3>
+                    No Docker Environments Configured
+                </h3>
+
+                <p>
+                    Select one of the available Docker images below to
+                    create your first reusable Virtual Lab environment.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- AVAILABLE IMAGES -->
+    <section class="vl-docker-section">
+
+        <div class="vl-docker-section-header">
+
+            <div>
+                <div class="vl-docker-section-label">
+                    DOCKER ENGINE
+                </div>
+
+                <h2>
+                    Available Docker Images
+                </h2>
+
+                <p>
+                    Images currently available on the Docker host.
+                </p>
+            </div>
+
+        </div>
+
+
+        {% if docker_images %}
+
+            <div class="vl-docker-image-list">
+
+                {% for image in docker_images %}
+
+                    <div class="vl-docker-image-card">
+
+                        <div class="vl-image-main">
+
+                            <div class="vl-image-icon">
+                                <i class="fab fa-docker"></i>
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    {{ image.tag }}
+                                </h3>
+
+                                <div class="vl-image-id">
+                                    {{ image.short_id }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="vl-image-actions">
+
+                            {% if image.tag in registered_images %}
+
+                                <span class="vl-image-registered">
+                                    <i class="fas fa-check-circle"></i>
+                                    REGISTERED
+                                </span>
+
+                            {% else %}
+
+                                <span class="vl-image-available">
+                                    <span></span>
+                                    AVAILABLE
+                                </span>
+
+                            {% endif %}
+
+                            <a
+                                href="{% url 'virtuallab:add_docker_environment' %}?image={{ image.tag|urlencode }}"
+                                class="vl-use-image-btn"
+                            >
+                                USE IMAGE
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="vl-docker-empty">
+
+                <div class="vl-empty-icon">
+                    <i class="fab fa-docker"></i>
+                </div>
+
+                <h3>
+                    No Docker Images Found
+                </h3>
+
+                <p>
+                    No local Docker images are currently available.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+
+<style>
+
+.vl-docker-page {
+    width: auto;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 30px;
+    padding: 38px 42px 70px;
+    min-height: calc(100vh - 150px);
+    transition:
+        margin-left 0.3s ease,
+        width 0.3s ease;
+}
+
+
+body:has(#side-nav.active) .vl-docker-page {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+}
+
+
+/* HEADER */
+
+.vl-docker-header {
+    margin-bottom: 30px;
+}
+
+.vl-docker-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 12px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #00d9ff;
+}
+
+.vl-docker-eyebrow span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #00d9ff;
+    box-shadow: 0 0 12px rgba(0,217,255,.8);
+}
+
+.vl-docker-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -.8px;
+    color: var(--text-primary, #f4f7fb);
+}
+
+.vl-docker-title i {
+    color: #00d9ff;
+}
+
+.vl-docker-subtitle {
+    margin-top: 10px;
+    max-width: 850px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary, #9aa7b5);
+}
+
+
+/* STATUS */
+
+.vl-docker-status {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 35px;
+    padding: 20px 24px;
+    border: 1px solid rgba(0,217,255,.14);
+    border-radius: 14px;
+    background: rgba(0,217,255,.025);
+}
+
+.vl-docker-status-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.vl-status-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: #00d9ff;
+    background: rgba(0,217,255,.08);
+}
+
+.vl-docker-status-item span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: #758392;
+}
+
+.vl-docker-status-item strong {
+    font-size: 14px;
+    color: #eaf5f9;
+}
+
+.vl-status-ready {
+    color: #48e0a4 !important;
+}
+
+.vl-status-error {
+    color: #ff6978 !important;
+}
+
+.vl-docker-status-divider {
+    width: 1px;
+    height: 35px;
+    background: rgba(140,160,180,.12);
+}
+
+
+/* ALERT */
+
+.vl-docker-alert {
+    display: flex;
+    gap: 15px;
+    padding: 18px 20px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255,90,110,.25);
+    border-radius: 12px;
+    background: rgba(255,70,90,.05);
+    color: #ff6978;
+}
+
+
+/* SECTION */
+
+.vl-docker-section {
+    margin-bottom: 42px;
+}
+
+.vl-docker-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 18px;
+}
+
+.vl-docker-section-label {
+    margin-bottom: 6px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #00d9ff;
+}
+
+.vl-docker-section-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: var(--text-primary, #f4f7fb);
+}
+
+.vl-docker-section-header p {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: var(--text-secondary, #8f9daa);
+}
+
+.vl-docker-add-btn,
+.vl-use-image-btn {
+    border: 1px solid rgba(0,217,255,.35);
+    border-radius: 8px;
+    padding: 10px 15px;
+    background: rgba(0,217,255,.06);
+    color: #00d9ff;
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+.vl-docker-add-btn,
+.vl-use-image-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.vl-docker-add-btn:hover,
+.vl-use-image-btn:hover {
+    border-color: #00d9ff;
+    background: rgba(0,217,255,.12);
+}
+
+
+/* ENVIRONMENT CARDS */
+
+.vl-docker-environment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 18px;
+}
+
+.vl-docker-environment-card {
+    padding: 22px;
+    border: 1px solid rgba(0,217,255,.12);
+    border-radius: 14px;
+    background: rgba(12,18,27,.75);
+}
+
+.vl-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vl-card-icon,
+.vl-image-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    color: #00d9ff;
+    background: rgba(0,217,255,.08);
+}
+
+.vl-environment-status {
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #48e0a4;
+}
+
+.vl-docker-environment-card h3 {
+    margin: 18px 0 5px;
+    font-size: 17px;
+    color: #eef5f8;
+}
+
+.vl-environment-type {
+    font-size: 10px;
+    color: #00d9ff;
+}
+
+.vl-image-name {
+    margin-top: 16px;
+    padding: 10px;
+    border-radius: 7px;
+    background: rgba(0,0,0,.2);
+    font-family: monospace;
+    font-size: 11px;
+    color: #aebbc5;
+}
+
+.vl-image-name i {
+    margin-right: 7px;
+    color: #00d9ff;
+}
+
+.vl-environment-description {
+    margin-top: 13px;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #7f8d99;
+}
+
+.vl-environment-meta {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.vl-environment-meta div {
+    padding-top: 10px;
+    border-top: 1px solid rgba(140,160,180,.08);
+}
+
+.vl-environment-meta span {
+    display: block;
+    font-size: 7px;
+    letter-spacing: 1px;
+    color: #687686;
+}
+
+.vl-environment-meta strong {
+    font-size: 10px;
+    color: #cbd8df;
+}
+
+
+/* IMAGE LIST */
+
+.vl-docker-image-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.vl-docker-image-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 20px;
+    border: 1px solid rgba(140,160,180,.10);
+    border-radius: 11px;
+    background: rgba(12,18,27,.6);
+}
+
+.vl-image-main {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.vl-docker-image-card h3 {
+    margin: 0 0 5px;
+    font-family: monospace;
+    font-size: 13px;
+    color: #e6eef3;
+}
+
+.vl-image-id {
+    font-family: monospace;
+    font-size: 9px;
+    color: #657380;
+}
+
+.vl-image-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.vl-image-registered {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #48e0a4;
+}
+
+.vl-image-available {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #8796a3;
+}
+
+.vl-image-available span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #48e0a4;
+    box-shadow: 0 0 8px rgba(72,224,164,.7);
+}
+
+
+/* EMPTY */
+
+.vl-docker-empty {
+    padding: 55px 25px;
+    text-align: center;
+    border: 1px dashed rgba(140,160,180,.15);
+    border-radius: 14px;
+    background: rgba(12,18,27,.35);
+}
+
+.vl-empty-icon {
+    width: 55px;
+    height: 55px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    color: #00d9ff;
+    background: rgba(0,217,255,.07);
+    font-size: 20px;
+}
+
+.vl-docker-empty h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    color: #dce7ed;
+}
+
+.vl-docker-empty p {
+    max-width: 550px;
+    margin: auto;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #74818d;
+}
+
+
+/* LIGHT THEME */
+
+html[data-theme="light"] .vl-docker-title,
+html[data-theme="light"] .vl-docker-section-header h2 {
+    color: #182630;
+}
+
+html[data-theme="light"] .vl-docker-status,
+html[data-theme="light"] .vl-docker-environment-card,
+html[data-theme="light"] .vl-docker-image-card,
+html[data-theme="light"] .vl-docker-empty {
+    background: #ffffff;
+    border-color: rgba(40,70,90,.12);
+}
+
+html[data-theme="light"] .vl-docker-status-item strong,
+html[data-theme="light"] .vl-docker-environment-card h3,
+html[data-theme="light"] .vl-docker-image-card h3,
+html[data-theme="light"] .vl-docker-empty h3 {
+    color: #253642;
+}
+
+html[data-theme="light"] .vl-image-name {
+    background: #f4f7f9;
+}
+
+html[data-theme="light"] .vl-image-name,
+html[data-theme="light"] .vl-environment-description,
+html[data-theme="light"] .vl-docker-section-header p {
+    color: #71808c;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+
+    .vl-docker-page {
+        margin-top: 25px;
+        padding: 30px 28px 60px;
+    }
+
+    body:has(#side-nav.active) .vl-docker-page {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .vl-docker-environment-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+}
+
+@media (max-width: 750px) {
+
+    .vl-docker-page {
+        padding: 25px 18px 50px;
+    }
+
+    .vl-docker-title {
+        font-size: 28px;
+    }
+
+    .vl-docker-status {
+        flex-wrap: wrap;
+    }
+
+    .vl-docker-status-divider {
+        display: none;
+    }
+
+    .vl-docker-section-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .vl-docker-environment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .vl-docker-image-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .vl-image-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .vl-docker-page {
+        margin-top: 20px;
+        padding: 20px 12px 40px;
+    }
+
+    .vl-docker-title {
+        font-size: 24px;
+    }
+
+    .vl-docker-status {
+        padding: 16px;
+    }
+}
+
+
+
+/* =========================================================
+   VIRTUAL LAB ADMIN PAGE NAVIGATION
+   ========================================================= */
+
+.vl-admin-page-navigation {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+}
+
+.vl-admin-back-btn,
+.vl-admin-nav-secondary {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    min-height: 42px;
+    padding: 0 16px;
+
+    border-radius: 6px;
+
+    text-decoration: none;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        color 0.25s ease;
+}
+
+/* Back to Management */
+
+.vl-admin-back-btn {
+    color: #ffffff;
+
+    border: 1px solid rgba(0, 200, 255, 0.45);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 200, 255, 0.14),
+            rgba(0, 200, 255, 0.035)
+        );
+}
+
+.vl-admin-back-btn i {
+    color: #00c8ff;
+}
+
+.vl-admin-back-btn:hover {
+    color: #ffffff;
+
+    border-color: #00c8ff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 200, 255, 0.20),
+            rgba(0, 200, 255, 0.06)
+        );
+
+    transform: translateX(-2px);
+
+    box-shadow:
+        0 6px 20px rgba(0, 200, 255, 0.10);
+}
+
+/* Access Control */
+
+.vl-admin-nav-secondary {
+    color: var(--vl-text-secondary, #9aa9b8);
+
+    border: 1px solid rgba(120, 150, 180, 0.25);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.06),
+            rgba(255, 255, 255, 0.02)
+        );
+}
+
+.vl-admin-nav-secondary i {
+    color: #a78bfa;
+}
+
+.vl-admin-nav-secondary:hover {
+    color: #ffffff;
+
+    border-color: rgba(167, 139, 250, 0.55);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(167, 139, 250, 0.12),
+            rgba(167, 139, 250, 0.035)
+        );
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 20px rgba(167, 139, 250, 0.08);
+}
+
+@media (max-width: 600px) {
+
+    .vl-admin-page-navigation {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .vl-admin-back-btn,
+    .vl-admin-nav-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* =========================================================
+   LIGHT THEME - TEXT VISIBILITY / CONTRAST
+   ========================================================= */
+
+[data-theme="light"] .vl-docker-page {
+    color: #17212b;
+}
+
+/* Main headings */
+[data-theme="light"] .vl-docker-page h1,
+[data-theme="light"] .vl-docker-page h2,
+[data-theme="light"] .vl-docker-page h3,
+[data-theme="light"] .vl-docker-page h4 {
+    color: #17212b;
+}
+
+/* Normal descriptions */
+[data-theme="light"] .vl-docker-page p {
+    color: #465563;
+}
+
+/* Labels */
+[data-theme="light"] .vl-docker-page small {
+    color: #526170;
+}
+
+/* Technical / secondary information */
+[data-theme="light"] .vl-docker-page .vl-docker-image,
+[data-theme="light"] .vl-docker-page .vl-image-tag {
+    color: #394957;
+}
+
+/* Environment names */
+[data-theme="light"] .vl-docker-page .vl-environment-name {
+    color: #17212b;
+}
+
+/* General card text */
+[data-theme="light"] .vl-docker-page span,
+[data-theme="light"] .vl-docker-page label {
+    color: #465563;
+}
+
+/* Navigation buttons */
+[data-theme="light"] .vl-docker-page .vl-admin-nav-secondary {
+    color: #344454;
+    border-color: rgba(40, 60, 80, 0.22);
+    background: rgba(20, 40, 60, 0.035);
+}
+
+/* Back button */
+[data-theme="light"] .vl-docker-page .vl-admin-back-btn {
+    color: #123447;
+    border-color: rgba(0, 150, 200, 0.40);
+    background: rgba(0, 180, 220, 0.08);
+}
+
+/* Button hover */
+[data-theme="light"] .vl-docker-page .vl-admin-nav-secondary:hover {
+    color: #17212b;
+    background: rgba(167, 139, 250, 0.10);
+}
+
+[data-theme="light"] .vl-docker-page .vl-admin-back-btn:hover {
+    color: #0d2735;
+    background: rgba(0, 180, 220, 0.14);
+}
+</style>
+
+{% endblock maincontent %}

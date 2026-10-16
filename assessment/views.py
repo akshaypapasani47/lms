@@ -18,6 +18,7 @@ from .models import (
     AssessmentPlacement,
     AssessmentSubmission,
     QuestionSubmission,
+    AssessmentAccessRequest,
 )
 
 from .forms import (
@@ -30,6 +31,7 @@ from .forms import (
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from datetime import timedelta
 from .evaluator.programming_evaluator import (
     evaluate_programming_question,
 )
@@ -38,11 +40,13 @@ from .evaluator.theory_evaluator import evaluate_theory_answer
 from .evaluator.comparator import compare_output
 
 from django.http import JsonResponse
-
+from django.http import HttpResponseForbidden
 from .evaluator import get_runner
 from django.urls import reverse
 from django.db import models
 from .evaluator.code_quality_evaluator import evaluate_code_quality
+
+
 
 # ==========================================================
 # INTERACTIVE CODE SESSIONS
@@ -111,7 +115,6 @@ def stop_interactive_session(session_id):
 # ==========================================================
 # ASSESSMENT LIST
 # ==========================================================
-
 @login_required
 def assessment_list(request):
 
@@ -128,9 +131,35 @@ def assessment_list(request):
             "student_assessment_list"
         )
 
-    assessments = Assessment.objects.filter(
-        created_by=request.user
-    ).order_by("-created_at")
+    # ======================================================
+    # ADMIN
+    # ======================================================
+
+    if request.user.is_superuser:
+
+        assessments = Assessment.objects.all().order_by(
+            "-created_at"
+        )
+
+    # ======================================================
+    # LECTURER
+    # ======================================================
+
+    else:
+
+        own_assessments = Assessment.objects.filter(
+            created_by=request.user
+        )
+
+        approved_assessments = Assessment.objects.filter(
+            access_requests__requested_by=request.user,
+            access_requests__status="APPROVED"
+        )
+
+        assessments = (
+            own_assessments
+            | approved_assessments
+        ).distinct().order_by("-created_at")
 
     return render(
         request,
@@ -144,6 +173,9 @@ def assessment_list(request):
 # ==========================================================
 # CREATE ASSESSMENT
 # ==========================================================
+
+
+
 
 @login_required
 def assessment_create(request):
@@ -184,18 +216,51 @@ def assessment_create(request):
     )
 
 
+def has_assessment_modify_access(user, assessment):
+    """
+    Returns True if the user is allowed to modify the assessment.
+
+    Allowed:
+    - Admin
+    - Assessment owner
+    - Lecturer with approved access
+    """
+
+    if user.is_superuser:
+        return True
+
+    if assessment.created_by == user:
+        return True
+
+    if AssessmentAccessRequest.objects.filter(
+        assessment=assessment,
+        requested_by=user,
+        status="APPROVED"
+    ).exists():
+        return True
+
+    return False
+
+
+
 # ==========================================================
 # EDIT ASSESSMENT
 # ==========================================================
-
 @login_required
 def assessment_edit(request, pk):
 
     assessment = get_object_or_404(
         Assessment,
-        pk=pk,
-        created_by=request.user
+        pk=pk
     )
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if request.method == "POST":
 
@@ -208,7 +273,9 @@ def assessment_edit(request, pk):
 
             form.save()
 
-            update_assessment_total_marks(assessment)
+            update_assessment_total_marks(
+                assessment
+            )
 
             messages.success(
                 request,
@@ -279,12 +346,71 @@ def assessment_detail(request, pk):
 
     assessment = get_object_or_404(
         Assessment,
-        pk=pk,
-        created_by=request.user
+        pk=pk
     )
 
+    # ======================================================
+    # CHECK ACCESS
+    # ======================================================
+
+    is_admin = request.user.is_superuser
+
+    is_owner = assessment.created_by == request.user
+
+    has_approved_access = AssessmentAccessRequest.objects.filter(
+        assessment=assessment,
+        requested_by=request.user,
+        status="APPROVED"
+    ).exists()
+
+    # Admin, owner, or approved lecturer can access
+    can_access = (
+        is_admin
+        or is_owner
+        or has_approved_access
+    )
+
+    if not can_access:
+        return HttpResponseForbidden(
+            "You are not allowed to access this assessment."
+        )
+
+    # ======================================================
+    # MODIFY PERMISSION
+    # ======================================================
+
+    can_modify = (
+        is_admin
+        or is_owner
+        or has_approved_access
+    )
+
+    # ======================================================
+    # QUESTIONS
+    # ======================================================
+
     questions = assessment.questions.all()
+
     placements = assessment.placements.all()
+
+    # ======================================================
+    # STUDENT SUBMISSIONS
+    # ======================================================
+
+    submissions = (
+        AssessmentSubmission.objects
+        .filter(
+            assessment=assessment
+        )
+        .select_related("student")
+        .exclude(
+            status="IN_PROGRESS"
+        )
+        .order_by(
+            "student__username",
+            "-attempt_number"
+        )
+    )
 
     return render(
         request,
@@ -293,21 +419,177 @@ def assessment_detail(request, pk):
             "assessment": assessment,
             "questions": questions,
             "placements": placements,
+            "submissions": submissions,
+            "can_modify": can_modify,
+            "is_owner": is_owner,
+            "is_admin": is_admin,
+            "has_approved_access": has_approved_access,
         }
     )
 
 
+@login_required
+def assessment_results(request, pk):
+
+    if request.user.is_superuser:
+        assessment = get_object_or_404(
+            Assessment,
+            pk=pk
+        )
+    else:
+        assessment = get_object_or_404(
+            Assessment,
+            pk=pk,
+            created_by=request.user
+        )
+
+    submissions = (
+        AssessmentSubmission.objects
+        .filter(
+            assessment=assessment
+        )
+        .select_related("student")
+        .exclude(status="IN_PROGRESS")
+        .order_by(
+            "student__username",
+            "-attempt_number"
+        )
+    )
+
+    return render(
+        request,
+        "assessment/assessment_results.html",
+        {
+            "assessment": assessment,
+            "submissions": submissions,
+        }
+    )
+
+
+
+@login_required
+def assessment_student_attempts(request, pk):
+
+    submission = get_object_or_404(
+        AssessmentSubmission,
+        pk=pk
+    )
+
+    assessment = submission.assessment
+    student = submission.student
+
+    # Check that the logged-in user is allowed
+    # to view this assessment's results.
+    if not request.user.is_superuser:
+        if assessment.created_by != request.user:
+            return HttpResponseForbidden(
+                "You are not allowed to view these results."
+            )
+
+    submissions = (
+        AssessmentSubmission.objects
+        .filter(
+            assessment=assessment,
+            student=student
+        )
+        .exclude(
+            status="IN_PROGRESS"
+        )
+        .order_by(
+            "attempt_number"
+        )
+    )
+
+    attempts = []
+
+    for attempt in submissions:
+
+        percentage = 0
+
+        if assessment.total_marks > 0:
+            percentage = round(
+                (attempt.total_marks / assessment.total_marks) * 100,
+                2
+            )
+
+        attempts.append({
+            "submission": attempt,
+            "percentage": percentage,
+        })
+
+    return render(
+        request,
+        "assessment/assessment_student_attempts.html",
+        {
+            "assessment": assessment,
+            "student": student,
+            "attempts": attempts,
+        }
+    )
+
+@login_required
+def assessment_student_result(request, pk):
+
+    submission = get_object_or_404(
+        AssessmentSubmission,
+        pk=pk
+    )
+
+    assessment = submission.assessment
+    student = submission.student
+
+    # Only the assessment creator or admin can view the result.
+    if not request.user.is_superuser:
+        if assessment.created_by != request.user:
+            return HttpResponseForbidden(
+                "You are not allowed to view this result."
+            )
+
+    question_submissions = (
+        submission.question_submissions
+        .select_related("question")
+        .order_by("question__order")
+    )
+
+    percentage = 0
+
+    if assessment.total_marks > 0:
+        percentage = round(
+            (submission.total_marks / assessment.total_marks) * 100,
+            2
+        )
+
+    return render(
+        request,
+        "assessment/assessment_student_result.html",
+        {
+            "submission": submission,
+            "assessment": assessment,
+            "student": student,
+            "question_submissions": question_submissions,
+            "percentage": percentage,
+        }
+    )
+
 # ==========================================================
 # CREATE QUESTION
 # ==========================================================
+
 @login_required
 def question_create(request, assessment_id):
 
     assessment = get_object_or_404(
         Assessment,
-        pk=assessment_id,
-        created_by=request.user
+        pk=assessment_id
     )
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if request.method == "POST":
 
@@ -464,10 +746,6 @@ def question_create(request, assessment_id):
 
                 total_test_case_marks = 0
 
-                # ------------------------------------------------
-                # CALCULATE TOTAL TEST CASE MARKS
-                # ------------------------------------------------
-
                 for index, input_data in enumerate(inputs):
 
                     if index >= len(outputs):
@@ -487,10 +765,6 @@ def question_create(request, assessment_id):
                     )
 
                     total_test_case_marks += test_case_marks
-
-                # ------------------------------------------------
-                # VALIDATE PROGRAMMING MARK ALLOCATION
-                # ------------------------------------------------
 
                 total_allocated_marks = (
                     question.ai_evaluation_marks
@@ -524,10 +798,6 @@ def question_create(request, assessment_id):
                             "is_edit": False,
                         }
                     )
-
-                # ------------------------------------------------
-                # CREATE TEST CASES
-                # ------------------------------------------------
 
                 for index, input_data in enumerate(inputs):
 
@@ -594,6 +864,7 @@ def question_create(request, assessment_id):
         }
     )
 
+
 # ==========================================================
 # EDIT QUESTION
 # ==========================================================
@@ -603,11 +874,18 @@ def question_edit(request, question_id):
 
     question = get_object_or_404(
         AssessmentQuestion,
-        pk=question_id,
-        assessment__created_by=request.user
+        pk=question_id
     )
 
     assessment = question.assessment
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if request.method == "POST":
 
@@ -618,11 +896,14 @@ def question_edit(request, question_id):
 
         if form.is_valid():
 
-            updated_question = form.save(commit=False)
+            updated_question = form.save(
+                commit=False
+            )
 
             # ------------------------------------------------
             # PROGRAMMING QUESTION MARK VALIDATION
             # ------------------------------------------------
+
             if updated_question.question_type == "PROGRAMMING":
 
                 existing_test_case_marks = (
@@ -680,7 +961,9 @@ def question_edit(request, question_id):
             # UPDATE ASSESSMENT TOTAL
             # ------------------------------------------------
 
-            update_assessment_total_marks(assessment)
+            update_assessment_total_marks(
+                assessment
+            )
 
             messages.success(
                 request,
@@ -708,8 +991,6 @@ def question_edit(request, question_id):
             "is_edit": True,
         }
     )
-
-
 # ==========================================================
 # DELETE QUESTION
 # ==========================================================
@@ -719,17 +1000,26 @@ def question_delete(request, question_id):
 
     question = get_object_or_404(
         AssessmentQuestion,
-        pk=question_id,
-        assessment__created_by=request.user
+        pk=question_id
     )
 
     assessment = question.assessment
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if request.method == "POST":
 
         question.delete()
 
-        update_assessment_total_marks(assessment)
+        update_assessment_total_marks(
+            assessment
+        )
 
         messages.success(
             request,
@@ -750,7 +1040,6 @@ def question_delete(request, question_id):
         }
     )
 
-
 # ==========================================================
 # CREATE TEST CASE
 # ==========================================================
@@ -760,9 +1049,22 @@ def test_case_create(request, question_id):
 
     question = get_object_or_404(
         AssessmentQuestion,
-        pk=question_id,
-        assessment__created_by=request.user
+        pk=question_id
     )
+
+    assessment = question.assessment
+
+    # ------------------------------------------------------
+    # CHECK MODIFY ACCESS
+    # ------------------------------------------------------
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if question.question_type != "PROGRAMMING":
 
@@ -773,7 +1075,7 @@ def test_case_create(request, question_id):
 
         return redirect(
             "assessment_detail",
-            pk=question.assessment.pk
+            pk=assessment.pk
         )
 
     if request.method == "POST":
@@ -783,7 +1085,10 @@ def test_case_create(request, question_id):
         )
 
         if form.is_valid():
-            test_case_marks = form.cleaned_data.get("marks") or 0
+
+            test_case_marks = (
+                form.cleaned_data.get("marks") or 0
+            )
 
             existing_test_case_marks = (
                 question.test_cases.aggregate(
@@ -798,6 +1103,7 @@ def test_case_create(request, question_id):
             )
 
             if test_case_marks > available_test_case_marks:
+
                 messages.error(
                     request,
                     (
@@ -810,10 +1116,19 @@ def test_case_create(request, question_id):
                         f"Existing test case marks: {existing_test_case_marks}."
                     )
                 )
+
             else:
-                test_case = form.save(commit=False)
+
+                test_case = form.save(
+                    commit=False
+                )
+
                 test_case.question = question
-                test_case.order = question.test_cases.count() + 1
+
+                test_case.order = (
+                    question.test_cases.count() + 1
+                )
+
                 test_case.save()
 
                 messages.success(
@@ -844,12 +1159,11 @@ def test_case_create(request, question_id):
         {
             "form": form,
             "question": question,
-            "assessment": question.assessment,
+            "assessment": assessment,
             "public_test_cases": public_test_cases,
             "hidden_test_cases": hidden_test_cases,
         }
     )
-
 # ==========================================================
 # EDIT TEST CASE
 # ==========================================================
@@ -859,32 +1173,50 @@ def test_case_edit(request, test_case_id):
 
     test_case = get_object_or_404(
         TestCase,
-        pk=test_case_id,
-        question__assessment__created_by=request.user
+        pk=test_case_id
     )
 
     question = test_case.question
+    assessment = question.assessment
+
+    # ------------------------------------------------------
+    # CHECK MODIFY ACCESS
+    # ------------------------------------------------------
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if question.question_type != "PROGRAMMING":
+
         messages.error(
             request,
             "Test cases can only be edited for programming questions."
         )
+
         return redirect(
             "assessment_detail",
-            pk=question.assessment.pk
+            pk=assessment.pk
         )
 
     if request.method == "POST":
-        form = TestCaseForm(request.POST, instance=test_case)
+
+        form = TestCaseForm(
+            request.POST,
+            instance=test_case
+        )
 
         if form.is_valid():
 
-            new_test_case_marks = form.cleaned_data.get("marks") or 0
+            new_test_case_marks = (
+                form.cleaned_data.get("marks") or 0
+            )
 
             # Calculate marks of all OTHER test cases.
-            # The current test case is excluded because its old marks
-            # should not be counted while validating the new marks.
             other_test_case_marks = (
                 question.test_cases
                 .exclude(pk=test_case.pk)
@@ -900,6 +1232,7 @@ def test_case_edit(request, test_case_id):
             )
 
             if new_test_case_marks > available_marks:
+
                 messages.error(
                     request,
                     (
@@ -914,6 +1247,7 @@ def test_case_edit(request, test_case_id):
                 )
 
             else:
+
                 test_case = form.save()
 
                 messages.success(
@@ -927,7 +1261,10 @@ def test_case_edit(request, test_case_id):
                 )
 
     else:
-        form = TestCaseForm(instance=test_case)
+
+        form = TestCaseForm(
+            instance=test_case
+        )
 
     return render(
         request,
@@ -935,7 +1272,7 @@ def test_case_edit(request, test_case_id):
         {
             "form": form,
             "question": question,
-            "assessment": question.assessment,
+            "assessment": assessment,
             "public_test_cases": question.test_cases.filter(
                 is_hidden=False
             ),
@@ -944,7 +1281,6 @@ def test_case_edit(request, test_case_id):
             ),
         }
     )
-
 # ==========================================================
 # DELETE TEST CASE
 # ==========================================================
@@ -954,11 +1290,23 @@ def test_case_delete(request, test_case_id):
 
     test_case = get_object_or_404(
         TestCase,
-        pk=test_case_id,
-        question__assessment__created_by=request.user
+        pk=test_case_id
     )
 
     question = test_case.question
+    assessment = question.assessment
+
+    # ------------------------------------------------------
+    # CHECK MODIFY ACCESS
+    # ------------------------------------------------------
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if request.method == "POST":
 
@@ -980,11 +1328,9 @@ def test_case_delete(request, test_case_id):
         {
             "test_case": test_case,
             "question": question,
-            "assessment": question.assessment,
+            "assessment": assessment,
         }
     )
-
-
 # ==========================================================
 # OPTION CREATE
 # ==========================================================
@@ -994,9 +1340,22 @@ def option_create(request, question_id):
 
     question = get_object_or_404(
         AssessmentQuestion,
-        pk=question_id,
-        assessment__created_by=request.user
+        pk=question_id
     )
+
+    assessment = question.assessment
+
+    # ------------------------------------------------------
+    # CHECK MODIFY ACCESS
+    # ------------------------------------------------------
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if question.question_type not in [
         "MCQ",
@@ -1010,7 +1369,7 @@ def option_create(request, question_id):
 
         return redirect(
             "assessment_detail",
-            pk=question.assessment.pk
+            pk=assessment.pk
         )
 
     if request.method == "POST":
@@ -1055,26 +1414,32 @@ def option_create(request, question_id):
         {
             "form": form,
             "question": question,
-            "assessment": question.assessment,
+            "assessment": assessment,
             "options": options,
         }
     )
 
-
 # ==========================================================
 # OPTION EDIT
 # ==========================================================
-
 @login_required
 def option_edit(request, option_id):
 
     option = get_object_or_404(
         QuestionOption,
-        pk=option_id,
-        question__assessment__created_by=request.user
+        pk=option_id
     )
 
     question = option.question
+    assessment = question.assessment
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if request.method == "POST":
 
@@ -1110,7 +1475,7 @@ def option_edit(request, option_id):
             "form": form,
             "option": option,
             "question": question,
-            "assessment": question.assessment,
+            "assessment": assessment,
         }
     )
 
@@ -1118,17 +1483,24 @@ def option_edit(request, option_id):
 # ==========================================================
 # OPTION DELETE
 # ==========================================================
-
 @login_required
 def option_delete(request, option_id):
 
     option = get_object_or_404(
         QuestionOption,
-        pk=option_id,
-        question__assessment__created_by=request.user
+        pk=option_id
     )
 
     question = option.question
+    assessment = question.assessment
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if request.method == "POST":
 
@@ -1150,7 +1522,7 @@ def option_delete(request, option_id):
         {
             "option": option,
             "question": question,
-            "assessment": question.assessment,
+            "assessment": assessment,
         }
     )
 
@@ -1158,15 +1530,21 @@ def option_delete(request, option_id):
 # ==========================================================
 # CREATE ASSESSMENT PLACEMENT
 # ==========================================================
-
 @login_required
 def placement_create(request, assessment_id):
 
     assessment = get_object_or_404(
         Assessment,
-        pk=assessment_id,
-        created_by=request.user
+        pk=assessment_id
     )
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if request.method == "POST":
 
@@ -1176,23 +1554,39 @@ def placement_create(request, assessment_id):
 
         if form.is_valid():
 
-            placement = form.save(
-                commit=False
-            )
+            placement = form.save(commit=False)
 
             placement.assessment = assessment
 
-            placement.save()
+            # ---------------------------------------------------------
+            # PREVENT DUPLICATE ASSESSMENT + VIRTUAL LAB PLACEMENT
+            # ---------------------------------------------------------
 
-            messages.success(
-                request,
-                "Assessment placement added successfully."
-            )
+            if (
+                placement.virtual_lab
+                and AssessmentPlacement.objects.filter(
+                    assessment=assessment,
+                    virtual_lab=placement.virtual_lab,
+                ).exists()
+            ):
+                messages.warning(
+                    request,
+                    "This assessment is already assigned to the selected Virtual Lab."
+                )
 
-            return redirect(
-                "assessment_detail",
-                pk=assessment.pk
-            )
+            else:
+
+                placement.save()
+
+                messages.success(
+                    request,
+                    "Assessment placement created successfully."
+                )
+
+                return redirect(
+                    "assessment_detail",
+                    pk=assessment.pk
+                )
 
     else:
 
@@ -1207,21 +1601,26 @@ def placement_create(request, assessment_id):
             "is_edit": False,
         }
     )
-
 # ==========================================================
 # EDIT ASSESSMENT PLACEMENT
 # ==========================================================
-
 @login_required
 def placement_edit(request, placement_id):
 
     placement = get_object_or_404(
         AssessmentPlacement,
-        pk=placement_id,
-        assessment__created_by=request.user
+        pk=placement_id
     )
 
     assessment = placement.assessment
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if request.method == "POST":
 
@@ -1265,17 +1664,23 @@ def placement_edit(request, placement_id):
 # ==========================================================
 # DELETE ASSESSMENT PLACEMENT
 # ==========================================================
-
 @login_required
 def placement_delete(request, placement_id):
 
     placement = get_object_or_404(
         AssessmentPlacement,
-        pk=placement_id,
-        assessment__created_by=request.user
+        pk=placement_id
     )
 
     assessment = placement.assessment
+
+    if not has_assessment_modify_access(
+        request.user,
+        assessment
+    ):
+        return HttpResponseForbidden(
+            "You are not allowed to modify this assessment."
+        )
 
     if request.method == "POST":
 
@@ -1312,6 +1717,30 @@ def student_assessment_list(request):
         status="PUBLISHED"
     ).order_by("-created_at")
 
+    # Check whether the student has completed at least one attempt
+    # for each assessment.
+    for assessment in assessments:
+
+        assessment.has_previous_attempts = AssessmentSubmission.objects.filter(
+            assessment=assessment,
+            student=request.user
+        ).exclude(
+            status="IN_PROGRESS"
+        ).exists()
+
+        # Get one completed submission to use for the
+        # "View Previous Results" link.
+        if assessment.has_previous_attempts:
+            assessment.previous_submission = (
+                AssessmentSubmission.objects.filter(
+                    assessment=assessment,
+                    student=request.user
+                )
+                .exclude(status="IN_PROGRESS")
+                .order_by("-attempt_number")
+                .first()
+            )
+
     return render(
         request,
         "assessment/student_assessment_list.html",
@@ -1319,7 +1748,6 @@ def student_assessment_list(request):
             "assessments": assessments,
         }
     )
-
 
 @login_required
 def student_assessment_start(request, pk):
@@ -1748,6 +2176,21 @@ def student_assessment_attempt(request, pk):
             current_question_index + 1
         ]
 
+
+    # ======================================================
+    # ASSESSMENT TIMER
+    # ======================================================
+
+    timer_end = None
+
+    if assessment.duration_minutes:
+        timer_end = (
+            submission.started_at
+            + timedelta(
+                minutes=assessment.duration_minutes
+            )
+        )
+
     # ======================================================
     # RENDER
     # ======================================================
@@ -1767,6 +2210,7 @@ def student_assessment_attempt(request, pk):
             "answered_question_ids": answered_question_ids,
             "selected_answer": selected_answer,
             "selected_multiple_answers": selected_multiple_answers,
+            "timer_end": timer_end,
         }
     )
 
@@ -3094,12 +3538,13 @@ def interactive_code_stop(request):
 
 @login_required
 def student_assessment_result(request, pk):
-
     submission = get_object_or_404(
         AssessmentSubmission,
         pk=pk,
         student=request.user
     )
+
+    assessment = submission.assessment
 
     questions = (
         submission.question_submissions
@@ -3107,12 +3552,253 @@ def student_assessment_result(request, pk):
         .order_by("question__order")
     )
 
+    # Calculate percentage
+    percentage = 0
+
+    if assessment.total_marks > 0:
+        percentage = round(
+            (submission.total_marks / assessment.total_marks) * 100,
+            2
+        )
+
     return render(
         request,
         "assessment/student_assessment_result.html",
         {
             "submission": submission,
-            "assessment": submission.assessment,
+            "assessment": assessment,
             "questions": questions,
+            "percentage": percentage,
+        }
+    )
+
+@login_required
+def student_assessment_attempts(request, pk):
+    submission = get_object_or_404(
+        AssessmentSubmission,
+        pk=pk,
+        student=request.user
+    )
+
+    assessment = submission.assessment
+
+    submissions = (
+        AssessmentSubmission.objects
+        .filter(
+            assessment=assessment,
+            student=request.user
+        )
+        .exclude(status="IN_PROGRESS")
+        .order_by("attempt_number")
+    )
+
+    attempts = []
+
+    for attempt in submissions:
+
+        percentage = 0
+
+        if assessment.total_marks > 0:
+            percentage = round(
+                (attempt.total_marks / assessment.total_marks) * 100,
+                2
+            )
+
+        attempts.append({
+            "submission": attempt,
+            "percentage": percentage,
+        })
+
+    return render(
+        request,
+        "assessment/student_assessment_attempts.html",
+        {
+            "assessment": assessment,
+            "attempts": attempts,
+        }
+    )
+
+
+@login_required
+def assessment_request_access(request, pk):
+
+    if not request.user.is_lecturer:
+        return HttpResponseForbidden(
+            "Only lecturers can request assessment access."
+        )
+
+    assessment = get_object_or_404(
+        Assessment,
+        pk=pk
+    )
+
+    # Owner does not need to request access
+    if assessment.created_by == request.user:
+        messages.info(
+            request,
+            "You are already the owner of this assessment."
+        )
+
+        return redirect("assessment_list")
+
+    # Check if an existing request already exists
+    existing_request = AssessmentAccessRequest.objects.filter(
+        assessment=assessment,
+        requested_by=request.user
+    ).first()
+
+    if existing_request:
+
+        if existing_request.status == "PENDING":
+            messages.info(
+                request,
+                "Your access request is already pending."
+            )
+
+        elif existing_request.status == "APPROVED":
+            messages.info(
+                request,
+                "You already have access to this assessment."
+            )
+
+        elif existing_request.status == "REJECTED":
+            messages.info(
+                request,
+                "Your previous access request was rejected."
+            )
+
+        return redirect("assessment_list")
+
+    AssessmentAccessRequest.objects.create(
+        assessment=assessment,
+        requested_by=request.user,
+        status="PENDING"
+    )
+
+    messages.success(
+        request,
+        "Access request sent to the administrator."
+    )
+
+    return redirect("assessment_list")
+
+
+@login_required
+def assessment_access_requests(request):
+
+    if not request.user.is_superuser:
+        return HttpResponseForbidden(
+            "Only administrators can access assessment requests."
+        )
+
+    access_requests = (
+        AssessmentAccessRequest.objects
+        .select_related(
+            "assessment",
+            "requested_by",
+            "approved_by"
+        )
+        .order_by(
+            "-created_at"
+        )
+    )
+
+    return render(
+        request,
+        "assessment/assessment_access_requests.html",
+        {
+            "access_requests": access_requests,
+        }
+    )
+
+
+@login_required
+def approve_assessment_access(request, request_id):
+
+    if not request.user.is_superuser:
+        return HttpResponseForbidden(
+            "Only administrators can approve access requests."
+        )
+
+    access_request = get_object_or_404(
+        AssessmentAccessRequest,
+        pk=request_id
+    )
+
+    access_request.status = "APPROVED"
+    access_request.approved_by = request.user
+    access_request.approved_at = timezone.now()
+    access_request.save()
+
+    messages.success(
+        request,
+        "Assessment access approved successfully."
+    )
+
+    return redirect(
+        "assessment_access_requests"
+    )
+
+
+@login_required
+def reject_assessment_access(request, request_id):
+
+    if not request.user.is_superuser:
+        return HttpResponseForbidden(
+            "Only administrators can reject access requests."
+        )
+
+    access_request = get_object_or_404(
+        AssessmentAccessRequest,
+        pk=request_id
+    )
+
+    access_request.status = "REJECTED"
+    access_request.approved_by = request.user
+    access_request.approved_at = timezone.now()
+    access_request.save()
+
+    messages.success(
+        request,
+        "Assessment access request rejected."
+    )
+
+    return redirect(
+        "assessment_access_requests"
+    )
+
+@login_required
+def lecturer_assessment_access_list(request):
+
+    if not request.user.is_lecturer:
+        return HttpResponseForbidden(
+            "Only lecturers can request assessment access."
+        )
+
+    assessments = (
+        Assessment.objects
+        .exclude(created_by=request.user)
+        .select_related("created_by")
+        .order_by("-created_at")
+    )
+
+    for assessment in assessments:
+
+        access_request = (
+            AssessmentAccessRequest.objects
+            .filter(
+                assessment=assessment,
+                requested_by=request.user
+            )
+            .first()
+        )
+
+        assessment.access_request = access_request
+
+    return render(
+        request,
+        "assessment/lecturer_assessment_access_list.html",
+        {
+            "assessments": assessments,
         }
     )

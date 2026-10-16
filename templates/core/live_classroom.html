@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Live Classroom
+{% endblock %}
+
+{% block content %}
+
+<div id="root"></div>
+
+<link
+    rel="stylesheet"
+    href="{% static 'live_classroom/assets/index-HJFJhPRJ.css' %}"
+>
+
+<script
+    type="module"
+    src="{% static 'live_classroom/assets/index-CFkTZ5GB.js' %}">
+</script>
+
+{% endblock %}

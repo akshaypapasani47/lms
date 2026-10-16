@@ -5,192 +5,189 @@ from django.conf import settings
 
 import os
 import asyncio
+
 from .models import UploadVideo
 from .utils import generate_subtitles
-from deep_translator import GoogleTranslator
-from course.audio_utils import create_hindi_audio, create_telugu_audio, create_kannada_audio
-from course.video_utils import convert_video
-from course.utils import translate_vtt
 
-from course.utils import extract_text_from_vtt
+from course.audio_utils import (
+    create_hindi_audio,
+    create_telugu_audio,
+    create_kannada_audio
+)
+
+from course.video_utils import convert_video
+
+from course.utils import (
+    translate_vtt,
+    extract_text_from_vtt
+)
+
 from .languages import LANGUAGES_CONFIG
 
-# from .audio_utils import (
-#     create_hindi_audio,
-#     create_telugu_audio,
-#     create_kannada_audio,
-# )
-
-# LANGUAGE_CONFIG = {
-#     "hi": {
-#         "translator": "hi",
-#         "audio_function": create_hindi_audio,
-#     },
-#     "te": {
-#         "translator": "te",
-#         "audio_function": create_telugu_audio,
-#     },
-#     "kn": {
-#         "translator": "kn",
-#         "audio_function": create_kannada_audio,
-#     },
-# }
 
 @receiver(post_save, sender=UploadVideo)
 def auto_generate_subtitle(sender, instance, created, **kwargs):
+
     if not created:
         return
+
     print("SIGNAL RUNNING")
-    # if created and instance.video:
-    #if instance.video and not instance.subtitle_en:
+
+    selected_languages = instance.selected_languages or []
+
     if instance.video:
 
-        video_path = convert_video(instance.video.path)
-        print("Fixed video created:", video_path)
-        vtt_path = generate_subtitles(video_path)
+        # =====================================================
+        # 1. FIX VIDEO
+        # =====================================================
+
+        video_path = convert_video(
+            instance.video.path
+        )
+
+        print(
+            "Fixed video created:",
+            video_path
+        )
+
+        # =====================================================
+        # 2. GENERATE ENGLISH SUBTITLE
+        # =====================================================
+
+        vtt_path = generate_subtitles(
+            video_path
+        )
+
+        # =====================================================
+        # 3. SAVE ENGLISH SUBTITLE
+        # =====================================================
 
         if vtt_path and os.path.exists(vtt_path):
-            with open(vtt_path, 'rb') as f:
+
+            with open(
+                vtt_path,
+                "rb"
+            ) as f:
+
                 instance.subtitle_en.save(
                     os.path.basename(vtt_path),
                     File(f),
                     save=False
-                    
                 )
-            print("Fixed video saved")
-            text = extract_text_from_vtt(vtt_path)
 
-            # hindi_text = GoogleTranslator(
-            #     source="en",
-            #     target="hi"
-            # ).translate(text)
+            print(
+                "English subtitle saved"
+            )
 
-            # telugu_text = GoogleTranslator(
-            #     source="en",
-            #     target="te"
-            # ).translate(text)
+            # =================================================
+            # 4. GET SELECTED LANGUAGES
+            # =================================================
 
-            # kannada_text = GoogleTranslator(
-            #     source="en",
-            #     target="kn"
-            # ).translate(text)
+        
 
-            selected_languages = instance.selected_languages or []
+            print(
+                "Selected languages:",
+                selected_languages
+            )
 
-            translations = {}
-
-            for lang in selected_languages:
-                translations[lang] = GoogleTranslator(
-                    source="en",
-                    target=LANGUAGES_CONFIG[lang]["translator"]
-                ).translate(text)
-
-            print("Hindi translation completed")
-            print("Telugu translation completed")
-            print("Kannada translation completed")
-
-            # hi_vtt = translate_vtt(vtt_path, "hi")
-            # te_vtt = translate_vtt(vtt_path, "te")
-            # kn_vtt = translate_vtt(vtt_path, "kn")
+            # =================================================
+            # 5. GENERATE TRANSLATED VTT
+            # =================================================
 
             generated_vtts = {}
 
             for lang in selected_languages:
-                generated_vtts[lang] = translate_vtt(vtt_path, lang)
 
-            print("EN:", vtt_path)
+                try:
 
-            for lang, vtt_file in generated_vtts.items():
-                print(lang, ":", vtt_file, os.path.exists(vtt_file))
+                    print(
+                        f"Translating subtitle to {lang}..."
+                    )
 
-            # if hi_vtt and os.path.exists(hi_vtt):
-            #     with open(hi_vtt, "rb") as f:
-            #         instance.subtitle_hi.save(
-            #             os.path.basename(hi_vtt),
-            #             File(f),
-            #             save=False
-            #         )
-            
-            # print("Saved HI:", instance.subtitle_hi.name)
-            # print("Saved HI path:", instance.subtitle_hi.path)
-            # print("Exists after save:", os.path.exists(instance.subtitle_hi.path))
-            # # Save Telugu subtitle
-            # if te_vtt and os.path.exists(te_vtt):
-            #     with open(te_vtt, "rb") as f:
-            #         instance.subtitle_te.save(
-            #             os.path.basename(te_vtt),
-            #             File(f),
-            #             save=False
-            #         )
+                    generated_vtts[lang] = (
+                        translate_vtt(
+                            vtt_path,
+                            lang
+                        )
+                    )
 
-            # # Save Kannada subtitle
-            # if kn_vtt and os.path.exists(kn_vtt):
-            #     with open(kn_vtt, "rb") as f:
-            #         instance.subtitle_kn.save(
-            #             os.path.basename(kn_vtt),
-            #             File(f),
-            #             save=False
-            #         )
+                except Exception as e:
 
-            # subtitle_fields = {
-            #     "hi": "subtitle_hi",
-            #     "te": "subtitle_te",
-            #     "kn": "subtitle_kn",
-            # }
+                    print(
+                        f"{lang} Translation Error:",
+                        e
+                    )
 
-            for lang, vtt_file in generated_vtts.items():
+            print(
+                "EN:",
+                vtt_path
+            )
+
+            for lang, vtt_file in (
+                generated_vtts.items()
+            ):
+
+                print(
+                    lang,
+                    ":",
+                    vtt_file,
+                    os.path.exists(vtt_file)
+                )
+
+            # =================================================
+            # 6. SAVE TRANSLATED SUBTITLES
+            # =================================================
+
+            for lang, vtt_file in (
+                generated_vtts.items()
+            ):
 
                 if os.path.exists(vtt_file):
 
-                    with open(vtt_file, "rb") as f:
+                    with open(
+                        vtt_file,
+                        "rb"
+                    ) as f:
 
                         getattr(
                             instance,
                             f"subtitle_{lang}"
                         ).save(
-                            os.path.basename(vtt_file),
+                            os.path.basename(
+                                vtt_file
+                            ),
                             File(f),
                             save=False
                         )
-                
-            # audio_dir = os.path.join(settings.MEDIA_ROOT, "audio")
 
-            # os.makedirs(audio_dir, exist_ok=True)
+            # =================================================
+            # 7. CREATE AUDIO DIRECTORY
+            # =================================================
 
-            # hi_mp3 = os.path.join(audio_dir, f"{instance.id}_hi.mp3")
-            # te_mp3 = os.path.join(audio_dir, f"{instance.id}_te.mp3")
-            # kn_mp3 = os.path.join(audio_dir, f"{instance.id}_kn.mp3")
+            audio_dir = os.path.join(
+                settings.MEDIA_ROOT,
+                "audio"
+            )
 
-            # print("Hindi Length:", len(hindi_text))
-            # print("Telugu Length:", len(telugu_text))
-            # print("Kannada Length:", len(kannada_text))
-
-            audio_dir = os.path.join(settings.MEDIA_ROOT, "audio")
-            os.makedirs(audio_dir, exist_ok=True)
+            os.makedirs(
+                audio_dir,
+                exist_ok=True
+            )
 
             generated_audio = {}
 
-
-            # try:
-            #     print("Generating Hindi audio...")
-            #     create_hindi_audio(hindi_text, hi_mp3)
-            # except Exception as e:
-            #     print("Hindi Audio Error:", e)
-
-            # try:
-            #     print("Generating Telugu audio...")
-            #     create_telugu_audio(telugu_text, te_mp3)
-            # except Exception as e:
-            #     print("Telugu Audio Error:", e)
-
-            # try:
-            #     print("Generating Kannada audio...")
-            #     create_kannada_audio(kannada_text, kn_mp3)
-            # except Exception as e:
-            #     print("Kannada Audio Error:", e)
-
+            # =================================================
+            # 8. GENERATE AUDIO FROM TRANSLATED VTT
+            # =================================================
 
             for lang in selected_languages:
+
+                if lang not in generated_vtts:
+                    print(
+                        f"Skipping {lang} audio because "
+                        f"translation was not generated."
+                    )
+                    continue
 
                 mp3_path = os.path.join(
                     audio_dir,
@@ -198,76 +195,96 @@ def auto_generate_subtitle(sender, instance, created, **kwargs):
                 )
 
                 try:
-                    print(f"Generating {lang} audio...")
 
-                    LANGUAGES_CONFIG[lang]["audio_function"](
-                        translations[lang],
+                    print(
+                        f"Generating {lang} audio..."
+                    )
+
+                    translated_text = (
+                        extract_text_from_vtt(
+                            generated_vtts[lang]
+                        )
+                    )
+
+                    # Safety check:
+                    # Don't generate Hindi/Telugu/Kannada
+                    # audio from empty text.
+                    if not translated_text.strip():
+                        raise Exception(
+                            f"No translated text found for {lang}"
+                        )
+
+                    LANGUAGES_CONFIG[lang][
+                        "audio_function"
+                    ](
+                        translated_text,
                         mp3_path
                     )
 
                     generated_audio[lang] = mp3_path
 
                 except Exception as e:
-                    print(f"{lang} Audio Error:", e)
-            
 
-            # print("Saving Hindi audio...")
-            # print("Saving telugu audio...")
-            # print("Saving kannada audio...")
+                    print(
+                        f"{lang} Audio Error:",
+                        e
+                    )
 
-            
-            # print(os.path.exists(hi_mp3))
-            # print(os.path.exists(te_mp3))
-            # print(os.path.exists(kn_mp3))
+            # =================================================
+            # 9. PRINT GENERATED AUDIO
+            # =================================================
 
-            # print("Generating subtitles from translated audio...")
+            print(
+                "Generated audio files:"
+            )
 
-            # Generate audio here
+            for lang, audio_file in (
+                generated_audio.items()
+            ):
 
-            # if os.path.exists(hi_mp3):
-            #     instance.audio_hi.name = f"audio/{instance.id}_hi.mp3"
+                print(
+                    lang,
+                    os.path.exists(audio_file),
+                    audio_file
+                )
 
-            # if os.path.exists(te_mp3):
-            #     instance.audio_te.name = f"audio/{instance.id}_te.mp3"
+            # =================================================
+            # 10. SET AUDIO DATABASE FIELDS
+            # =================================================
 
-            # if os.path.exists(kn_mp3):
-            #     instance.audio_kn.name = f"audio/{instance.id}_kn.mp3"
-
-            # audio_fields = {
-            #     "hi": "audio_hi",
-            #     "te": "audio_te",
-            #     "kn": "audio_kn",
-            # }
-            print("Generated audio files:")
-
-            for lang, audio_file in generated_audio.items():
-                print(lang, os.path.exists(audio_file), audio_file)
-
-            for lang, audio_file in generated_audio.items():
+            for lang, audio_file in (
+                generated_audio.items()
+            ):
 
                 if os.path.exists(audio_file):
 
                     getattr(
                         instance,
                         f"audio_{lang}"
-                    ).name = f"audio/{instance.id}_{lang}.mp3"
+                    ).name = (
+                        f"audio/"
+                        f"{instance.id}_"
+                        f"{lang}.mp3"
+                    )
 
-    # instance.save(update_fields=[
-    #     "subtitle_en",
-    #     "subtitle_hi",
-    #     "subtitle_te",
-    #     "subtitle_kn",
-    #     "audio_hi",
-    #     "audio_te",
-    #     "audio_kn",
-    # ])
+    # =========================================================
+    # 11. SAVE DATABASE FIELDS
+    # =========================================================
 
-    update_fields = ["subtitle_en"]
+    update_fields = [
+        "subtitle_en"
+    ]
 
     for lang in selected_languages:
-        update_fields.append(f"subtitle_{lang}")
-        update_fields.append(f"audio_{lang}")
 
-    instance.save(update_fields=update_fields)
-      
-        
+        update_fields.append(
+            f"subtitle_{lang}"
+        )
+
+        update_fields.append(
+            f"audio_{lang}"
+        )
+
+    instance.save(
+        update_fields=update_fields
+    )

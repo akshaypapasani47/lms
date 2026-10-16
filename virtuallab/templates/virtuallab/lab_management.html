@@ -1,0 +1,1772 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Virtual Lab Management
+{% endblock title %}
+
+{% block extra_css %}
+    {{ block.super }}
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/virtual_lab.css' %}"
+    >
+
+
+    <style>
+
+    /* ============================================================
+    VIRTUAL LAB MANAGEMENT CENTER
+    FUTURISTIC HPC / AI DESIGN
+    LIGHT + DARK THEME
+    ============================================================ */
+
+
+    /* ============================================================
+    PAGE FOUNDATION
+    ============================================================ */
+
+    .vl-management-page {
+        position: relative;
+
+        /* IMPORTANT:
+        Prevent page from going underneath common header */
+        margin-top: 30px;
+
+        width: auto;
+        max-width: none;
+
+        margin-left: 0;
+        margin-right: 0;
+
+        padding: 38px 42px 70px;
+
+        min-height: calc(100vh - 120px);
+
+        transition:
+            margin-left 0.3s ease,
+            width 0.3s ease,
+            background 0.3s ease,
+            color 0.3s ease;
+
+        box-sizing: border-box;
+
+        color: #eaf6ff;
+    }
+
+
+    /* ============================================================
+    SIDEBAR SCREEN ADJUSTMENT
+    ============================================================ */
+
+    body:has(#side-nav.active)
+    .vl-management-page {
+
+        margin-left: 280px;
+
+        width: calc(100% - 280px);
+    }
+
+
+    /* ============================================================
+    DARK THEME
+    ============================================================ */
+
+    html[data-theme="dark"] .vl-management-page {
+
+        --mg-bg: #060b12;
+        --mg-card: #0b1420;
+        --mg-card-hover: #0e1b2a;
+
+        --mg-border: rgba(0, 229, 255, 0.18);
+        --mg-border-strong: rgba(0, 229, 255, 0.45);
+
+        --mg-text: #f2f9ff;
+        --mg-text-soft: #a8b8c8;
+        --mg-text-muted: #728497;
+
+        --mg-accent: #00e5ff;
+        --mg-accent-2: #7c5cff;
+
+        --mg-success: #36f59a;
+        --mg-danger: #ff6178;
+
+        --mg-shadow:
+            0 18px 50px rgba(0, 0, 0, 0.42);
+
+        background:
+            radial-gradient(
+                circle at 85% 5%,
+                rgba(0, 229, 255, 0.07),
+                transparent 28%
+            ),
+            radial-gradient(
+                circle at 10% 40%,
+                rgba(124, 92, 255, 0.05),
+                transparent 30%
+            );
+    }
+
+
+    /* ============================================================
+    LIGHT THEME
+    ============================================================ */
+
+    html[data-theme="light"] .vl-management-page {
+
+        --mg-bg: #f5f9fc;
+        --mg-card: #ffffff;
+        --mg-card-hover: #f8fcff;
+
+        --mg-border: rgba(20, 100, 130, 0.18);
+        --mg-border-strong: rgba(0, 150, 190, 0.45);
+
+        --mg-text: #142331;
+        --mg-text-soft: #405568;
+        --mg-text-muted: #687b8b;
+
+        --mg-accent: #008db5;
+        --mg-accent-2: #6746d8;
+
+        --mg-success: #009f68;
+        --mg-danger: #d94055;
+
+        --mg-shadow:
+            0 18px 45px rgba(30, 70, 100, 0.10);
+
+        background:
+            radial-gradient(
+                circle at 85% 5%,
+                rgba(0, 160, 200, 0.07),
+                transparent 28%
+            ),
+            radial-gradient(
+                circle at 10% 40%,
+                rgba(103, 70, 216, 0.04),
+                transparent 30%
+            );
+
+        color: var(--mg-text);
+    }
+
+
+    /* ============================================================
+    HEADER
+    ============================================================ */
+
+    .vl-management-header {
+
+        display: flex;
+
+        justify-content: space-between;
+        align-items: flex-end;
+
+        gap: 30px;
+
+        margin-bottom: 42px;
+
+        padding-bottom: 25px;
+
+        border-bottom: 1px solid var(--mg-border);
+    }
+
+
+    /* ============================================================
+    EYEBROW
+    ============================================================ */
+
+    .vl-management-header::before {
+        content: none;
+    }
+
+
+    /* ============================================================
+    TITLE
+    ============================================================ */
+
+    .vl-management-title {
+
+        margin: 0;
+
+        font-size: clamp(38px, 4vw, 58px);
+
+        line-height: 1.05;
+
+        font-weight: 900;
+
+        letter-spacing: -1.8px;
+
+        color: var(--mg-text);
+
+        text-shadow:
+            0 0 22px rgba(0, 229, 255, 0.08);
+    }
+
+
+    .vl-management-title i {
+
+        color: var(--mg-accent);
+
+        margin-right: 12px;
+
+        font-size: 0.72em;
+
+        filter:
+            drop-shadow(
+                0 0 10px rgba(0, 229, 255, 0.5)
+            );
+    }
+
+
+    /* ============================================================
+    SUBTITLE
+    ============================================================ */
+
+    .vl-management-subtitle {
+
+        margin-top: 14px;
+
+        max-width: 720px;
+
+        font-size: 15px;
+
+        line-height: 1.7;
+
+        font-weight: 500;
+
+        color: var(--mg-text-soft);
+    }
+
+
+    /* ============================================================
+    CREATE BUTTON
+    ============================================================ */
+
+    .vl-management-create {
+
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 11px;
+
+        min-height: 50px;
+
+        padding: 13px 21px;
+
+        border: 1px solid var(--mg-accent);
+
+        border-radius: 4px;
+
+        text-decoration: none;
+
+        font-size: 12px;
+
+        font-weight: 900;
+
+        letter-spacing: 1.4px;
+
+        color: var(--mg-accent);
+
+        background:
+            rgba(0, 229, 255, 0.04);
+
+        transition:
+            transform 0.25s ease,
+            background 0.25s ease,
+            box-shadow 0.25s ease,
+            color 0.25s ease;
+    }
+
+
+    .vl-management-create:hover {
+
+        transform: translateY(-3px);
+
+        color: #ffffff;
+
+        background: var(--mg-accent);
+
+        box-shadow:
+            0 0 25px rgba(0, 229, 255, 0.28);
+
+    }
+
+
+    /* ============================================================
+    STATISTICS
+    ============================================================ */
+
+    .vl-management-stats {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        gap: 16px;
+
+        margin-bottom: 50px;
+    }
+
+
+    /* ============================================================
+    STAT CARD
+    ============================================================ */
+
+    .vl-management-stat {
+
+        position: relative;
+
+        min-height: 145px;
+
+        padding: 25px;
+
+        overflow: hidden;
+
+        border-radius: 5px;
+
+        border: 1px solid var(--mg-border);
+
+        background: var(--mg-card);
+
+        box-shadow: var(--mg-shadow);
+
+        transition:
+            transform 0.25s ease,
+            border-color 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+
+    .vl-management-stat::before {
+
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 2px;
+
+        background: var(--mg-accent);
+
+        box-shadow:
+            0 0 15px var(--mg-accent);
+    }
+
+
+    .vl-management-stat::after {
+
+        content: "";
+
+        position: absolute;
+
+        right: -35px;
+        bottom: -35px;
+
+        width: 100px;
+        height: 100px;
+
+        border-radius: 50%;
+
+        border: 1px solid var(--mg-border);
+
+        opacity: 0.4;
+    }
+
+
+    .vl-management-stat:hover {
+
+        transform: translateY(-5px);
+
+        border-color: var(--mg-border-strong);
+
+        box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.18),
+            0 0 20px rgba(0, 229, 255, 0.06);
+    }
+
+
+    /* ============================================================
+    STAT LABEL
+    ============================================================ */
+
+    .vl-management-stat-label {
+
+        display: block;
+
+        font-size: 11px;
+
+        font-weight: 800;
+
+        text-transform: uppercase;
+
+        letter-spacing: 1.6px;
+
+        color: var(--mg-text-muted);
+    }
+
+
+    /* ============================================================
+    STAT VALUE
+    ============================================================ */
+
+    .vl-management-stat-value {
+
+        display: block;
+
+        margin-top: 15px;
+
+        font-size: 42px;
+
+        line-height: 1;
+
+        font-weight: 900;
+
+        letter-spacing: -1px;
+
+        color: var(--mg-text);
+    }
+
+
+    /* ============================================================
+    SECTION TITLE
+    ============================================================ */
+
+    .vl-management-section-title {
+
+        position: relative;
+
+        margin-bottom: 25px;
+
+        padding-left: 18px;
+
+        font-size: 27px;
+
+        line-height: 1.2;
+
+        font-weight: 900;
+
+        letter-spacing: -0.5px;
+
+        color: var(--mg-text);
+    }
+
+
+    .vl-management-section-title::before {
+
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        top: 3px;
+
+        width: 4px;
+        height: calc(100% - 6px);
+
+        background: var(--mg-accent);
+
+        box-shadow:
+            0 0 12px var(--mg-accent);
+    }
+
+
+    /* ============================================================
+    LAB GRID
+    ============================================================ */
+
+    .vl-management-labs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+        align-items: stretch;
+    }
+
+
+    /* ============================================================
+    LAB CARD
+    ============================================================ */
+
+    .vl-management-card {
+        position: relative;
+        min-width: 0;
+        height: 100%;
+        min-height: 430px;
+
+        display: flex;
+        flex-direction: column;
+
+        padding: 27px;
+        overflow: hidden;
+        box-sizing: border-box;
+
+        border-radius: 8px;
+        border: 1px solid var(--mg-border);
+        background: var(--mg-card);
+        box-shadow: var(--mg-shadow);
+
+        transition:
+            transform 0.3s ease,
+            border-color 0.3s ease,
+            background 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    /* futuristic corner line */
+
+    .vl-management-card::before {
+
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 70px;
+        height: 2px;
+
+        background: var(--mg-accent);
+
+        box-shadow:
+            0 0 15px var(--mg-accent);
+    }
+
+
+    /* background glow */
+
+    .vl-management-card::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 180px;
+        height: 180px;
+
+        right: -90px;
+        bottom: -90px;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(0, 229, 255, 0.08),
+                transparent 70%
+            );
+
+        pointer-events: none;
+    }
+
+
+    .vl-management-card:hover {
+
+        transform: translateY(-7px);
+
+        border-color: var(--mg-border-strong);
+
+        background: var(--mg-card-hover);
+
+        box-shadow:
+            0 25px 60px rgba(0, 0, 0, 0.22),
+            0 0 25px rgba(0, 229, 255, 0.06);
+    }
+
+
+    /* ============================================================
+    CARD TOP
+    ============================================================ */
+
+    .vl-management-card-top {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+        margin-bottom: 22px;
+    }
+
+
+    /* ============================================================
+    CARD TITLE
+    ============================================================ */
+
+    .vl-management-card-title {
+
+        margin: 0;
+
+        font-size: 23px;
+
+        line-height: 1.25;
+
+        font-weight: 900;
+
+        color: var(--mg-text);
+
+        word-break: break-word;
+    }
+
+
+    /* ============================================================
+    STATUS
+    ============================================================ */
+
+    .vl-management-status {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 7px;
+
+        flex-shrink: 0;
+
+        padding: 7px 10px;
+
+        border-radius: 3px;
+
+        font-size: 9px;
+
+        font-weight: 900;
+
+        letter-spacing: 1.2px;
+    }
+
+
+    .vl-management-status::before {
+
+        content: "";
+
+        width: 6px;
+        height: 6px;
+
+        border-radius: 50%;
+
+        background: currentColor;
+
+        box-shadow:
+            0 0 9px currentColor;
+    }
+
+
+    .vl-management-status.active {
+
+        color: var(--mg-success);
+
+        background:
+            rgba(54, 245, 154, 0.08);
+
+        border:
+            1px solid rgba(54, 245, 154, 0.22);
+    }
+
+
+    .vl-management-status.inactive {
+
+        color: var(--mg-danger);
+
+        background:
+            rgba(255, 97, 120, 0.08);
+
+        border:
+            1px solid rgba(255, 97, 120, 0.22);
+    }
+
+
+    /* ============================================================
+    DESCRIPTION
+    ============================================================ */
+
+    .vl-management-card-description {
+        margin: 0 0 24px;
+        min-height: 72px;
+        max-height: 72px;
+
+        font-size: 14px;
+        line-height: 1.65;
+        font-weight: 500;
+
+        color: var(--mg-text-soft);
+
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+
+    /* ============================================================
+    METADATA
+    ============================================================ */
+
+
+    .vl-management-card .vl-management-actions {
+        margin-top: auto;
+    }
+
+
+    .vl-management-meta-item {
+
+        position: relative;
+
+        padding: 14px;
+
+        border-radius: 4px;
+
+        border: 1px solid var(--mg-border);
+
+        background:
+            rgba(127, 127, 127, 0.035);
+    }
+
+
+    .vl-management-meta-item small {
+
+        display: block;
+
+        font-size: 9px;
+
+        font-weight: 800;
+
+        text-transform: uppercase;
+
+        letter-spacing: 1.2px;
+
+        color: var(--mg-text-muted);
+    }
+
+
+    .vl-management-meta-item strong {
+
+        display: block;
+
+        margin-top: 7px;
+
+        font-size: 22px;
+
+        line-height: 1;
+
+        font-weight: 900;
+
+        color: var(--mg-text);
+    }
+
+
+    /* ============================================================
+    ACTION BUTTONS
+    ============================================================ */
+
+    .vl-management-actions {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+        width: 100%;
+        margin-top: auto;
+    }
+
+    .vl-management-action {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+
+        min-height: 44px;
+        padding: 10px 12px;
+
+        border: 1px solid var(--mg-border);
+        border-radius: 6px;
+
+        background: rgba(0, 229, 255, 0.025);
+        color: var(--mg-text-soft);
+
+        text-decoration: none;
+
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 1px;
+
+        overflow: hidden;
+
+        transition:
+            color 0.25s ease,
+            border-color 0.25s ease,
+            background 0.25s ease,
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    .vl-management-action::before {
+        content: "";
+
+        position: absolute;
+        left: 0;
+        top: 0;
+
+        width: 0;
+        height: 2px;
+
+        background: var(--mg-accent);
+
+        box-shadow: 0 0 10px var(--mg-accent);
+
+        transition: width 0.3s ease;
+    }
+
+    .vl-management-action i {
+        font-size: 11px;
+        color: var(--mg-accent);
+
+        transition:
+            transform 0.25s ease,
+            color 0.25s ease;
+    }
+
+    .vl-management-action:hover {
+        color: var(--mg-text);
+
+        border-color: var(--mg-border-strong);
+
+        background: rgba(0, 229, 255, 0.07);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 22px rgba(0, 0, 0, 0.14),
+            0 0 15px rgba(0, 229, 255, 0.05);
+
+        text-decoration: none;
+    }
+
+    .vl-management-action:hover::before {
+        width: 100%;
+    }
+
+    .vl-management-action:hover i {
+        transform: translateX(2px);
+        color: #00e5ff;
+    }
+
+    html[data-theme="light"] .vl-management-action {
+        background: rgba(0, 120, 160, 0.025);
+    }
+
+    html[data-theme="light"] .vl-management-action:hover {
+        background: rgba(0, 120, 160, 0.06);
+    }
+
+    .vl-management-action i {
+
+        font-size: 11px;
+
+        color: var(--mg-accent);
+    }
+
+
+    .vl-management-action:hover {
+
+        transform: translateY(-2px);
+
+        color: var(--mg-accent);
+
+        border-color: var(--mg-border-strong);
+
+        background:
+            rgba(0, 229, 255, 0.055);
+    }
+
+
+    /* ============================================================
+    EMPTY STATE
+    ============================================================ */
+
+    .vl-management-empty {
+
+        padding: 85px 30px;
+
+        text-align: center;
+
+        border: 1px dashed var(--mg-border-strong);
+
+        border-radius: 5px;
+
+        background: var(--mg-card);
+    }
+
+
+    .vl-management-empty i {
+
+        display: block;
+
+        margin-bottom: 22px;
+
+        font-size: 48px !important;
+
+        color: var(--mg-accent);
+
+        filter:
+            drop-shadow(
+                0 0 12px rgba(0, 229, 255, 0.35)
+            );
+    }
+
+
+    .vl-management-empty h3 {
+
+        margin: 0 0 10px;
+
+        font-size: 25px;
+
+        font-weight: 900;
+
+        color: var(--mg-text);
+    }
+
+
+    .vl-management-empty p {
+
+        margin: 0;
+
+        font-size: 14px;
+
+        color: var(--mg-text-muted);
+    }
+
+
+    /* ============================================================
+    LIGHT THEME CARD VISIBILITY
+    ============================================================ */
+
+    html[data-theme="light"]
+    .vl-management-card,
+    html[data-theme="light"]
+    .vl-management-stat {
+
+        box-shadow:
+            0 12px 35px rgba(40, 80, 110, 0.08);
+    }
+
+
+    html[data-theme="light"]
+    .vl-management-action {
+
+        color: #405568;
+    }
+
+
+    html[data-theme="light"]
+    .vl-management-card-description {
+
+        color: #536979;
+    }
+
+
+    html[data-theme="light"]
+    .vl-management-stat-value,
+    html[data-theme="light"]
+    .vl-management-card-title,
+    html[data-theme="light"]
+    .vl-management-section-title {
+
+        color: #142331;
+    }
+
+
+    /* ============================================================
+    RESPONSIVE - LARGE TABLETS
+    ============================================================ */
+
+    @media (max-width: 1200px) {
+
+        .vl-management-stats {
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+        }
+
+
+        .vl-management-labs {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+            align-items: stretch;
+        }
+
+    }
+
+
+    /* ============================================================
+    RESPONSIVE - SIDEBAR OPEN
+    ============================================================ */
+
+    @media (max-width: 1100px) {
+
+        body:has(#side-nav.active)
+        .vl-management-page {
+
+            margin-left: 0;
+
+            width: 100%;
+        }
+
+    }
+
+
+    /* ============================================================
+    TABLET
+    ============================================================ */
+
+    @media (max-width: 850px) {
+
+        .vl-management-page {
+
+            padding:
+                32px 24px 60px;
+        }
+
+
+        .vl-management-header {
+
+            align-items: flex-start;
+
+            flex-direction: column;
+        }
+
+
+        .vl-management-stats {
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+
+        .vl-management-create {
+
+            width: 100%;
+        }
+
+    }
+
+
+    /* ============================================================
+    MOBILE
+    ============================================================ */
+
+    @media (max-width: 600px) {
+
+        .vl-management-page {
+
+            margin-top: 20px;
+
+            padding:
+                28px 16px 50px;
+        }
+
+
+        body:has(#side-nav.active)
+        .vl-management-page {
+
+            margin-left: 0;
+
+            width: 100%;
+        }
+
+
+        .vl-management-header {
+
+            margin-bottom: 32px;
+
+            padding-bottom: 20px;
+        }
+
+
+        .vl-management-header::before {
+
+            position: static;
+
+            display: block;
+
+            margin: 0 0 12px;
+
+            font-size: 9px;
+        }
+
+
+        .vl-management-title {
+
+            font-size: 34px;
+
+            line-height: 1.1;
+        }
+
+
+        .vl-management-subtitle {
+
+            font-size: 13px;
+        }
+
+
+        .vl-management-stats {
+
+            grid-template-columns: 1fr;
+
+            gap: 12px;
+
+            margin-bottom: 38px;
+        }
+
+
+        .vl-management-stat {
+
+            min-height: 120px;
+        }
+
+
+        .vl-management-stat-value {
+
+            font-size: 36px;
+        }
+
+
+        .vl-management-labs {
+
+            grid-template-columns: 1fr;
+
+            gap: 16px;
+        }
+
+
+        .vl-management-card {
+
+            padding: 21px;
+        }
+
+
+        .vl-management-card-title {
+
+            font-size: 21px;
+        }
+
+
+        .vl-management-meta-item strong {
+
+            font-size: 20px;
+        }
+
+    }
+
+
+    /* ============================================================
+    VERY SMALL MOBILE
+    ============================================================ */
+
+    @media (max-width: 400px) {
+
+        .vl-management-title {
+
+            font-size: 29px;
+        }
+
+
+        .vl-management-actions {
+
+            grid-template-columns: 1fr;
+        }
+
+
+        .vl-management-meta {
+
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+
+    /* ============================================================
+    REDUCED MOTION
+    ============================================================ */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .vl-management-page,
+        .vl-management-card,
+        .vl-management-stat,
+        .vl-management-action,
+        .vl-management-create {
+
+            transition: none !important;
+        }
+
+    }
+
+    .vl-management-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+
+        margin-bottom: 12px;
+
+        font-size: 10px;
+        line-height: 1;
+
+        font-weight: 800;
+        letter-spacing: 2px;
+
+        color: var(--mg-accent);
+    }
+
+    .vl-management-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        flex: 0 0 7px;
+
+        border-radius: 50%;
+
+        background: var(--mg-accent);
+
+        box-shadow:
+            0 0 10px var(--mg-accent);
+    }
+
+    .vl-management-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+    }
+
+    .vl-management-actions .vl-management-create {
+        min-height: 46px;
+    }
+    /* =========================================================
+    ADMIN NAVIGATION
+    ========================================================= */
+
+    .vl-admin-navigation {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .vl-admin-nav-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+
+        min-height: 44px;
+        padding: 0 18px;
+
+        border: 1px solid rgba(120, 150, 180, 0.25);
+        border-radius: 6px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.07),
+                rgba(255, 255, 255, 0.02)
+            );
+
+        color: var(--vl-text-secondary, #9aa9b8);
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+
+        overflow: hidden;
+
+        transition:
+            color 0.25s ease,
+            border-color 0.25s ease,
+            background 0.25s ease,
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    /* top accent line */
+
+    .vl-admin-nav-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 12px;
+        right: 12px;
+
+        height: 2px;
+
+        background: transparent;
+
+        transition: background 0.25s ease;
+    }
+
+    /* icon */
+
+    .vl-admin-nav-btn i {
+        width: 28px;
+        height: 28px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 4px;
+
+        background: rgba(255, 255, 255, 0.05);
+
+        font-size: 13px;
+
+        transition:
+            background 0.25s ease,
+            color 0.25s ease,
+            transform 0.25s ease;
+    }
+
+    /* hover */
+
+    .vl-admin-nav-btn:hover {
+        color: #ffffff;
+
+        border-color: rgba(0, 200, 255, 0.55);
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(0, 200, 255, 0.12),
+                rgba(0, 200, 255, 0.035)
+            );
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.15),
+            0 0 18px rgba(0, 200, 255, 0.08);
+    }
+
+    .vl-admin-nav-btn:hover::before {
+        background: #00c8ff;
+    }
+
+    .vl-admin-nav-btn:hover i {
+        background: rgba(0, 200, 255, 0.14);
+        color: #00c8ff;
+        transform: scale(1.08);
+    }
+
+    /* =========================================================
+    DOCKER BUTTON
+    ========================================================= */
+
+    .vl-admin-nav-btn:first-child i {
+        color: #2496ed;
+    }
+
+    /* =========================================================
+    ACCESS CONTROL BUTTON
+    ========================================================= */
+
+    .vl-admin-nav-btn:last-child i {
+        color: #a78bfa;
+    }
+
+    /* =========================================================
+    MOBILE
+    ========================================================= */
+
+    @media (max-width: 900px) {
+
+        .vl-admin-navigation {
+            justify-content: flex-start;
+        }
+
+        .vl-admin-nav-btn {
+            flex: 0 1 auto;
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        .vl-admin-navigation {
+            width: 100%;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .vl-admin-nav-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    .vl-management-create-action {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 18px;
+    }
+
+    .vl-management-create-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+
+        min-height: 42px;
+        padding: 0 17px;
+
+        border: 1px solid rgba(0, 217, 255, 0.45);
+        border-radius: 9px;
+
+        background: rgba(0, 217, 255, 0.08);
+        color: #00d9ff;
+
+        text-decoration: none;
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 1px;
+
+        transition:
+            transform .25s ease,
+            border-color .25s ease,
+            background .25s ease,
+            box-shadow .25s ease;
+    }
+
+    .vl-management-create-btn:hover {
+        color: #00d9ff;
+        border-color: #00d9ff;
+        background: rgba(0, 217, 255, 0.13);
+        box-shadow: 0 0 22px rgba(0, 217, 255, 0.12);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    @media (max-width: 500px) {
+        .vl-management-create-action {
+            justify-content: stretch;
+        }
+
+        .vl-management-create-btn {
+            width: 100%;
+        }
+    }
+
+   .vl-management-status-form {
+        width: 100%;
+        margin: 0;
+    }
+
+    .vl-management-status-form .vl-management-action {
+        width: 100%;
+        cursor: pointer;
+        font-family: inherit;
+    } 
+
+    </style>
+    
+
+
+{% endblock extra_css %}
+
+
+{% block maincontent %}
+
+<div class="vl-management-page">
+
+    <div class="vl-management-header">
+
+        <div>
+
+            <div class="vl-management-eyebrow">
+                <span></span>
+                HPC / VIRTUAL LAB / ADMINISTRATION
+            </div>
+
+            <h1 class="vl-management-title">
+                <i class="fas fa-server"></i>
+                Virtual Lab Management
+            </h1>
+
+            <div class="vl-management-subtitle">
+                Manage laboratories, environments, students and resources.
+            </div>
+        </div>
+
+        <div class="vl-management-actions">
+
+            <div class="vl-admin-navigation">
+
+                <a
+                    href="{% url 'virtuallab:docker_environment_management' %}"
+                    class="vl-admin-nav-btn"
+                >
+                    <i class="fab fa-docker"></i>
+                    DOCKER ENVIRONMENTS
+                </a>
+
+                <a
+                    href="{% url 'virtuallab:access_requests' %}"
+                    class="vl-admin-nav-btn"
+                >
+                    <i class="fas fa-user-shield"></i>
+                    ACCESS CONTROL
+                </a>
+
+            </div>
+
+            <div class="vl-management-create-action">
+                <a
+                    href="{% url 'virtuallab:create_lab' %}"
+                    class="vl-management-create-btn"
+                >
+                    <i class="fas fa-plus"></i>
+                    CREATE NEW LAB
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <div class="vl-management-stats">
+
+        <div class="vl-management-stat">
+            <span class="vl-management-stat-label">
+                Total Labs
+            </span>
+
+            <strong class="vl-management-stat-value">
+                {{ total_labs }}
+            </strong>
+        </div>
+
+
+        <div class="vl-management-stat">
+            <span class="vl-management-stat-label">
+                Active Labs
+            </span>
+
+            <strong class="vl-management-stat-value">
+                {{ active_labs }}
+            </strong>
+        </div>
+
+
+        <div class="vl-management-stat">
+            <span class="vl-management-stat-label">
+                Inactive Labs
+            </span>
+
+            <strong class="vl-management-stat-value">
+                {{ inactive_labs }}
+            </strong>
+        </div>
+
+
+        <div class="vl-management-stat">
+            <span class="vl-management-stat-label">
+                Total Students
+            </span>
+
+            <strong class="vl-management-stat-value">
+                {{ total_students }}
+            </strong>
+        </div>
+
+
+        <div class="vl-management-stat">
+            <span class="vl-management-stat-label">
+                Running Environments
+            </span>
+
+            <strong class="vl-management-stat-value">
+                {{ running_environments }}
+            </strong>
+        </div>
+
+    </div>
+
+
+    <!-- LABS -->
+
+    <div class="vl-management-section-title">
+        Virtual Laboratories
+    </div>
+
+
+    {% if labs %}
+
+        <div class="vl-management-labs">
+
+            {% for lab in labs %}
+
+                <div class="vl-management-card">
+
+                    <div class="vl-management-card-top">
+
+                        <div>
+                            <h2 class="vl-management-card-title">
+                                {{ lab.name }}
+                            </h2>
+                        </div>
+
+                        {% if lab.status == "ACTIVE" %}
+                            <span class="vl-management-status active">
+                                ACTIVE
+                            </span>
+                        {% else %}
+                            <span class="vl-management-status inactive">
+                                INACTIVE
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+
+                    <p class="vl-management-card-description">
+                        {{ lab.description|default:"No description available."|truncatechars:120 }}
+                    </p>
+
+
+                    <div class="vl-management-meta">
+
+                        <div class="vl-management-meta-item">
+                            <small>Students</small>
+                            <strong>
+                                {{ lab.student_count }}
+                            </strong>
+                        </div>
+
+                        <div class="vl-management-meta-item">
+                            <small>Pending</small>
+                            <strong>
+                                {{ lab.pending_count }}
+                            </strong>
+                        </div>
+
+                        <div class="vl-management-meta-item">
+                            <small>Running</small>
+                            <strong>
+                                {{ lab.running_environment_count }}
+                            </strong>
+                        </div>
+
+                        <div class="vl-management-meta-item">
+                            <small>Environments</small>
+                            <strong>
+                                {{ lab.environment_count }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="vl-management-actions">
+
+                        <a
+                            href="{% url 'virtuallab:lab_manager_overview' lab.id %}"
+                            class="vl-management-action"
+                        >
+                            <i class="fas fa-external-link-alt"></i>
+                            OPEN
+                        </a>
+
+
+                        <a
+                            href="{% url 'virtuallab:edit_lab' lab.id %}"
+                            class="vl-management-action"
+                        >
+                            <i class="fas fa-edit"></i>
+                            EDIT
+                        </a>
+
+
+                        <a
+                            href="{% url 'virtuallab:manage_lab_resources' lab.id %}"
+                            class="vl-management-action"
+                        >
+                            <i class="fas fa-folder-open"></i>
+                            RESOURCES
+                        </a>
+
+
+                        <a
+                            href="{% url 'virtuallab:lab_access_details' lab.id %}"
+                            class="vl-management-action"
+                        >
+                            <i class="fas fa-users"></i>
+                            STUDENTS
+                        </a>
+
+                        <form
+                            method="post"
+                            action="{% url 'virtuallab:toggle_lab_status' lab.id %}"
+                            class="vl-management-status-form"
+                            onsubmit="return confirm(
+                                '{% if lab.status == "ACTIVE" %}Deactivate{% else %}Activate{% endif %} {{ lab.name }}?'
+                            );"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="vl-management-action vl-management-status-action"
+                            >
+                                {% if lab.status == "ACTIVE" %}
+                                    <i class="fas fa-power-off"></i>
+                                    DEACTIVATE
+                                {% else %}
+                                    <i class="fas fa-play"></i>
+                                    ACTIVATE
+                                {% endif %}
+                            </button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="vl-management-empty">
+
+            <i
+                class="fas fa-server"
+                style="font-size:45px; opacity:.35;"
+            ></i>
+
+            <h3>No Virtual Labs</h3>
+
+            <p>
+                No Virtual Labs have been created yet.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock maincontent %}

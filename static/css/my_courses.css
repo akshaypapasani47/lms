@@ -1,0 +1,5298 @@
+/* =========================================================
+   C-DAC LMS — MY COURSES
+   FUTURISTIC HPC / AI LEARNING PLATFORM
+   SINGLE CARD CAROUSEL
+   ========================================================= */
+
+
+/* =========================================================
+   ROOT PAGE
+   ========================================================= */
+
+.my-courses-page {
+
+    --my-bg:
+        #030914;
+
+    --my-bg-2:
+        #071426;
+
+    --my-cyan:
+        #00d9ff;
+
+    --my-blue:
+        #147aff;
+
+    --my-purple:
+        #7b4dff;
+
+    --my-white:
+        #ffffff;
+
+    --my-text:
+        #e7f1fb;
+
+    --my-muted:
+        #aab7ca;
+
+    --my-soft:
+        #71839b;
+
+    --my-border:
+        rgba(0, 217, 255, 0.15);
+
+    --my-border-strong:
+        rgba(0, 217, 255, 0.36);
+
+
+    position:
+        relative;
+
+
+    width:
+        100%;
+
+
+    min-height:
+        calc(100vh - 72px);
+
+
+    padding:
+        52px 6% 70px;
+
+
+    overflow-x:
+        hidden;
+
+
+    overflow-y:
+        visible;
+
+
+    color:
+        var(--my-text);
+
+
+    background:
+
+        radial-gradient(
+            circle at 78% 18%,
+            rgba(0, 217, 255, 0.07),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 15% 78%,
+            rgba(123, 77, 255, 0.07),
+            transparent 28%
+        ),
+
+        linear-gradient(
+            135deg,
+            var(--my-bg),
+            var(--my-bg-2)
+        );
+
+
+    font-family:
+        "Inter",
+        "Segoe UI",
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+
+
+    -webkit-font-smoothing:
+        antialiased;
+
+}
+
+
+/* =========================================================
+   BACKGROUND GRID
+   ========================================================= */
+
+.my-courses-page::before {
+
+    content:
+        "";
+
+
+    position:
+        absolute;
+
+
+    inset:
+        -20%;
+
+
+    pointer-events:
+        none;
+
+
+    background-image:
+
+        linear-gradient(
+            rgba(0, 217, 255, 0.035) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(0, 217, 255, 0.035) 1px,
+            transparent 1px
+        );
+
+
+    background-size:
+        55px 55px;
+
+
+    opacity:
+        .32;
+
+
+    transform:
+
+        perspective(900px)
+        rotateX(58deg)
+        scale(1.35);
+
+
+    transform-origin:
+        center bottom;
+
+}
+
+
+/* =========================================================
+   AMBIENT GLOW
+   ========================================================= */
+
+.my-courses-page::after {
+
+    content:
+        "";
+
+
+    position:
+        absolute;
+
+
+    width:
+        430px;
+
+
+    height:
+        430px;
+
+
+    right:
+        -170px;
+
+
+    top:
+        150px;
+
+
+    border-radius:
+        50%;
+
+
+    background:
+        rgba(0, 217, 255, .07);
+
+
+    filter:
+        blur(100px);
+
+
+    pointer-events:
+        none;
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.my-learning-header {
+
+    position:
+        relative;
+
+
+    z-index:
+        5;
+
+
+    display:
+        flex;
+
+
+    align-items:
+        flex-end;
+
+
+    justify-content:
+        space-between;
+
+
+    gap:
+        45px;
+
+
+    width:
+        min(1450px, 100%);
+
+
+    margin:
+        0 auto 60px;
+
+}
+
+
+.my-learning-header-main {
+
+    position:
+        relative;
+
+
+    z-index:
+        2;
+
+
+    max-width:
+        850px;
+
+}
+
+
+.my-learning-eyebrow {
+
+    display:
+        inline-flex;
+
+
+    align-items:
+        center;
+
+
+    gap:
+        10px;
+
+
+    margin-bottom:
+        18px;
+
+
+    padding:
+        9px 15px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .24);
+
+
+    border-radius:
+        30px;
+
+
+    background:
+        rgba(0, 217, 255, .045);
+
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        11px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.8px;
+
+
+    backdrop-filter:
+        blur(10px);
+
+}
+
+
+.my-learning-eyebrow-dot {
+
+    width:
+        7px;
+
+
+    height:
+        7px;
+
+
+    flex-shrink:
+        0;
+
+
+    border-radius:
+        50%;
+
+
+    background:
+        var(--my-cyan);
+
+
+    box-shadow:
+        0 0 10px
+        var(--my-cyan);
+
+
+    animation:
+        myCoursesPulse
+        2s
+        infinite;
+
+}
+
+
+.my-learning-header h1 {
+
+    margin:
+        0;
+
+
+    color:
+        var(--my-white);
+
+
+    font-size:
+        clamp(
+            3rem,
+            5.4vw,
+            5.2rem
+        );
+
+
+    line-height:
+        .95;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        -2.8px;
+
+}
+
+
+.my-learning-header h1 span {
+
+    display:
+        inline-block;
+
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #ffffff,
+            var(--my-cyan),
+            #ffffff
+        );
+
+
+    background-size:
+        200% auto;
+
+
+    -webkit-background-clip:
+        text;
+
+
+    background-clip:
+        text;
+
+
+    -webkit-text-fill-color:
+        transparent;
+
+
+    animation:
+        myCoursesTitleGradient
+        5s
+        linear
+        infinite;
+
+}
+
+
+.my-learning-header-main > p {
+
+    max-width:
+        720px;
+
+
+    margin:
+        24px 0 0;
+
+
+    color:
+        var(--my-muted);
+
+
+    font-size:
+        1.02rem;
+
+
+    line-height:
+        1.8;
+
+}
+
+
+.my-learning-header-main > p strong {
+
+    color:
+        var(--my-white);
+
+
+    font-weight:
+        700;
+
+}
+
+
+/* =========================================================
+   STATUS CARD
+   ========================================================= */
+
+.my-learning-status-card {
+
+    position:
+        relative;
+
+
+    min-width:
+        225px;
+
+
+    padding:
+        20px 21px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .18);
+
+
+    border-radius:
+        14px;
+
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(10, 31, 48, .86),
+            rgba(4, 15, 27, .76)
+        );
+
+
+    backdrop-filter:
+        blur(18px);
+
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+
+    box-shadow:
+
+        inset 0 1px 0
+        rgba(255, 255, 255, .03),
+
+        0 22px 55px
+        rgba(0, 0, 0, .24);
+
+}
+
+
+.my-learning-status-card::before {
+
+    content:
+        "";
+
+
+    position:
+        absolute;
+
+
+    left:
+        10%;
+
+
+    right:
+        10%;
+
+
+    top:
+        0;
+
+
+    height:
+        1px;
+
+
+    background:
+
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--my-cyan),
+            transparent
+        );
+
+
+    opacity:
+        .7;
+
+}
+
+
+.my-learning-status-label {
+
+    display:
+        block;
+
+
+    margin-bottom:
+        9px;
+
+
+    color:
+        var(--my-soft);
+
+
+    font-size:
+        9px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.8px;
+
+}
+
+
+.my-learning-status-value {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    gap:
+        9px;
+
+
+    color:
+        var(--my-white);
+
+
+    font-size:
+        14px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1px;
+
+}
+
+
+.my-learning-live-dot {
+
+    width:
+        7px;
+
+
+    height:
+        7px;
+
+
+    border-radius:
+        50%;
+
+
+    background:
+        #19e68c;
+
+
+    box-shadow:
+        0 0 9px
+        rgba(25, 230, 140, .7);
+
+
+    animation:
+        myCoursesLivePulse
+        2s
+        infinite;
+
+}
+
+
+.my-learning-status-meta {
+
+    margin-top:
+        10px;
+
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        10px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.4px;
+
+}
+
+
+/* =========================================================
+   MESSAGES
+   ========================================================= */
+
+.my-learning-messages {
+
+    position:
+        relative;
+
+
+    z-index:
+        5;
+
+
+    width:
+        min(1450px, 100%);
+
+
+    margin:
+        0 auto 28px;
+
+}
+
+
+.my-learning-message {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    gap:
+        11px;
+
+
+    padding:
+        14px 17px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .15);
+
+
+    border-radius:
+        10px;
+
+
+    background:
+        rgba(0, 217, 255, .035);
+
+
+    color:
+        #dce8f2;
+
+
+    font-size:
+        14px;
+
+
+    backdrop-filter:
+        blur(10px);
+
+}
+
+
+.my-learning-message.success i {
+
+    color:
+        var(--my-cyan);
+
+}
+
+
+.my-learning-message.error {
+
+    border-color:
+        rgba(255, 70, 100, .22);
+
+
+    background:
+        rgba(255, 70, 100, .05);
+
+}
+
+
+.my-learning-message.error i {
+
+    color:
+        #ff617a;
+
+}
+
+
+/* =========================================================
+   LEARNING SECTION
+   ========================================================= */
+
+.my-learning-courses-section,
+.my-learning-faculty-section {
+
+    position:
+        relative;
+
+
+    z-index:
+        4;
+
+
+    width:
+        min(1450px, 100%);
+
+
+    margin:
+        0 auto;
+
+}
+
+
+.my-learning-courses-section {
+
+    margin-bottom:
+        65px;
+
+}
+
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.my-learning-section-header {
+
+    display:
+        flex;
+
+
+    align-items:
+        flex-end;
+
+
+    justify-content:
+        space-between;
+
+
+    gap:
+        25px;
+
+
+    margin-bottom:
+        26px;
+
+}
+
+
+.my-learning-section-label {
+
+    display:
+        block;
+
+
+    margin-bottom:
+        9px;
+
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        10px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        2px;
+
+}
+
+
+.my-learning-section-header h2 {
+
+    margin:
+        0;
+
+
+    color:
+        var(--my-white);
+
+
+    font-size:
+        clamp(
+            2rem,
+            3vw,
+            2.65rem
+        );
+
+
+    line-height:
+        1.1;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        -.7px;
+
+}
+
+
+.my-learning-section-header p {
+
+    margin:
+        9px 0 0;
+
+
+    color:
+        var(--my-soft);
+
+
+    font-size:
+        13px;
+
+
+    line-height:
+        1.6;
+
+}
+
+
+/* =========================================================
+   COURSE COUNTER
+   ========================================================= */
+
+.my-learning-course-counter {
+
+    display:
+        flex;
+
+
+    align-items:
+        baseline;
+
+
+    gap:
+        9px;
+
+
+    padding:
+        10px 14px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .16);
+
+
+    border-radius:
+        9px;
+
+
+    background:
+        rgba(0, 217, 255, .035);
+
+
+    backdrop-filter:
+        blur(10px);
+
+}
+
+
+.my-learning-course-counter strong {
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        24px;
+
+
+    font-weight:
+        800;
+
+}
+
+
+.my-learning-course-counter span {
+
+    color:
+        var(--my-soft);
+
+
+    font-size:
+        9px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.2px;
+
+}
+
+
+/* =========================================================
+   CAROUSEL SHELL
+   ========================================================= */
+
+.my-learning-carousel-shell {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    gap:
+        18px;
+
+
+    width:
+        100%;
+
+}
+
+
+/* =========================================================
+   CAROUSEL VIEWPORT
+   ========================================================= */
+
+.my-learning-carousel-viewport {
+
+    position:
+        relative;
+
+
+    flex:
+        1 1 auto;
+
+
+    min-width:
+        0;
+
+
+    width:
+        100%;
+
+
+    padding:
+        12px 8px 30px;
+
+
+    overflow:
+        hidden;
+
+}
+
+
+/* =========================================================
+   CAROUSEL TRACK
+   ========================================================= */
+
+.my-learning-carousel-track {
+
+    position:
+        relative;
+
+
+    width:
+        100%;
+
+
+    min-height:
+        570px;
+
+
+    margin:
+        0;
+
+
+    padding:
+        0;
+
+
+    overflow:
+        hidden;
+
+
+    touch-action:
+        pan-y;
+
+
+    isolation:
+        isolate;
+
+}
+
+
+/* =========================================================
+   CAROUSEL CARDS
+   ONE CARD OCCUPIES THE VIEWPORT
+   ========================================================= */
+
+.my-learning-course-card {
+
+    position:
+        absolute !important;
+
+
+    inset:
+        0;
+
+
+    width:
+        100% !important;
+
+
+    min-width:
+        100% !important;
+
+
+    max-width:
+        100% !important;
+
+
+    min-height:
+        570px;
+
+
+    margin:
+        0 !important;
+
+
+    box-sizing:
+        border-box;
+
+
+    display:
+        flex;
+
+
+    flex-direction:
+        column;
+
+
+    padding:
+        34px 38px 30px;
+
+
+    overflow:
+        hidden;
+
+
+    opacity:
+        0;
+
+
+    visibility:
+        hidden;
+
+
+    pointer-events:
+        none;
+
+
+    transform:
+        translateX(110%)
+        scale(.975);
+
+
+    z-index:
+        1;
+
+
+    border:
+        1px solid
+        rgba(111, 177, 220, .15);
+
+
+    border-radius:
+        18px;
+
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(10, 30, 48, .90),
+            rgba(4, 16, 29, .74)
+        );
+
+
+    backdrop-filter:
+        blur(18px);
+
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+
+    box-shadow:
+
+        inset 0 1px 0
+        rgba(255, 255, 255, .025),
+
+        0 25px 70px
+        rgba(0, 0, 0, .27);
+
+
+    transition:
+
+        transform .55s
+        cubic-bezier(
+            .22,
+            .61,
+            .36,
+            1
+        ),
+
+        opacity .40s ease,
+
+        visibility 0s linear .55s,
+
+        border-color .40s ease,
+
+        box-shadow .40s ease;
+
+}
+
+
+/* =========================================================
+   ACTIVE MAIN CARD
+   ========================================================= */
+
+.my-learning-course-card.is-active {
+
+    opacity:
+        1;
+
+
+    visibility:
+        visible;
+
+
+    pointer-events:
+        auto;
+
+
+    transform:
+        translateX(0)
+        scale(1.012);
+
+
+    z-index:
+        5;
+
+
+    border-color:
+        rgba(0, 217, 255, .48);
+
+
+    box-shadow:
+
+        0 0 46px
+        rgba(0, 217, 255, .12),
+
+        inset 0 1px 0
+        rgba(255, 255, 255, .04),
+
+        0 30px 85px
+        rgba(0, 0, 0, .30);
+
+}
+
+
+/* =========================================================
+   NEXT CARD
+   ========================================================= */
+
+.my-learning-course-card.is-next {
+
+    opacity:
+        0;
+
+
+    visibility:
+        hidden;
+
+
+    pointer-events:
+        none;
+
+
+    transform:
+        translateX(110%)
+        scale(.975);
+
+
+    z-index:
+        3;
+
+}
+
+
+/* =========================================================
+   PREVIOUS CARD
+   ========================================================= */
+
+.my-learning-course-card.is-prev {
+
+    opacity:
+        0;
+
+
+    visibility:
+        hidden;
+
+
+    pointer-events:
+        none;
+
+
+    transform:
+        translateX(-110%)
+        scale(.975);
+
+
+    z-index:
+        3;
+
+}
+
+
+/* =========================================================
+   OTHER CARDS
+   ========================================================= */
+
+.my-learning-course-card.is-hidden {
+
+    opacity:
+        0;
+
+
+    visibility:
+        hidden;
+
+
+    pointer-events:
+        none;
+
+
+    transform:
+        translateX(0)
+        scale(.96);
+
+
+    z-index:
+        0;
+
+}
+
+
+/* =========================================================
+   CIRCULAR RESET
+   ========================================================= */
+
+.my-learning-carousel-track
+.carousel-no-transition {
+
+    transition:
+        none !important;
+
+}
+
+
+.my-learning-carousel-track.carousel-no-transition
+.my-learning-course-card {
+
+    transition:
+        none !important;
+
+}
+
+
+/* =========================================================
+   CARD TOP
+   ========================================================= */
+
+.my-learning-card-top {
+
+    position:
+        relative;
+
+
+    z-index:
+        5;
+
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        space-between;
+
+
+    gap:
+        12px;
+
+}
+
+
+.my-learning-course-status {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    gap:
+        8px;
+
+
+    color:
+        #72889b;
+
+
+    font-size:
+        10px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.2px;
+
+}
+
+
+.my-learning-course-status span {
+
+    width:
+        6px;
+
+
+    height:
+        6px;
+
+
+    border-radius:
+        50%;
+
+
+    background:
+        var(--my-cyan);
+
+
+    box-shadow:
+        0 0 9px
+        var(--my-cyan);
+
+
+    animation:
+        myCoursesPulse
+        2s
+        infinite;
+
+}
+
+
+.my-learning-course-code {
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        10px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1px;
+
+}
+
+
+/* =========================================================
+   COURSE VISUAL
+   ========================================================= */
+
+.my-learning-card-visual {
+
+    position:
+        relative;
+
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    width:
+        190px;
+
+
+    height:
+        190px;
+
+
+    flex-shrink:
+        0;
+
+
+    margin:
+        23px auto 7px;
+
+}
+
+
+.my-learning-visual-core {
+
+    position:
+        relative;
+
+
+    z-index:
+        5;
+
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    width:
+        84px;
+
+
+    height:
+        84px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .42);
+
+
+    border-radius:
+        50%;
+
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(0, 217, 255, .18),
+            rgba(4, 17, 30, .97) 68%
+        );
+
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        30px;
+
+
+    box-shadow:
+
+        0 0 35px
+        rgba(0, 217, 255, .16),
+
+        inset 0 0 25px
+        rgba(0, 217, 255, .07);
+
+
+    animation:
+        myLearningCorePulse
+        3s
+        ease-in-out
+        infinite;
+
+}
+
+
+.my-learning-visual-ring {
+
+    position:
+        absolute;
+
+
+    border-radius:
+        50%;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .16);
+
+}
+
+
+.my-learning-visual-ring.ring-1 {
+
+    width:
+        130px;
+
+
+    height:
+        130px;
+
+
+    border-style:
+        dashed;
+
+
+    animation:
+        myLearningOrbit
+        9s
+        linear
+        infinite;
+
+}
+
+
+.my-learning-visual-ring.ring-2 {
+
+    width:
+        174px;
+
+
+    height:
+        174px;
+
+
+    border-color:
+        rgba(123, 77, 255, .18);
+
+
+    animation:
+        myLearningOrbitReverse
+        13s
+        linear
+        infinite;
+
+}
+
+
+/* =========================================================
+   COURSE CONTENT
+   ========================================================= */
+
+.my-learning-card-content {
+
+    position:
+        relative;
+
+
+    z-index:
+        5;
+
+
+    text-align:
+        center;
+
+}
+
+
+.my-learning-course-type {
+
+    color:
+        #70869a;
+
+
+    font-size:
+        9px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.5px;
+
+}
+
+
+.my-learning-card-content h3 {
+
+    margin:
+        10px 0 0;
+
+
+    color:
+        #ffffff;
+
+
+    font-size:
+        clamp(
+            1.85rem,
+            2.7vw,
+            2.55rem
+        );
+
+
+    line-height:
+        1.18;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        -.7px;
+
+}
+
+
+.my-learning-card-content p {
+
+    max-width:
+        680px;
+
+
+    margin:
+        13px auto 0;
+
+
+    color:
+        #8198a9;
+
+
+    font-size:
+        14px;
+
+
+    line-height:
+        1.75;
+
+}
+
+
+/* =========================================================
+   COURSE META
+   ========================================================= */
+
+.my-learning-card-meta {
+
+    position:
+        relative;
+
+
+    z-index:
+        5;
+
+
+    display:
+        grid;
+
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+
+    gap:
+        9px;
+
+
+    margin-top:
+        auto;
+
+
+    padding-top:
+        26px;
+
+}
+
+
+.my-learning-card-meta > div {
+
+    padding:
+        11px 8px;
+
+
+    text-align:
+        center;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .075);
+
+
+    border-radius:
+        8px;
+
+
+    background:
+        rgba(255, 255, 255, .012);
+
+}
+
+
+.my-learning-card-meta span {
+
+    display:
+        block;
+
+
+    margin-bottom:
+        5px;
+
+
+    color:
+        #5f7484;
+
+
+    font-size:
+        7px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1px;
+
+}
+
+
+.my-learning-card-meta strong {
+
+    color:
+        #cbd8df;
+
+
+    font-size:
+        10px;
+
+}
+
+
+.learning-active-status {
+
+    color:
+        var(--my-cyan) !important;
+
+}
+
+
+/* =========================================================
+   COURSE FOOTER
+   ========================================================= */
+
+.my-learning-card-footer {
+
+    position:
+        relative;
+
+
+    z-index:
+        5;
+
+
+    margin-top:
+        17px;
+
+
+    padding-top:
+        16px;
+
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, .045);
+
+}
+
+
+.my-learning-enrolled-badge {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    gap:
+        7px;
+
+
+    margin-bottom:
+        10px;
+
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        9px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.1px;
+
+}
+
+
+.my-learning-continue-btn {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        space-between;
+
+
+    gap:
+        12px;
+
+
+    padding:
+        14px 16px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .30);
+
+
+    border-radius:
+        10px;
+
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(0, 217, 255, .08),
+            rgba(123, 77, 255, .07)
+        );
+
+
+    color:
+        #ffffff;
+
+
+    text-decoration:
+        none;
+
+
+    font-size:
+        11px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        .9px;
+
+
+    transition:
+
+        transform .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease,
+        background .3s ease;
+
+}
+
+
+.my-learning-continue-btn:hover {
+
+    color:
+        #ffffff;
+
+
+    text-decoration:
+        none;
+
+
+    transform:
+        translateY(-2px);
+
+
+    border-color:
+        rgba(0, 217, 255, .68);
+
+
+    box-shadow:
+        0 8px 26px
+        rgba(0, 217, 255, .09);
+
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(0, 217, 255, .13),
+            rgba(123, 77, 255, .12)
+        );
+
+}
+
+
+.my-learning-continue-btn i {
+
+    color:
+        var(--my-cyan);
+
+
+    transition:
+        transform .3s ease;
+
+}
+
+
+.my-learning-continue-btn:hover i {
+
+    transform:
+        translateX(6px);
+
+}
+
+
+/* =========================================================
+   DECORATIVE GRID / GLOW
+   ========================================================= */
+
+.my-learning-card-grid {
+
+    position:
+        absolute;
+
+
+    right:
+        -30px;
+
+
+    bottom:
+        -30px;
+
+
+    width:
+        160px;
+
+
+    height:
+        160px;
+
+
+    opacity:
+        .18;
+
+
+    background-image:
+
+        linear-gradient(
+            rgba(0, 217, 255, .12) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(0, 217, 255, .12) 1px,
+            transparent 1px
+        );
+
+
+    background-size:
+        13px 13px;
+
+
+    transform:
+        rotate(8deg);
+
+
+    pointer-events:
+        none;
+
+}
+
+
+.my-learning-card-glow {
+
+    position:
+        absolute;
+
+
+    right:
+        -65px;
+
+
+    top:
+        25%;
+
+
+    width:
+        190px;
+
+
+    height:
+        190px;
+
+
+    border-radius:
+        50%;
+
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(0, 217, 255, .055),
+            transparent 70%
+        );
+
+
+    pointer-events:
+        none;
+
+}
+
+
+/* =========================================================
+   NAVIGATION BUTTONS
+   ========================================================= */
+
+.my-learning-carousel-btn {
+
+    position:
+        relative;
+
+
+    z-index:
+        20;
+
+
+    flex:
+        0 0 58px;
+
+
+    width:
+        58px;
+
+
+    height:
+        58px;
+
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .18);
+
+
+    border-radius:
+        14px;
+
+
+    background:
+        rgba(0, 217, 255, .035);
+
+
+    color:
+        #8398a8;
+
+
+    cursor:
+        pointer;
+
+
+    transition:
+
+        transform .3s ease,
+        border-color .3s ease,
+        background .3s ease,
+        color .3s ease,
+        box-shadow .3s ease;
+
+}
+
+
+.my-learning-carousel-btn:hover {
+
+    color:
+        var(--my-cyan);
+
+
+    border-color:
+        rgba(0, 217, 255, .58);
+
+
+    background:
+        rgba(0, 217, 255, .08);
+
+
+    box-shadow:
+        0 0 22px
+        rgba(0, 217, 255, .08);
+
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+.my-learning-carousel-btn:active {
+
+    transform:
+        scale(.93);
+
+}
+
+
+.my-learning-carousel-btn:disabled {
+
+    opacity:
+        1;
+
+
+    cursor:
+        pointer;
+
+}
+
+
+/* =========================================================
+   DOTS
+   ========================================================= */
+
+.my-learning-carousel-dots {
+
+    position:
+        relative;
+
+
+    z-index:
+        20;
+
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    gap:
+        7px;
+
+
+    margin-top:
+        2px;
+
+}
+
+
+.my-learning-carousel-dot {
+
+    width:
+        7px;
+
+
+    height:
+        7px;
+
+
+    padding:
+        0;
+
+
+    border:
+        0;
+
+
+    border-radius:
+        50%;
+
+
+    background:
+        rgba(0, 217, 255, .18);
+
+
+    cursor:
+        pointer;
+
+
+    transition:
+
+        width .25s ease,
+        background .25s ease,
+        box-shadow .25s ease;
+
+}
+
+
+.my-learning-carousel-dot.active {
+
+    width:
+        24px;
+
+
+    border-radius:
+        99px;
+
+
+    background:
+        var(--my-cyan);
+
+
+    box-shadow:
+        0 0 10px
+        rgba(0, 217, 255, .5);
+
+}
+
+
+/* =========================================================
+   SLIDER HINT
+   ========================================================= */
+
+.my-learning-carousel-hint {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    gap:
+        8px;
+
+
+    margin-top:
+        11px;
+
+
+    color:
+        #5f7484;
+
+
+    font-size:
+        9px;
+
+
+    font-weight:
+        700;
+
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+.my-learning-carousel-hint i {
+
+    color:
+        var(--my-cyan);
+
+}
+
+
+.my-learning-hint-line {
+
+    width:
+        27px;
+
+
+    height:
+        1px;
+
+
+    background:
+        rgba(0, 217, 255, .13);
+
+}
+
+
+/* =========================================================
+   EXPLORE PANEL
+   ========================================================= */
+
+.my-learning-explore-panel {
+
+    position:
+        relative;
+
+
+    z-index:
+        4;
+
+
+    display:
+        grid;
+
+
+    grid-template-columns:
+        auto 1fr auto;
+
+
+    align-items:
+        center;
+
+
+    gap:
+        24px;
+
+
+    width:
+        min(1450px, 100%);
+
+
+    margin:
+        0 auto;
+
+
+    padding:
+        28px 30px;
+
+
+    overflow:
+        hidden;
+
+
+    border:
+        1px solid
+        rgba(94, 70, 255, .20);
+
+
+    border-radius:
+        16px;
+
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(0, 217, 255, .035),
+            rgba(123, 77, 255, .06)
+        );
+
+
+    box-shadow:
+        0 20px 55px
+        rgba(0, 0, 0, .18);
+
+}
+
+
+.my-learning-explore-panel::before {
+
+    content:
+        "";
+
+
+    position:
+        absolute;
+
+
+    top:
+        0;
+
+
+    left:
+        10%;
+
+
+    right:
+        10%;
+
+
+    height:
+        1px;
+
+
+    background:
+
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 217, 255, .5),
+            transparent
+        );
+
+}
+
+
+.my-learning-explore-orbit {
+
+    position:
+        absolute;
+
+
+    right:
+        -50px;
+
+
+    top:
+        -70px;
+
+
+    width:
+        180px;
+
+
+    height:
+        180px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .1);
+
+
+    border-radius:
+        50%;
+
+
+    animation:
+        myLearningOrbit
+        14s
+        linear
+        infinite;
+
+}
+
+
+.my-learning-explore-icon {
+
+    position:
+        relative;
+
+
+    z-index:
+        3;
+
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    width:
+        62px;
+
+
+    height:
+        62px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .2);
+
+
+    border-radius:
+        13px;
+
+
+    background:
+        rgba(0, 217, 255, .045);
+
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        23px;
+
+}
+
+
+.my-learning-explore-content {
+
+    position:
+        relative;
+
+
+    z-index:
+        3;
+
+}
+
+
+.my-learning-explore-content > span {
+
+    display:
+        block;
+
+
+    margin-bottom:
+        7px;
+
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        9px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.5px;
+
+}
+
+
+.my-learning-explore-content h2 {
+
+    margin:
+        0;
+
+
+    color:
+        #ffffff;
+
+
+    font-size:
+        23px;
+
+
+    font-weight:
+        800;
+
+}
+
+
+.my-learning-explore-content p {
+
+    max-width:
+        800px;
+
+
+    margin:
+        8px 0 0;
+
+
+    color:
+        #8196a7;
+
+
+    font-size:
+        13px;
+
+
+    line-height:
+        1.7;
+
+}
+
+
+.my-learning-explore-btn {
+
+    position:
+        relative;
+
+
+    z-index:
+        3;
+
+
+    display:
+        inline-flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    gap:
+        11px;
+
+
+    padding:
+        14px 18px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .3);
+
+
+    border-radius:
+        10px;
+
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(20, 122, 255, .18),
+            rgba(123, 77, 255, .14)
+        );
+
+
+    color:
+        #ffffff;
+
+
+    text-decoration:
+        none;
+
+
+    font-size:
+        10px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        .09em;
+
+
+    white-space:
+        nowrap;
+
+}
+
+
+.my-learning-explore-btn i {
+
+    color:
+        var(--my-cyan);
+
+
+    transition:
+        transform .3s ease;
+
+}
+
+
+.my-learning-explore-btn:hover {
+
+    color:
+        #ffffff;
+
+
+    text-decoration:
+        none;
+
+
+    transform:
+        translateY(-2px);
+
+
+    border-color:
+        rgba(0, 217, 255, .68);
+
+
+    box-shadow:
+        0 10px 32px
+        rgba(0, 217, 255, .09);
+
+}
+
+
+.my-learning-explore-btn:hover i {
+
+    transform:
+        translateX(5px);
+
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.my-learning-empty {
+
+    position:
+        relative;
+
+
+    z-index:
+        4;
+
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    gap:
+        25px;
+
+
+    width:
+        min(1450px, 100%);
+
+
+    margin:
+        0 auto 45px;
+
+
+    padding:
+        32px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .12);
+
+
+    border-radius:
+        15px;
+
+
+    background:
+        rgba(0, 217, 255, .025);
+
+}
+
+
+.my-learning-empty-icon {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    width:
+        68px;
+
+
+    height:
+        68px;
+
+
+    flex-shrink:
+        0;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .18);
+
+
+    border-radius:
+        13px;
+
+
+    background:
+        rgba(0, 217, 255, .04);
+
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        24px;
+
+}
+
+
+.my-learning-empty-content > span {
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        9px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.4px;
+
+}
+
+
+.my-learning-empty-content h2 {
+
+    margin:
+        7px 0 0;
+
+
+    color:
+        #ffffff;
+
+
+    font-size:
+        24px;
+
+
+    font-weight:
+        800;
+
+}
+
+
+.my-learning-empty-content p {
+
+    max-width:
+        700px;
+
+
+    margin:
+        8px 0 0;
+
+
+    color:
+        #8196a7;
+
+
+    font-size:
+        13px;
+
+
+    line-height:
+        1.7;
+
+}
+
+
+.my-learning-primary-btn {
+
+    display:
+        inline-flex;
+
+
+    align-items:
+        center;
+
+
+    gap:
+        10px;
+
+
+    margin-top:
+        16px;
+
+
+    padding:
+        13px 17px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .3);
+
+
+    border-radius:
+        9px;
+
+
+    background:
+        rgba(0, 217, 255, .05);
+
+
+    color:
+        #ffffff;
+
+
+    text-decoration:
+        none;
+
+
+    font-size:
+        10px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        .09em;
+
+}
+
+
+.my-learning-primary-btn i {
+
+    color:
+        var(--my-cyan);
+
+}
+
+
+/* =========================================================
+   FACULTY
+   ========================================================= */
+
+.my-learning-faculty-section {
+
+    margin-top:
+        40px;
+
+}
+
+
+.my-learning-faculty-grid {
+
+    display:
+        grid;
+
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+
+    gap:
+        20px;
+
+}
+
+
+.my-learning-faculty-card {
+
+    position:
+        relative;
+
+
+    padding:
+        21px;
+
+
+    border:
+        1px solid
+        rgba(111, 177, 220, .14);
+
+
+    border-radius:
+        14px;
+
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(10, 30, 48, .86),
+            rgba(4, 16, 29, .70)
+        );
+
+
+    backdrop-filter:
+        blur(15px);
+
+
+    transition:
+
+        transform .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease;
+
+}
+
+
+.my-learning-faculty-card:hover {
+
+    transform:
+        translateY(-5px);
+
+
+    border-color:
+        rgba(0, 217, 255, .36);
+
+
+    box-shadow:
+        0 20px 55px
+        rgba(0, 0, 0, .25);
+
+}
+
+
+.my-learning-faculty-top {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        space-between;
+
+}
+
+
+.my-learning-faculty-top span {
+
+    color:
+        #6f8398;
+
+
+    font-size:
+        8px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.2px;
+
+}
+
+
+.my-learning-faculty-top strong {
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        9px;
+
+}
+
+
+.my-learning-faculty-icon {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    width:
+        50px;
+
+
+    height:
+        50px;
+
+
+    margin-top:
+        20px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .16);
+
+
+    border-radius:
+        11px;
+
+
+    background:
+        rgba(0, 217, 255, .04);
+
+
+    color:
+        var(--my-cyan);
+
+
+    font-size:
+        19px;
+
+}
+
+
+.my-learning-faculty-card h3 {
+
+    margin:
+        15px 0 0;
+
+
+    color:
+        #ffffff;
+
+
+    font-size:
+        19px;
+
+
+    line-height:
+        1.3;
+
+
+    font-weight:
+        750;
+
+}
+
+
+.my-learning-faculty-card p {
+
+    margin:
+        8px 0 0;
+
+
+    color:
+        #8095a7;
+
+
+    font-size:
+        11px;
+
+}
+
+
+.my-learning-faculty-btn {
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        space-between;
+
+
+    margin-top:
+        18px;
+
+
+    padding:
+        11px 13px;
+
+
+    border:
+        1px solid
+        rgba(0, 217, 255, .23);
+
+
+    border-radius:
+        8px;
+
+
+    color:
+        #ffffff;
+
+
+    text-decoration:
+        none;
+
+
+    font-size:
+        9px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+.my-learning-faculty-btn i {
+
+    color:
+        var(--my-cyan);
+
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.my-learning-footer {
+
+    position:
+        relative;
+
+
+    z-index:
+        4;
+
+
+    display:
+        flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    flex-wrap:
+        wrap;
+
+
+    gap:
+        12px;
+
+
+    width:
+        min(1450px, 100%);
+
+
+    margin:
+        48px auto 0;
+
+
+    padding-top:
+        22px;
+
+
+    border-top:
+        1px solid
+        rgba(0, 217, 255, .08);
+
+
+    color:
+        #53697a;
+
+
+    font-size:
+        9px;
+
+
+    font-weight:
+        800;
+
+
+    letter-spacing:
+        1.2px;
+
+}
+
+
+.my-learning-footer-divider {
+
+    width:
+        32px;
+
+
+    height:
+        1px;
+
+
+    background:
+        rgba(0, 217, 255, .14);
+
+}
+
+
+.my-learning-footer-status {
+
+    display:
+        inline-flex;
+
+
+    align-items:
+        center;
+
+
+    gap:
+        6px;
+
+
+    color:
+        var(--my-cyan);
+
+}
+
+
+.my-learning-footer-status span {
+
+    width:
+        5px;
+
+
+    height:
+        5px;
+
+
+    border-radius:
+        50%;
+
+
+    background:
+        var(--my-cyan);
+
+
+    box-shadow:
+        0 0 8px
+        var(--my-cyan);
+
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes myCoursesPulse {
+
+    0%,
+    100% {
+
+        opacity:
+            1;
+
+        transform:
+            scale(1);
+
+    }
+
+
+    50% {
+
+        opacity:
+            .45;
+
+        transform:
+            scale(.72);
+
+    }
+
+}
+
+
+@keyframes myCoursesLivePulse {
+
+    0%,
+    100% {
+
+        opacity:
+            1;
+
+        transform:
+            scale(1);
+
+    }
+
+
+    50% {
+
+        opacity:
+            .55;
+
+        transform:
+            scale(.82);
+
+    }
+
+}
+
+
+@keyframes myCoursesTitleGradient {
+
+    0% {
+
+        background-position:
+            0% center;
+
+    }
+
+
+    100% {
+
+        background-position:
+            200% center;
+
+    }
+
+}
+
+
+@keyframes myLearningCorePulse {
+
+    0%,
+    100% {
+
+        transform:
+            scale(1);
+
+        box-shadow:
+
+            0 0 28px
+            rgba(0, 217, 255, .13),
+
+            inset 0 0 18px
+            rgba(0, 217, 255, .07);
+
+    }
+
+
+    50% {
+
+        transform:
+            scale(1.06);
+
+        box-shadow:
+
+            0 0 42px
+            rgba(0, 217, 255, .24),
+
+            inset 0 0 24px
+            rgba(0, 217, 255, .11);
+
+    }
+
+}
+
+
+@keyframes myLearningOrbit {
+
+    from {
+
+        transform:
+            rotate(0deg);
+
+    }
+
+
+    to {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+@keyframes myLearningOrbitReverse {
+
+    from {
+
+        transform:
+            rotate(0deg);
+
+    }
+
+
+    to {
+
+        transform:
+            rotate(-360deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   LIGHT THEME
+   SOFT BLUE / SLATE
+   ========================================================= */
+
+html[data-theme="light"] .my-courses-page,
+html:not([data-theme="dark"]) .my-courses-page {
+
+    --my-bg:
+        #f4f8fc;
+
+    --my-bg-2:
+        #edf3f9;
+
+    --my-cyan:
+        #087f9f;
+
+    --my-blue:
+        #2f73d9;
+
+    --my-purple:
+        #7254d6;
+
+    --my-white:
+        #24364b;
+
+    --my-text:
+        #2a3d52;
+
+    --my-muted:
+        #60758b;
+
+    --my-soft:
+        #8193a5;
+
+    --my-border:
+        rgba(30, 89, 130, .13);
+
+    --my-border-strong:
+        rgba(47, 115, 217, .24);
+
+
+    background:
+
+        radial-gradient(
+            circle at 82% 12%,
+            rgba(8, 127, 159, .065),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 12% 82%,
+            rgba(114, 84, 214, .05),
+            transparent 27%
+        ),
+
+        linear-gradient(
+            135deg,
+            #f4f8fc,
+            #edf3f9
+        );
+
+
+    color:
+        #2a3d52;
+
+}
+
+
+/* =========================================================
+   LIGHT GRID
+   ========================================================= */
+
+html[data-theme="light"]
+.my-courses-page::before,
+html:not([data-theme="dark"])
+.my-courses-page::before {
+
+    background-image:
+
+        linear-gradient(
+            rgba(47, 115, 217, .05) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(47, 115, 217, .05) 1px,
+            transparent 1px
+        );
+
+
+    opacity:
+        .35;
+
+}
+
+
+/* =========================================================
+   LIGHT GLOW
+   ========================================================= */
+
+html[data-theme="light"]
+.my-courses-page::after,
+html:not([data-theme="dark"])
+.my-courses-page::after {
+
+    background:
+        rgba(8, 127, 159, .06);
+
+    filter:
+        blur(110px);
+
+}
+
+
+/* =========================================================
+   LIGHT HEADER
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-eyebrow,
+html:not([data-theme="dark"])
+.my-learning-eyebrow {
+
+    background:
+        rgba(8, 127, 159, .045);
+
+    border-color:
+        rgba(8, 127, 159, .18);
+
+    color:
+        #087f9f;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-header h1,
+html:not([data-theme="dark"])
+.my-learning-header h1 {
+
+    color:
+        #24364b;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-header h1 span,
+html:not([data-theme="dark"])
+.my-learning-header h1 span {
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #24364b,
+            #087f9f,
+            #2f73d9
+        );
+
+    background-size:
+        200% auto;
+
+    -webkit-background-clip:
+        text;
+
+    background-clip:
+        text;
+
+    -webkit-text-fill-color:
+        transparent;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-header-main > p,
+html:not([data-theme="dark"])
+.my-learning-header-main > p {
+
+    color:
+        #60758b;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-header-main > p strong,
+html:not([data-theme="dark"])
+.my-learning-header-main > p strong {
+
+    color:
+        #2a3d52;
+
+}
+
+
+/* =========================================================
+   LIGHT STATUS
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-status-card,
+html:not([data-theme="dark"])
+.my-learning-status-card {
+
+    border-color:
+        rgba(47, 115, 217, .15);
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, .90),
+            rgba(237, 244, 250, .90)
+        );
+
+    box-shadow:
+
+        0 15px 40px
+        rgba(30, 70, 100, .07),
+
+        inset 0 1px 0
+        rgba(255, 255, 255, .95);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-status-label,
+html:not([data-theme="dark"])
+.my-learning-status-label {
+
+    color:
+        #8193a5;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-status-value,
+html:not([data-theme="dark"])
+.my-learning-status-value {
+
+    color:
+        #2a3d52;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-status-meta,
+html:not([data-theme="dark"])
+.my-learning-status-meta {
+
+    color:
+        #087f9f;
+
+}
+
+
+/* =========================================================
+   LIGHT MESSAGES
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-message,
+html:not([data-theme="dark"])
+.my-learning-message {
+
+    border-color:
+        rgba(47, 115, 217, .13);
+
+    background:
+        rgba(255, 255, 255, .76);
+
+    color:
+        #2a3d52;
+
+    box-shadow:
+        0 7px 22px
+        rgba(30, 70, 100, .045);
+
+}
+
+
+/* =========================================================
+   LIGHT SECTION
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-section-label,
+html:not([data-theme="dark"])
+.my-learning-section-label {
+
+    color:
+        #087f9f;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-section-header h2,
+html:not([data-theme="dark"])
+.my-learning-section-header h2 {
+
+    color:
+        #24364b;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-section-header p,
+html:not([data-theme="dark"])
+.my-learning-section-header p {
+
+    color:
+        #60758b;
+
+}
+
+
+/* =========================================================
+   LIGHT COUNTER
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-course-counter,
+html:not([data-theme="dark"])
+.my-learning-course-counter {
+
+    border-color:
+        rgba(47, 115, 217, .15);
+
+    background:
+        rgba(255, 255, 255, .70);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-course-counter strong,
+html:not([data-theme="dark"])
+.my-learning-course-counter strong {
+
+    color:
+        #2f73d9;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-course-counter span,
+html:not([data-theme="dark"])
+.my-learning-course-counter span {
+
+    color:
+        #8193a5;
+
+}
+
+
+/* =========================================================
+   LIGHT COURSE CARD
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-course-card,
+html:not([data-theme="dark"])
+.my-learning-course-card {
+
+    border-color:
+        rgba(47, 115, 217, .14);
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, .96),
+            rgba(244, 249, 253, .92)
+        );
+
+    box-shadow:
+
+        0 18px 50px
+        rgba(30, 70, 100, .08),
+
+        inset 0 1px 0
+        rgba(255, 255, 255, .98);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-course-card.is-active,
+html:not([data-theme="dark"])
+.my-learning-course-card.is-active {
+
+    border-color:
+        rgba(8, 127, 159, .32);
+
+    box-shadow:
+
+        0 25px 60px
+        rgba(30, 70, 100, .10),
+
+        0 0 32px
+        rgba(8, 127, 159, .055),
+
+        inset 0 1px 0
+        #ffffff;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-card-content h3,
+html:not([data-theme="dark"])
+.my-learning-card-content h3 {
+
+    color:
+        #2a3d52;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-card-content p,
+html:not([data-theme="dark"])
+.my-learning-card-content p {
+
+    color:
+        #60758b;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-course-status,
+html:not([data-theme="dark"])
+.my-learning-course-status {
+
+    color:
+        #8193a5;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-course-code,
+html:not([data-theme="dark"])
+.my-learning-course-code {
+
+    color:
+        #2f73d9;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-course-type,
+html:not([data-theme="dark"])
+.my-learning-course-type {
+
+    color:
+        #8193a5;
+
+}
+
+
+/* =========================================================
+   LIGHT VISUAL
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-visual-core,
+html:not([data-theme="dark"])
+.my-learning-visual-core {
+
+    border-color:
+        rgba(47, 115, 217, .34);
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(8, 127, 159, .12),
+            rgba(238, 247, 251, .97) 68%
+        );
+
+    color:
+        #087f9f;
+
+    box-shadow:
+
+        0 0 30px
+        rgba(8, 127, 159, .09),
+
+        inset 0 0 20px
+        rgba(8, 127, 159, .04);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-visual-ring,
+html:not([data-theme="dark"])
+.my-learning-visual-ring {
+
+    border-color:
+        rgba(47, 115, 217, .14);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-visual-ring.ring-2,
+html:not([data-theme="dark"])
+.my-learning-visual-ring.ring-2 {
+
+    border-color:
+        rgba(114, 84, 214, .16);
+
+}
+
+
+/* =========================================================
+   LIGHT META
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-card-meta > div,
+html:not([data-theme="dark"])
+.my-learning-card-meta > div {
+
+    border-color:
+        rgba(47, 115, 217, .09);
+
+    background:
+        rgba(244, 249, 253, .90);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-card-meta span,
+html:not([data-theme="dark"])
+.my-learning-card-meta span {
+
+    color:
+        #8193a5;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-card-meta strong,
+html:not([data-theme="dark"])
+.my-learning-card-meta strong {
+
+    color:
+        #344b61;
+
+}
+
+
+html[data-theme="light"]
+.learning-active-status,
+html:not([data-theme="dark"])
+.learning-active-status {
+
+    color:
+        #087f9f !important;
+
+}
+
+
+/* =========================================================
+   LIGHT FOOTER BUTTON
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-card-footer,
+html:not([data-theme="dark"])
+.my-learning-card-footer {
+
+    border-top-color:
+        rgba(30, 70, 100, .075);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-enrolled-badge,
+html:not([data-theme="dark"])
+.my-learning-enrolled-badge {
+
+    color:
+        #18845b;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-continue-btn,
+html:not([data-theme="dark"])
+.my-learning-continue-btn {
+
+    border-color:
+        rgba(47, 115, 217, .28);
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(47, 115, 217, .08),
+            rgba(114, 84, 214, .07)
+        );
+
+    color:
+        #2a3d52;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-continue-btn i,
+html:not([data-theme="dark"])
+.my-learning-continue-btn i {
+
+    color:
+        #2f73d9;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-continue-btn:hover,
+html:not([data-theme="dark"])
+.my-learning-continue-btn:hover {
+
+    color:
+        #24364b;
+
+    border-color:
+        rgba(47, 115, 217, .58);
+
+}
+
+
+/* =========================================================
+   LIGHT BUTTONS
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-carousel-btn,
+html:not([data-theme="dark"])
+.my-learning-carousel-btn {
+
+    border-color:
+        rgba(47, 115, 217, .17);
+
+    background:
+        rgba(255, 255, 255, .84);
+
+    color:
+        #60758b;
+
+    box-shadow:
+        0 8px 20px
+        rgba(30, 70, 100, .055);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-carousel-btn:hover,
+html:not([data-theme="dark"])
+.my-learning-carousel-btn:hover {
+
+    color:
+        #2f73d9;
+
+    border-color:
+        rgba(47, 115, 217, .48);
+
+    background:
+        rgba(238, 246, 252, .96);
+
+}
+
+
+/* =========================================================
+   LIGHT DOTS
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-carousel-dot,
+html:not([data-theme="dark"])
+.my-learning-carousel-dot {
+
+    background:
+        rgba(47, 115, 217, .18);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-carousel-dot.active,
+html:not([data-theme="dark"])
+.my-learning-carousel-dot.active {
+
+    background:
+        #2f73d9;
+
+    box-shadow:
+        0 0 10px
+        rgba(47, 115, 217, .28);
+
+}
+
+
+/* =========================================================
+   LIGHT HINT
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-carousel-hint,
+html:not([data-theme="dark"])
+.my-learning-carousel-hint {
+
+    color:
+        #8193a5;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-carousel-hint i,
+html:not([data-theme="dark"])
+.my-learning-carousel-hint i {
+
+    color:
+        #2f73d9;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-hint-line,
+html:not([data-theme="dark"])
+.my-learning-hint-line {
+
+    background:
+        rgba(47, 115, 217, .15);
+
+}
+
+
+/* =========================================================
+   LIGHT EXPLORE PANEL
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-explore-panel,
+html:not([data-theme="dark"])
+.my-learning-explore-panel {
+
+    border-color:
+        rgba(114, 84, 214, .16);
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, .88),
+            rgba(242, 247, 252, .92)
+        );
+
+    box-shadow:
+        0 20px 50px
+        rgba(30, 70, 100, .07);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-explore-content h2,
+html:not([data-theme="dark"])
+.my-learning-explore-content h2 {
+
+    color:
+        #2a3d52;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-explore-content p,
+html:not([data-theme="dark"])
+.my-learning-explore-content p {
+
+    color:
+        #60758b;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-explore-btn,
+html:not([data-theme="dark"])
+.my-learning-explore-btn {
+
+    border-color:
+        rgba(47, 115, 217, .28);
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(47, 115, 217, .10),
+            rgba(114, 84, 214, .08)
+        );
+
+    color:
+        #2a3d52;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-explore-btn i,
+html:not([data-theme="dark"])
+.my-learning-explore-btn i {
+
+    color:
+        #2f73d9;
+
+}
+
+
+/* =========================================================
+   LIGHT EMPTY
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-empty,
+html:not([data-theme="dark"])
+.my-learning-empty {
+
+    border-color:
+        rgba(47, 115, 217, .12);
+
+    background:
+        rgba(255, 255, 255, .70);
+
+    box-shadow:
+        0 15px 40px
+        rgba(30, 70, 100, .055);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-empty-content h2,
+html:not([data-theme="dark"])
+.my-learning-empty-content h2 {
+
+    color:
+        #2a3d52;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-empty-content p,
+html:not([data-theme="dark"])
+.my-learning-empty-content p {
+
+    color:
+        #60758b;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-primary-btn,
+html:not([data-theme="dark"])
+.my-learning-primary-btn {
+
+    border-color:
+        rgba(47, 115, 217, .25);
+
+    background:
+        rgba(47, 115, 217, .07);
+
+    color:
+        #2a3d52;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-primary-btn i,
+html:not([data-theme="dark"])
+.my-learning-primary-btn i {
+
+    color:
+        #2f73d9;
+
+}
+
+
+/* =========================================================
+   LIGHT FACULTY
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-faculty-card,
+html:not([data-theme="dark"])
+.my-learning-faculty-card {
+
+    border-color:
+        rgba(47, 115, 217, .13);
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, .93),
+            rgba(244, 249, 253, .91)
+        );
+
+    box-shadow:
+        0 15px 40px
+        rgba(30, 70, 100, .065);
+
+}
+
+
+html[data-theme="light"]
+.my-learning-faculty-card h3,
+html:not([data-theme="dark"])
+.my-learning-faculty-card h3 {
+
+    color:
+        #2a3d52;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-faculty-card p,
+html:not([data-theme="dark"])
+.my-learning-faculty-card p {
+
+    color:
+        #8193a5;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-faculty-top span,
+html:not([data-theme="dark"])
+.my-learning-faculty-top span {
+
+    color:
+        #8193a5;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-faculty-top strong,
+html:not([data-theme="dark"])
+.my-learning-faculty-top strong {
+
+    color:
+        #2f73d9;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-faculty-icon,
+html:not([data-theme="dark"])
+.my-learning-faculty-icon {
+
+    border-color:
+        rgba(47, 115, 217, .16);
+
+    background:
+        rgba(47, 115, 217, .05);
+
+    color:
+        #2f73d9;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-faculty-btn,
+html:not([data-theme="dark"])
+.my-learning-faculty-btn {
+
+    border-color:
+        rgba(47, 115, 217, .20);
+
+    color:
+        #2a3d52;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-faculty-btn i,
+html:not([data-theme="dark"])
+.my-learning-faculty-btn i {
+
+    color:
+        #2f73d9;
+
+}
+
+
+/* =========================================================
+   LIGHT FOOTER
+   ========================================================= */
+
+html[data-theme="light"]
+.my-learning-footer,
+html:not([data-theme="dark"])
+.my-learning-footer {
+
+    border-top-color:
+        rgba(47, 115, 217, .10);
+
+    color:
+        #8193a5;
+
+}
+
+
+html[data-theme="light"]
+.my-learning-footer-status,
+html:not([data-theme="dark"])
+.my-learning-footer-status {
+
+    color:
+        #18845b;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .my-courses-page {
+
+        padding-left:
+            4%;
+
+        padding-right:
+            4%;
+
+    }
+
+
+    .my-learning-course-card {
+
+        min-height:
+            550px;
+
+    }
+
+
+    .my-learning-carousel-track {
+
+        min-height:
+            550px;
+
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .my-learning-header {
+
+        align-items:
+            flex-start;
+
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .my-learning-status-card {
+
+        width:
+            100%;
+
+    }
+
+
+    .my-learning-carousel-shell {
+
+        gap:
+            10px;
+
+    }
+
+
+    .my-learning-carousel-btn {
+
+        flex:
+            0 0 50px;
+
+
+        width:
+            50px;
+
+
+        height:
+            50px;
+
+    }
+
+
+    .my-learning-course-card {
+
+        min-height:
+            530px;
+
+        padding:
+            30px 27px 27px;
+
+    }
+
+
+    .my-learning-carousel-track {
+
+        min-height:
+            530px;
+
+    }
+
+
+    .my-learning-card-visual {
+
+        width:
+            175px;
+
+
+        height:
+            175px;
+
+    }
+
+
+    .my-learning-visual-ring.ring-1 {
+
+        width:
+            120px;
+
+
+        height:
+            120px;
+
+    }
+
+
+    .my-learning-visual-ring.ring-2 {
+
+        width:
+            160px;
+
+
+        height:
+            160px;
+
+    }
+
+
+    .my-learning-faculty-grid {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+    }
+
+
+    .my-learning-explore-panel {
+
+        grid-template-columns:
+            auto 1fr;
+
+    }
+
+
+    .my-learning-explore-btn {
+
+        grid-column:
+            2;
+
+
+        justify-self:
+            start;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .my-courses-page {
+
+        padding:
+            30px 16px 45px;
+
+    }
+
+
+    .my-learning-header {
+
+        margin-bottom:
+            42px;
+
+    }
+
+
+    .my-learning-eyebrow {
+
+        font-size:
+            9px;
+
+        letter-spacing:
+            1.3px;
+
+    }
+
+
+    .my-learning-header h1 {
+
+        font-size:
+            3.15rem;
+
+        letter-spacing:
+            -2px;
+
+    }
+
+
+    .my-learning-header-main > p {
+
+        font-size:
+            .95rem;
+
+    }
+
+
+    .my-learning-section-header {
+
+        align-items:
+            flex-start;
+
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .my-learning-section-header h2 {
+
+        font-size:
+            2.1rem;
+
+    }
+
+
+    .my-learning-carousel-shell {
+
+        gap:
+            7px;
+
+    }
+
+
+    .my-learning-carousel-btn {
+
+        flex:
+            0 0 42px;
+
+
+        width:
+            42px;
+
+
+        height:
+            42px;
+
+
+        border-radius:
+            11px;
+
+    }
+
+
+    .my-learning-carousel-viewport {
+
+        padding:
+            8px 3px 25px;
+
+    }
+
+
+    .my-learning-carousel-track {
+
+        min-height:
+            510px;
+
+    }
+
+
+    .my-learning-course-card {
+
+        min-height:
+            510px;
+
+        padding:
+            24px 18px 22px;
+
+        border-radius:
+            15px;
+
+    }
+
+
+    .my-learning-card-visual {
+
+        width:
+            150px;
+
+
+        height:
+            150px;
+
+
+        margin:
+            18px auto 8px;
+
+    }
+
+
+    .my-learning-visual-core {
+
+        width:
+            70px;
+
+
+        height:
+            70px;
+
+
+        font-size:
+            24px;
+
+    }
+
+
+    .my-learning-visual-ring.ring-1 {
+
+        width:
+            105px;
+
+
+        height:
+            105px;
+
+    }
+
+
+    .my-learning-visual-ring.ring-2 {
+
+        width:
+            138px;
+
+
+        height:
+            138px;
+
+    }
+
+
+    .my-learning-card-content h3 {
+
+        font-size:
+            1.55rem;
+
+    }
+
+
+    .my-learning-card-content p {
+
+        font-size:
+            12px;
+
+    }
+
+
+    .my-learning-card-meta {
+
+        grid-template-columns:
+            repeat(
+                2,
+                1fr
+            );
+
+    }
+
+
+    .my-learning-explore-panel {
+
+        grid-template-columns:
+            1fr;
+
+
+        gap:
+            17px;
+
+
+        padding:
+            23px;
+
+    }
+
+
+    .my-learning-explore-btn {
+
+        grid-column:
+            1;
+
+
+        width:
+            100%;
+
+    }
+
+
+    .my-learning-empty {
+
+        flex-direction:
+            column;
+
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .my-learning-faculty-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .my-learning-footer {
+
+        text-align:
+            center;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .my-courses-page *,
+    .my-courses-page *::before,
+    .my-courses-page *::after {
+
+        animation-duration:
+            .01ms !important;
+
+        animation-iteration-count:
+            1 !important;
+
+        transition-duration:
+            .01ms !important;
+
+        scroll-behavior:
+            auto !important;
+
+    }
+
+}
+
+/* =========================================================
+   FINAL FIX — CONTINUE LEARNING BUTTON
+   ========================================================= */
+
+.my-learning-course-card {
+    position: absolute !important;
+    overflow: hidden;
+    padding-bottom: 125px !important;
+}
+
+.my-learning-card-footer {
+    position: absolute !important;
+    left: 34px;
+    right: 34px;
+    bottom: 28px;
+
+    z-index: 50 !important;
+
+    margin: 0 !important;
+    padding-top: 16px;
+
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.my-learning-enrolled-badge {
+    position: relative;
+    z-index: 51 !important;
+
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    margin-bottom: 10px;
+}
+
+.my-learning-continue-btn {
+    position: relative !important;
+    z-index: 52 !important;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    pointer-events: auto !important;
+}
+
+.my-learning-course-card.is-active
+.my-learning-card-footer {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.my-learning-course-card.is-active
+.my-learning-continue-btn {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Keep decorative elements behind the button */
+.my-learning-card-grid,
+.my-learning-card-glow {
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+.my-learning-card-top,
+.my-learning-card-visual,
+.my-learning-card-content,
+.my-learning-card-meta {
+    position: relative;
+    z-index: 10;
+}
+
+/* =========================================================
+   CAROUSEL — FASTER SLIDE / QUICK SETTLE
+   ========================================================= */
+
+.my-learning-course-card {
+    transition:
+        transform 0.28s cubic-bezier(0.22, 0.75, 0.25, 1),
+        opacity 0.20s ease,
+        visibility 0s linear 0.28s;
+}
+
+/* Active card */
+.my-learning-course-card.is-active {
+    transition:
+        transform 0.28s cubic-bezier(0.22, 0.75, 0.25, 1),
+        opacity 0.20s ease;
+}
+
+/* Next / previous cards */
+.my-learning-course-card.is-next,
+.my-learning-course-card.is-prev {
+    transition:
+        transform 0.28s cubic-bezier(0.22, 0.75, 0.25, 1),
+        opacity 0.20s ease,
+        visibility 0s;
+}
+
+/* Instant wrap from last → first / first → last */
+.my-learning-carousel-track.carousel-no-transition
+.my-learning-course-card {
+    transition: none !important;
+}

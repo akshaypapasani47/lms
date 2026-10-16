@@ -4,149 +4,228 @@
 
 <div class="container mt-4 mb-5">
 
-```
-<!-- Assessment summary -->
-<div class="card shadow-sm mb-4">
-    <div class="card-body text-center">
-
-        <h2>Assessment Result</h2>
-
-        <h4 class="mt-3">
-            {{ assessment.title }}
-        </h4>
-
-        <hr>
-
-        <h1>
-            {{ submission.total_marks }}
-            /
-            {{ assessment.total_marks }}
-        </h1>
-
-        <p class="text-muted">
-            Attempt {{ submission.attempt_number }}
-        </p>
-
-    </div>
-</div>
-
-
-{% for item in questions %}
-
+    <!-- Assessment Summary -->
     <div class="card shadow-sm mb-4">
-        <div class="card-body">
+        <div class="card-body text-center">
 
-            <h5>
-                Q{{ item.question.order }}.
-                {{ item.question.question_text }}
-            </h5>
+            <h2>Assessment Result</h2>
 
-            <p>
-                <strong>Marks:</strong>
-                {{ item.marks_awarded }}
-                /
-                {{ item.question.marks }}
-            </p>
+            <h4 class="mt-3">
+                {{ assessment.title }}
+            </h4>
 
+            <hr>
 
-            <!-- Status -->
+            <div class="row mt-4">
 
-            {% if item.is_correct %}
-
-                <div class="alert alert-success">
-                    Correct
+                <div class="col-md-4">
+                    <h6 class="text-muted">Score</h6>
+                    <h2>
+                        {{ submission.total_marks }}
+                        /
+                        {{ assessment.total_marks }}
+                    </h2>
                 </div>
 
-            {% elif item.is_correct == False %}
-
-                <div class="alert alert-danger">
-                    Incorrect
+                <div class="col-md-4">
+                    <h6 class="text-muted">Percentage</h6>
+                    <h2>
+                        {{ percentage }}%
+                    </h2>
                 </div>
 
-            {% else %}
-
-                <div class="alert alert-warning">
-                    Pending Evaluation
+                <div class="col-md-4">
+                    <h6 class="text-muted">Attempt</h6>
+                    <h2>
+                        {{ submission.attempt_number }}
+                    </h2>
                 </div>
 
-            {% endif %}
+            </div>
 
-
-            <!-- Programming question -->
-
-            {% if item.question.question_type == "PROGRAMMING" %}
-
-                <div class="mt-4">
-
-                    <h6>Submitted Code</h6>
-
-                    {% if item.submitted_code %}
-
-                        <pre class="bg-light border rounded p-3"
-                             style="white-space: pre-wrap;"><code>{{ item.submitted_code }}</code></pre>
-
-                    {% else %}
-
-                        <div class="alert alert-secondary">
-                            No code submitted.
-                        </div>
-
-                    {% endif %}
-
-                </div>
-
-                {% if item.feedback %}
-
-                    <div class="mt-3">
-
-                        <strong>Evaluation:</strong>
-
-                        <p class="mt-2">
-                            {{ item.feedback }}
-                        </p>
-
-                    </div>
-
-                {% endif %}
-
-
-            <!-- Other question types -->
-
-            {% else %}
-
-                {% if item.feedback %}
-
-                    <p class="mt-3">
-
-                        <strong>Feedback:</strong>
-
-                        {{ item.feedback }}
-
-                    </p>
-
-                {% endif %}
-
+            {% if submission.submitted_at %}
+                <p class="text-muted mt-3 mb-0">
+                    Submitted on:
+                    {{ submission.submitted_at|date:"d M Y, h:i A" }}
+                </p>
             {% endif %}
 
         </div>
     </div>
 
-{% empty %}
 
-    <div class="alert alert-info">
-        No questions were submitted.
+    <!-- Question-wise Results -->
+
+    <h4 class="mb-3">
+        Question-wise Results
+    </h4>
+
+    {% for item in questions %}
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-body">
+
+                <!-- Question -->
+                <h5>
+                    Q{{ item.question.order }}.
+                    {{ item.question.question_text }}
+                </h5>
+
+                <!-- Marks -->
+                <p class="mb-3">
+                    <strong>Marks:</strong>
+                    {{ item.marks_awarded }}
+                    /
+                    {{ item.question.marks }}
+                </p>
+
+
+                <!-- Status -->
+
+                {% if item.is_correct %}
+
+                    <div class="alert alert-success">
+                        <strong>Correct</strong>
+                    </div>
+
+                {% elif item.is_correct == False %}
+
+                    <div class="alert alert-danger">
+                        <strong>Incorrect</strong>
+                    </div>
+
+                {% else %}
+
+                    <div class="alert alert-warning">
+                        <strong>Pending Evaluation</strong>
+                    </div>
+
+                {% endif %}
+
+
+                <!-- Programming Question -->
+
+                {% if item.question.question_type == "PROGRAMMING" %}
+
+                    <div class="mt-4">
+
+                        <h6>
+                            Submitted Code
+                        </h6>
+
+                        {% if item.submitted_code %}
+
+                            <pre class="bg-light border rounded p-3"
+                                 style="white-space: pre-wrap;"><code>{{ item.submitted_code }}</code></pre>
+
+                        {% else %}
+
+                            <div class="alert alert-secondary">
+                                No code submitted.
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Programming Evaluation -->
+
+                    {% if item.feedback %}
+
+                        <div class="mt-3">
+
+                            <strong>Evaluation:</strong>
+
+                            <div class="mt-2">
+                                {{ item.feedback|linebreaks }}
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                <!-- Non-programming Questions -->
+
+                {% else %}
+
+                    <!-- Student Answer -->
+
+                    <div class="mt-4">
+
+                        <h6>
+                            Your Answer
+                        </h6>
+
+                        {% if item.answer_text %}
+
+                            <div class="bg-light border rounded p-3">
+                                {{ item.answer_text|linebreaks }}
+                            </div>
+
+                        {% else %}
+
+                            <div class="alert alert-secondary">
+                                No answer submitted.
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Feedback -->
+
+                    {% if item.feedback %}
+
+                        <div class="mt-3">
+
+                            <strong>Feedback:</strong>
+
+                            <div class="mt-2">
+                                {{ item.feedback|linebreaks }}
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="alert alert-info">
+            No questions were submitted.
+        </div>
+
+    {% endfor %}
+
+
+    <!-- Back Button -->
+
+    <div class="d-flex gap-2">
+
+        <a href="{% url 'student_assessment_attempts' submission.pk %}"
+        class="btn btn-info">
+
+            View All Attempts
+
+        </a>
+
+        <a href="{% url 'student_assessment_list' %}"
+        class="btn btn-primary">
+
+            Back to Assessments
+
+        </a>
+
     </div>
-
-{% endfor %}
-
-
-<a href="{% url 'student_assessment_list' %}"
-   class="btn btn-primary">
-
-    Back to Assessments
-
-</a>
-```
 
 </div>
 

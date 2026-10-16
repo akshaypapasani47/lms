@@ -14,12 +14,14 @@ from .views import (
     semester_update_view,
     semester_delete_view,
     dashboard_view,
+    live_classroom_view,   # ADD THIS
 )
 
 
 urlpatterns = [
     # Accounts url
     path("", home_view, name="home"),
+    path("live-classroom/", live_classroom_view, name="live_classroom"),
     path("add_item/", post_add, name="add_item"),
     path("item/<int:pk>/edit/", edit_post, name="edit_post"),
     path("item/<int:pk>/delete/", delete_post, name="delete_post"),
@@ -32,4 +34,5 @@ urlpatterns = [
     path("semester/<int:pk>/edit/", semester_update_view, name="edit_semester"),
     path("semester/<int:pk>/delete/", semester_delete_view, name="delete_semester"),
     path("dashboard/", dashboard_view, name="dashboard"),
+    
 ]

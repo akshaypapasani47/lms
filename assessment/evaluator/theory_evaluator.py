@@ -64,7 +64,26 @@ Consider:
 - important concepts
 - factual accuracy
 
-Award a mark from 0 to {max_marks}.
+Award a mark from 0 to {max_marks} based only on the knowledge demonstrated in the student's answer.
+
+Important grading rules:
+
+1. Do not award marks just because the student repeats the topic name, question keywords, or important terms.
+2. If the student only writes the name of the concept/topic without explaining it, award 0 marks.
+3. If the student gives only a very short or incomplete definition, award only the marks justified by that content.
+4. Do not assume that the student understands concepts that they have not explained.
+5. Do not give marks simply because keywords from the reference answer appear in the student's answer.
+6. Marks must reflect correctness, relevance, completeness, explanation, and the concepts actually demonstrated.
+7. A detailed and correct answer should receive substantially more marks than a keyword-only or one-line answer.
+8. For a 5-mark question:
+   - 0 marks: no meaningful answer or only the topic/concept name.
+   - 1 mark: very limited understanding or a minimally correct statement.
+   - 2 marks: basic understanding with some relevant explanation but major concepts missing.
+   - 3 marks: reasonably correct explanation but important concepts/details are missing.
+   - 4 marks: mostly complete and correct answer with minor omissions.
+   - 5 marks: complete, accurate, relevant explanation covering the important expected concepts.
+9. Scale these expectations proportionally when the maximum marks are different from 5.
+10. Never award several marks for an answer that contains only the question's topic or a few related words.
 
 Return ONLY valid JSON in exactly this format:
 
@@ -95,6 +114,7 @@ Rules:
                 "model": OLLAMA_MODEL,
                 "prompt": prompt,
                 "stream": False,
+                "think": False,
                 "format": "json",
             },
             timeout=180,
@@ -113,13 +133,6 @@ Rules:
             "response",
             ""
         )
-
-        if not result_text:
-
-            result_text = data.get(
-                "thinking",
-                ""
-            )
 
 
         if not result_text:

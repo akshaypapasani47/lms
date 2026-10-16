@@ -287,7 +287,7 @@ class AssessmentPlacement(models.Model):
         related_name="assessment_placements"
     )
 
-    virtual_lab = models.ForeignKey(
+    programming_lab = models.ForeignKey(
         "programming_lab.VirtualLab",
         on_delete=models.CASCADE,
         null=True,
@@ -295,9 +295,25 @@ class AssessmentPlacement(models.Model):
         related_name="assessment_placements"
     )
 
+    virtual_lab = models.ForeignKey(
+        "virtuallab.VirtualLab",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="new_assessment_placements"
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["assessment", "virtual_lab"],
+                name="unique_assessment_virtual_lab_placement",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.assessment.title} placement"
@@ -350,6 +366,7 @@ class AssessmentSubmission(models.Model):
         return f"{self.student.username} - {self.assessment.title}"
 
 
+
 class QuestionSubmission(models.Model):
 
     submission = models.ForeignKey(
@@ -397,3 +414,46 @@ class QuestionSubmission(models.Model):
 
     def __str__(self):
         return f"{self.submission.student.username} - Q{self.question.order}"
+
+
+
+class AssessmentAccessRequest(models.Model):
+
+    STATUS_CHOICES = (
+        ("PENDING", "Pending"),
+        ("APPROVED", "Approved"),
+        ("REJECTED", "Rejected"),
+    )
+
+    assessment = models.ForeignKey(
+        Assessment,
+        on_delete=models.CASCADE,
+        related_name="access_requests"
+    )
+
+    requested_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="assessment_access_requests"
+    )
+
+    approved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="approved_assessment_access_requests"
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="PENDING"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    approved_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )

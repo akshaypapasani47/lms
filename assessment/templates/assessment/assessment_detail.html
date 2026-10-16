@@ -36,19 +36,23 @@
 
                 <div>
 
-                    <a
-                        href="{% url 'assessment_edit' assessment.pk %}"
-                        class="btn btn-warning"
-                    >
-                        Edit
-                    </a>
+                    {% if can_modify %}
+                        <a
+                            href="{% url 'assessment_edit' assessment.pk %}"
+                            class="btn btn-warning"
+                        >
+                            Edit
+                        </a>
+                    {% endif %}
 
-                    <a
-                        href="{% url 'assessment_delete' assessment.pk %}"
-                        class="btn btn-danger"
-                    >
-                        Delete
-                    </a>
+                    {% if is_owner or is_admin %}
+                        <a
+                            href="{% url 'assessment_delete' assessment.pk %}"
+                            class="btn btn-danger"
+                        >
+                            Delete
+                        </a>
+                    {% endif %}                         
 
                 </div>
 
@@ -97,6 +101,150 @@
 
     </div>
 
+    <!-- ASSESSMENT PLACEMENT -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <strong>
+                    Assessment Placement
+                </strong>
+
+                {% if can_modify %}
+                    <a
+                        href="{% url 'placement_create' assessment.pk %}"
+                        class="btn btn-primary btn-sm"
+                    >
+                        + Add Placement
+                    </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body">
+
+            {% if assessment.placements.exists %}
+
+                {% for placement in assessment.placements.all %}
+
+                    <div class="border rounded p-3 mb-3">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <div>
+
+                                {% if placement.course %}
+                                    <strong>
+                                        Course:
+                                    </strong>
+                                    {{ placement.course }}
+                                    <br>
+                                {% endif %}
+
+
+                                {% if placement.module %}
+                                    <strong>
+                                        Module:
+                                    </strong>
+                                    {{ placement.module }}
+                                    <br>
+                                {% endif %}
+
+
+                                {% if placement.chapter %}
+                                    <strong>
+                                        Chapter:
+                                    </strong>
+                                    {{ placement.chapter }}
+                                    <br>
+                                {% endif %}
+
+
+                                {% if placement.lesson %}
+                                    <strong>
+                                        Lesson:
+                                    </strong>
+                                    {{ placement.lesson }}
+                                    <br>
+                                {% endif %}
+
+
+                                {% if placement.virtual_lab %}
+                                    <strong>
+                                        Virtual Lab:
+                                    </strong>
+                                    {{ placement.virtual_lab }}
+                                {% endif %}
+
+                            </div>
+
+
+                            {% if can_modify %}
+
+                                <div>
+
+                                    <a
+                                        href="{% url 'placement_edit' placement.pk %}"
+                                        class="btn btn-warning btn-sm"
+                                    >
+                                        Edit
+                                    </a>
+
+                                    <a
+                                        href="{% url 'placement_delete' placement.pk %}"
+                                        class="btn btn-danger btn-sm"
+                                    >
+                                        Delete
+                                    </a>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="text-center py-4">
+
+                    <h6>
+                        No placement configured.
+                    </h6>
+
+                    <p class="text-muted mb-3">
+                        Assign this assessment to a course, lesson,
+                        or Virtual Lab.
+                    </p>
+
+                    {% if can_modify %}
+
+                        <a
+                            href="{% url 'placement_create' assessment.pk %}"
+                            class="btn btn-outline-primary"
+                        >
+                            + Add Placement
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
 
     <!-- QUESTIONS -->
 
@@ -110,12 +258,14 @@
                     Questions
                 </strong>
 
-                <a
-                    href="{% url 'question_create' assessment.pk %}"
-                    class="btn btn-primary btn-sm"
-                >
-                    + Add Question
-                </a>
+                {% if can_modify %}
+                    <a 
+                        href="{% url 'question_create' assessment.pk %}" 
+                        class="btn btn-primary btn-sm" 
+                    >
+                        + Add Question 
+                    </a>
+                {% endif %}
 
             </div>
 
@@ -154,23 +304,25 @@
                             </div>
 
 
-                            <div>
+                            {% if can_modify %}
+                                <div> 
 
-                                <a
-                                    href="{% url 'question_edit' question.pk %}"
-                                    class="btn btn-warning btn-sm"
-                                >
-                                    Edit
-                                </a>
+                                    <a 
+                                        href="{% url 'question_edit' question.pk %}" 
+                                        class="btn btn-warning btn-sm" 
+                                    > 
+                                        Edit 
+                                    </a> 
 
-                                <a
-                                    href="{% url 'question_delete' question.pk %}"
-                                    class="btn btn-danger btn-sm"
-                                >
-                                    Delete
-                                </a>
+                                    <a 
+                                        href="{% url 'question_delete' question.pk %}" 
+                                        class="btn btn-danger btn-sm" 
+                                    > 
+                                        Delete 
+                                    </a> 
 
-                            </div>
+                                </div>
+                            {% endif %}
 
                         </div>
 
@@ -181,12 +333,14 @@
 
                             <div class="mt-3">
 
-                                <a
-                                    href="{% url 'question_options' question.pk %}"
-                                    class="btn btn-outline-primary btn-sm"
-                                >
-                                    Manage Options
-                                </a>
+                                {% if can_modify %}
+                                    <a
+                                        href="{% url 'question_options' question.pk %}"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
+                                        Manage Options
+                                    </a>
+                                {% endif %}
 
                                 <span class="text-muted ms-2">
                                     {{ question.options.count }} options
@@ -199,19 +353,22 @@
 
                         <!-- MULTIPLE SELECT -->
 
-                        {% if question.question_type == "MULTIPLE_SELECT" %}
+                        {% if question.question_type == "PROGRAMMING" %}
 
                             <div class="mt-3">
 
-                                <a
-                                    href="{% url 'question_options' question.pk %}"
-                                    class="btn btn-outline-primary btn-sm"
-                                >
-                                    Manage Options
-                                </a>
+                                {% if can_modify %}
+                                    <a
+                                        href="{% url 'test_case_create' question.pk %}"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
+                                        Manage Test Cases
+                                    </a>
+                                {% endif %}
 
                                 <span class="text-muted ms-2">
-                                    {{ question.options.count }} options
+                                    {{ question.test_cases.count }}
+                                    test cases
                                 </span>
 
                             </div>
@@ -225,12 +382,14 @@
 
                             <div class="mt-3">
 
-                                <a
-                                    href="{% url 'test_case_create' question.pk %}"
-                                    class="btn btn-outline-primary btn-sm"
-                                >
-                                    Manage Test Cases
-                                </a>
+                                {% if can_modify %}
+                                    <a
+                                        href="{% url 'test_case_create' question.pk %}"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
+                                        Manage Test Cases
+                                    </a>
+                                {% endif %}
 
                                 <span class="text-muted ms-2">
                                     {{ question.test_cases.count }}
@@ -257,12 +416,14 @@
                         Start by adding your first question.
                     </p>
 
-                    <a
-                        href="{% url 'question_create' assessment.pk %}"
-                        class="btn btn-primary"
-                    >
-                        + Add First Question
-                    </a>
+                    {% if can_modify %}
+                        <a 
+                            href="{% url 'question_create' assessment.pk %}" 
+                            class="btn btn-primary" 
+                        >
+                            + Add First Question 
+                        </a>
+                    {% endif %}
 
                 </div>
 
